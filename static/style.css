@@ -1,0 +1,445 @@
+/* static/style.css (v2.0 - 專案登陸頁) */
+
+/* --- 全域設定 --- */
+html {
+    scroll-behavior: smooth; /* 點擊導覽列時平滑捲動 */
+}
+
+body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #f4f7f6;
+    color: #333;
+    line-height: 1.6;
+}
+
+/* --- 導覽列 --- */
+.navbar {
+    background: #ffffff;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+}
+
+.navbar-container {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 0 2rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    height: 60px;
+}
+
+.logo {
+    font-size: 1.3rem;
+    font-weight: 700;
+    color: #005a9c; /* 新竹藍 */
+}
+
+.navbar nav a {
+    color: #555;
+    text-decoration: none;
+    margin-left: 20px;
+    font-weight: 500;
+    transition: color 0.2s ease;
+}
+
+.navbar nav a:hover {
+    color: #005a9c;
+}
+
+/* --- 區塊通用樣式 --- */
+section {
+    padding: 4rem 2rem;
+}
+
+section h2 {
+    text-align: center;
+    font-size: 2.2rem;
+    margin-top: 0;
+    margin-bottom: 3rem;
+    color: #333;
+}
+
+.section-light {
+    background: #ffffff;
+}
+.section-dark {
+    background: #f4f7f6;
+}
+
+/* --- 1. 專案願景 (Hero) --- */
+.hero {
+    /* 使用專案 static 資料夾中的新竹市天際線圖片，外加一層藍色漸層遮罩提高文字可讀性 */
+    background: linear-gradient(rgba(0, 90, 156, 0.7), rgba(0, 90, 156, 0.7)), url('/static/hsinchu_skyline.jpg');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    color: white;
+    text-align: center;
+    padding: 6rem 2rem;
+}
+
+.hero h1 {
+    font-size: 3rem;
+    margin-bottom: 1rem;
+}
+
+.hero p {
+    font-size: 1.3rem;
+    margin-bottom: 2rem;
+    opacity: 0.9;
+}
+
+.cta-button {
+    background: #ffffff;
+    color: #005a9c;
+    padding: 12px 25px;
+    border-radius: 8px;
+    text-decoration: none;
+    font-size: 1.1rem;
+    font-weight: 700;
+    transition: all 0.3s ease;
+}
+
+.cta-button:hover {
+    background: #eee;
+    transform: translateY(-2px);
+}
+
+/* --- 2. 問題界定 (Problem) --- */
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 2rem;
+    max-width: 1100px;
+    margin: 0 auto;
+}
+
+.stat-card {
+    background: #f9f9f9;
+    border: 1px solid #eee;
+    padding: 2rem;
+    border-radius: 8px;
+    text-align: center;
+}
+
+.stat-card h3 {
+    font-size: 2.5rem;
+    color: #d90429; /* 警示紅 */
+    margin: 0 0 10px 0;
+}
+
+.stat-card p {
+    font-size: 1.1rem;
+    margin: 0;
+}
+
+/* --- 3. AI 偵測 (Demo Tool) --- */
+.demo-container {
+    max-width: 700px;
+    margin: 0 auto;
+    background: #ffffff;
+    padding: 2rem 2.5rem;
+    border-radius: 12px;
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.07);
+    text-align: center;
+}
+
+.demo-container h2 {
+    color: #005a9c;
+    margin-bottom: 1.5rem;
+}
+
+textarea {
+    width: 95%; /* 確保 padding 不會撐破 */
+    height: 120px;
+    padding: 12px;
+    border-radius: 8px;
+    border: 1px solid #ccc;
+    font-size: 1rem;
+    resize: vertical;
+}
+
+button {
+    background-color: #005a9c;
+    color: white;
+    padding: 12px 25px;
+    border: none;
+    border-radius: 8px;
+    font-size: 1.1rem;
+    font-weight: 600;
+    cursor: pointer;
+    margin-top: 15px;
+    transition: background-color 0.2s ease;
+}
+
+button:hover {
+    background-color: #003d6b;
+}
+
+#loading {
+    display: none;
+    margin-top: 15px;
+    color: #555;
+    font-style: italic;
+}
+
+#result-container {
+    margin-top: 25px;
+    background: #f9f9f9;
+    border: 1px solid #eee;
+    padding: 20px;
+    border-radius: 8px;
+    display: none; /* 預設隱藏 */
+    text-align: left; /* 結果靠左對齊 */
+}
+
+.result-box {
+    font-size: 1.1rem;
+    line-height: 1.6;
+}
+
+.risk-high { color: #d90429; }
+.risk-medium { color: #f77f00; }
+.risk-low { color: #008000; }
+
+.result-box strong {
+    font-size: 1.5rem;
+    margin-right: 10px;
+}
+
+.result-box p {
+    margin: 10px 0 0;
+}
+
+/* --- 4. 防詐儀表板 (Dashboard) --- */
+.dashboard-container {
+    max-width: 1100px;
+    margin: 0 auto;
+    text-align: center;
+}
+.dashboard-container p {
+    font-size: 1.1rem;
+    color: #555;
+    margin-bottom: 2rem;
+}
+.dashboard-image {
+    width: 100%;
+    max-width: 900px; /* 限制最大寬度 */
+    border-radius: 8px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+    border: 1px solid #ddd;
+}
+
+/* 動態儀表板：KPI 與圖表 */
+.kpi-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 1rem;
+    margin: 0 auto 2rem;
+}
+
+.kpi-card {
+    background: #f9f9f9;
+    border: 1px solid #eee;
+    border-radius: 10px;
+    padding: 1.2rem 1rem;
+    text-align: left;
+}
+
+.kpi-title {
+    font-size: 0.95rem;
+    color: #666;
+    margin-bottom: 0.3rem;
+}
+
+.kpi-value {
+    font-size: 1.8rem;
+    font-weight: 700;
+    color: #005a9c;
+}
+
+.chart-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+    gap: 1.5rem;
+    margin-top: 1rem;
+}
+
+.chart-card {
+    background: #fff;
+    border: 1px solid #eee;
+    border-radius: 10px;
+    padding: 1rem;
+    text-align: left;
+}
+
+.chart-card h3 {
+    margin: 0 0 0.8rem 0;
+    color: #333;
+}
+
+/* 預設顯示動態儀表板，若 JS 成功載入可選擇隱藏 fallback */
+.dashboard-fallback {
+    margin-top: 1.5rem;
+}
+
+/* --- 5. 核心功能 (Features) --- */
+.feature-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 2rem;
+    max-width: 1100px;
+    margin: 0 auto;
+}
+
+.feature-card {
+    background: #f9f9f9;
+    border: 1px solid #eee;
+    padding: 2rem;
+    border-radius: 8px;
+}
+
+.feature-card h3 {
+    font-size: 1.5rem;
+    color: #005a9c;
+    margin-top: 0;
+}
+
+/* --- 團隊卡片 --- */
+.team-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr); /* 固定四欄，並列同一排 */
+    gap: 1.5rem;
+    max-width: 1100px;
+    margin: 0 auto;
+}
+.team-card {
+    background: #f9f9f9;
+    border: 1px solid #eee;
+    border-radius: 12px;
+    padding: 1.25rem 1.25rem 1.5rem;
+    text-align: center;
+}
+.team-card { min-width: 240px; }
+.team-card img.team-avatar {
+    width: 110px;
+    height: 110px;
+    border-radius: 50%;
+    display: block;
+    margin: 0 auto 0.8rem;
+    box-shadow: 0 3px 10px rgba(0,0,0,0.08);
+    background: #fff;
+}
+.team-card .role {
+    color: #555;
+    margin: 0.2rem 0 0.6rem;
+}
+.team-card ul {
+    text-align: left;
+    margin: 0.6rem 0 0;
+    padding-left: 1.2rem;
+}
+.team-card ul li { margin-bottom: 0.35rem; }
+
+/* --- 6. 互動式防詐模擬 --- */
+.simulation-container {
+    max-width: 700px;
+    margin: 0 auto;
+    text-align: center;
+}
+.simulation-container p {
+    font-size: 1.1rem;
+    color: #555;
+    margin-bottom: 2rem;
+}
+.cta-button-2 { /* 一個新樣式的按鈕 */
+    background: #008000; /* 綠色 */
+    color: white;
+    padding: 12px 25px;
+    border-radius: 8px;
+    text-decoration: none;
+    font-size: 1.1rem;
+    font-weight: 700;
+    transition: all 0.3s ease;
+    border: none;
+    cursor: pointer;
+}
+.cta-button-2:hover {
+    background: #006400;
+}
+
+.sim-chat {
+    max-width: 400px; /* 模擬手機寬度 */
+    margin: 2rem auto 0;
+    border: 1px solid #ccc;
+    background: #ACE2E1; /* LINE 的背景色 */
+    border-radius: 12px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+    display: none; /* 預設隱藏 */
+}
+.sim-header {
+    background: #333;
+    color: white;
+    padding: 10px 15px;
+    font-weight: bold;
+    border-top-left-radius: 12px;
+    border-top-right-radius: 12px;
+}
+.sim-body {
+    padding: 15px;
+    height: 300px;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+}
+.sim-message {
+    padding: 8px 12px;
+    border-radius: 10px;
+    margin-bottom: 10px;
+    max-width: 80%;
+    line-height: 1.4;
+    opacity: 0; /* 預設透明 */
+    animation: fadeIn 0.5s forwards; /* 淡入動畫 */
+}
+.sim-message.scammer { /* 詐騙者在左邊 */
+    background: #fff;
+    align-self: flex-start;
+}
+.sim-message.user { /* 用戶在右邊 */
+    background: #90EE90; /* 綠色對話框 */
+    align-self: flex-end;
+}
+.sim-message.system { /* 系統/AI 分析訊息 */
+    background: #fff3cd; /* 淡黃色提示背景 */
+    border: 1px solid #ffeeba;
+    color: #856404;
+    align-self: center;
+}
+.sim-footer {
+    padding: 10px;
+    background: #f9f9f9;
+    border-bottom-left-radius: 12px;
+    border-bottom-right-radius: 12px;
+}
+.sim-footer input {
+    width: 90%;
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 20px;
+}
+@keyframes fadeIn {
+    to { opacity: 1; }
+}
+
+/* --- 7. 頁尾 --- */
+.footer {
+    background: #333;
+    color: #aaa;
+    text-align: center;
+    padding: 1.5rem 2rem;
+}

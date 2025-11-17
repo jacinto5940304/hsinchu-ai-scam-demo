@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>防詐儀表板 | 新竹市 AI 防詐偵測</title>
+    <link rel="stylesheet" href="/static/style.css">
+    <!-- Chart.js CDN 僅在儀表板頁載入 -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+</head>
+<body>
+
+    <header class="navbar">
+        <div class="navbar-container">
+            <div class="logo">新竹 AI 防詐專案</div>
+            <nav>
+                <a href="/">首頁</a>
+                <a href="/detect">AI 立即偵測</a>
+                <a href="/dashboard">防詐儀表板</a>
+                <a href="/simulation">互動模擬</a>
+                <a href="/team">團隊與聯絡</a>
+            </nav>
+        </div>
+    </header>
+
+    <section id="dashboard" class="section-light">
+        <h2>新竹防詐儀表板</h2>
+        <div class="dashboard-container">
+            <p>下方為動態儀表板（暫代資料）；若腳本未載入，將顯示靜態示意圖作為備援。</p>
+
+            <!-- 動態 KPI 區塊 -->
+            <div id="dynamic-dashboard">
+                <div class="kpi-grid">
+                    <div class="kpi-card">
+                        <div class="kpi-title">本月財損</div>
+                        <div class="kpi-value" id="kpi-monthly-loss">--</div>
+                    </div>
+                    <div class="kpi-card">
+                        <div class="kpi-title">本月通報件數</div>
+                        <div class="kpi-value" id="kpi-monthly-cases">--</div>
+                    </div>
+                    <div class="kpi-card">
+                        <div class="kpi-title">AI 攔截次數</div>
+                        <div class="kpi-value" id="kpi-ai-interceptions">--</div>
+                    </div>
+                </div>
+
+                <!-- 圖表區 -->
+                <div class="chart-grid">
+                    <div class="chart-card">
+                        <h3>詐騙類型分布</h3>
+                        <canvas id="scamTypesChart" width="400" height="300"></canvas>
+                    </div>
+                    <div class="chart-card">
+                        <h3>受害族群年齡</h3>
+                        <canvas id="victimAgesChart" width="400" height="300"></canvas>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 備援：靜態示意圖（當 JS 失效或 API 不可用時仍可展示） -->
+            <div class="dashboard-fallback">
+                <picture>
+                    <source srcset="/static/dashboard_mockup.png" type="image/png">
+                    <img src="/static/dashboard_mockup.svg" alt="新竹防詐儀表板概念圖" class="dashboard-image">
+                </picture>
+            </div>
+        </div>
+    </section>
+
+    <footer class="footer">
+        <p>&copy; 2025 新竹政策黑客松 - 清大小夥伴 團隊</p>
+    </footer>
+
+    <script src="/static/main.js" defer></script>
+</body>
+</html>

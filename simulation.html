@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>互動式防詐模擬 | 新竹市 AI 防詐偵測</title>
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+
+    <header class="navbar">
+        <div class="navbar-container">
+            <div class="logo">新竹 AI 防詐專案</div>
+            <nav>
+                <a href="/">首頁</a>
+                <a href="/detect">AI 立即偵測</a>
+                <a href="/dashboard">防詐儀表板</a>
+                <a href="/simulation">互動模擬</a>
+                <a href="/team">團隊與聯絡</a>
+            </nav>
+        </div>
+    </header>
+
+    <section id="simulation" class="section-dark">
+        <h2>互動式防詐模擬 (情境演練)</h2>
+        <div class="simulation-container">
+            <p>光說不練不夠。點擊下方按鈕，體驗「假投資」詐騙情境。</p>
+            <button id="startSimButton" class="cta-button-2">開始「老師帶你飛」情境模擬</button>
+            
+            <div id="simChat" class="sim-chat">
+                <div class="sim-header">投資理財-穩賺不賠 (3)</div>
+                <div class="sim-body"></div>
+                <div class="sim-footer">
+                    <input type="text" placeholder="輸入訊息..." disabled>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer class="footer">
+        <p>&copy; 2025 新竹政策黑客松 - 清大小夥伴 團隊</p>
+    </footer>
+
+    <script src="/static/main.js" defer></script>
+</body>
+</html>

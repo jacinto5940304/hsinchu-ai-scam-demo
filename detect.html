@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI 立即偵測 | 新竹市 AI 防詐偵測</title>
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+
+    <header class="navbar">
+        <div class="navbar-container">
+            <div class="logo">新竹 AI 防詐專案</div>
+            <nav>
+                <a href="/">首頁</a>
+                <a href="/detect">AI 立即偵測</a>
+                <a href="/dashboard">防詐儀表板</a>
+                <a href="/simulation">互動模擬</a>
+                <a href="/team">團隊與聯絡</a>
+            </nav>
+        </div>
+    </header>
+
+    <section id="demo" class="section-dark">
+        <div class="demo-container">
+            <h2>AI 立即偵測 (Live Demo)</h2>
+            <p>請貼上您懷疑是詐騙的訊息，AI 將立即為您分析風險。</p>
+
+            <textarea id="scamText" placeholder="例如：[緊急通知] 您的帳戶因安全問題已被凍結，請立即點擊..."></textarea>
+            
+            <button id="analyzeButton">立即 AI 分析</button>
+
+            <div id="loading">分析中... (AI 引擎正在思考 🧠)</div>
+            
+            <div id="result-container">
+                <div id="result-box" class="result-box"></div>
+            </div>
+        </div>
+    </section>
+
+    <footer class="footer">
+        <p>&copy; 2025 新竹政策黑客松 - 清大小夥伴 團隊</p>
+    </footer>
+
+    <script src="/static/main.js" defer></script>
+</body>
+</html>

@@ -1,0 +1,22 @@
+# Python 暫存檔
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Conda & venv 環境 (雖然你的在外部，但這是好習慣)
+venv/
+env/
+*.egg-info/
+
+# macOS 系統垃圾檔
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# VS Code 編輯器設定
+.vscode/
+
+# Ollama & AI 模型 (防止未來不小心下載)
+*.gguf
+*.bin
