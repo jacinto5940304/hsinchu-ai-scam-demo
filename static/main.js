@@ -365,6 +365,9 @@ async function loadDashboardData() {
             }
         }
 
+        // 5. 載入熱區圖資料並初始化地圖
+        initMap();
+
         // 若成功載入動態儀表板，可選擇隱藏備援圖
         const fallback = document.querySelector('.dashboard-fallback');
         if (fallback) fallback.style.display = 'none';
@@ -372,5 +375,70 @@ async function loadDashboardData() {
     } catch (e) {
         // 若失敗，保留備援圖
         console.warn('loadDashboardData error:', e);
+    }
+}
+
+async function initMap() {
+    // 檢查 Google Maps API 是否已載入
+    if (typeof google === 'undefined' || typeof google.maps === 'undefined') {
+        console.warn("Google Maps API尚未載入，無法初始化地圖。");
+        return;
+    }
+
+    try {
+        const response = await fetch(`${API_BASE}/api/heatmap_data`);
+        if (!response.ok) {
+            throw new Error(`無法獲取熱區圖資料 (HTTP ${response.status})`);
+        }
+        const heatmapData = await response.json();
+
+        if (heatmapData.error || !Array.isArray(heatmapData) || heatmapData.length === 0) {
+            console.warn("熱區圖資料格式錯誤或為空。", heatmapData.error || '');
+            document.getElementById('map').textContent = '熱區圖資料載入失敗。';
+            return;
+        }
+
+        // 將後端資料轉換為 Google Maps 需要的格式
+        const heatMapPoints = heatmapData.map(point => ({
+            location: new google.maps.LatLng(point.lat, point.lng),
+            weight: point.weight
+        }));
+
+        // 初始化地圖
+        const map = new google.maps.Map(document.getElementById("map"), {
+            center: { lat: 24.804, lng: 120.972 }, // 地圖中心點設為新竹市
+            zoom: 12, // 縮放等級
+            mapTypeId: 'satellite' // 可以是 'roadmap', 'satellite', 'hybrid', 'terrain'
+        });
+
+        // 建立熱區圖層
+        const heatmap = new google.maps.visualization.HeatmapLayer({
+            data: heatMapPoints,
+            map: map
+        });
+
+        // 設定熱區圖層的樣式
+        heatmap.set("radius", 20); // 熱點半徑
+        heatmap.set("opacity", 0.8); // 透明度
+        heatmap.set("gradient", [
+            "rgba(0, 255, 255, 0)",
+            "rgba(0, 255, 255, 1)",
+            "rgba(0, 191, 255, 1)",
+            "rgba(0, 127, 255, 1)",
+            "rgba(0, 63, 255, 1)",
+            "rgba(0, 0, 255, 1)",
+            "rgba(0, 0, 223, 1)",
+            "rgba(0, 0, 191, 1)",
+            "rgba(0, 0, 159, 1)",
+            "rgba(0, 0, 127, 1)",
+            "rgba(63, 0, 91, 1)",
+            "rgba(127, 0, 63, 1)",
+            "rgba(191, 0, 31, 1)",
+            "rgba(255, 0, 0, 1)"
+        ]);
+
+    } catch (error) {
+        console.error("初始化地圖失敗:", error);
+        document.getElementById('map').textContent = '地圖載入時發生錯誤。';
     }
 }

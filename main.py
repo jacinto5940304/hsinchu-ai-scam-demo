@@ -300,6 +300,26 @@ async def api_hsinchu_district_data():
     return read_csv_data("data/hsinchu_crime_data.csv", "district", "cases")
 
 
+@app.get("/api/heatmap_data")
+async def api_heatmap_data():
+    """從 CSV 讀取熱區圖數據。"""
+    try:
+        with open("data/heatmap_data.csv", mode="r", encoding="utf-8") as infile:
+            reader = csv.DictReader(infile)
+            data = [
+                {
+                    "lat": float(row["lat"]),
+                    "lng": float(row["lng"]),
+                    "weight": int(row["cases"])
+                }
+                for row in reader
+            ]
+            return data
+    except FileNotFoundError:
+        return {"error": "heatmap_data.csv not found."}
+    except Exception as e:
+        return {"error": str(e)}
+
 
 # --- 7. 模擬：預設 5 種腳本，隨機給 1 種 ---
 try:

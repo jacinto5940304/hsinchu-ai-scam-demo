@@ -60,6 +60,11 @@
                         <canvas id="hsinchuDistrictChart" width="400" height="300"></canvas>
                     </div>
                 </div>
+                <!-- 熱區地圖 -->
+                <div class="map-container">
+                    <h3>詐騙熱區地圖</h3>
+                    <div id="map"></div>
+                </div>
             </div>
 
             <!-- 備援示意圖區塊已被移除，以解決 404 錯誤 -->
@@ -74,5 +79,7 @@
 
     <script src="/static/config.js"></script>
     <script src="/static/main.js" defer></script>
+    <!-- Google Maps API，請記得填入你的 API Key -->
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAdKJjWhCddLaS9HsvC_1tVFIvlCdLPblo&libraries=visualization" defer></script>
 </body>
 </html>
