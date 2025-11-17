@@ -272,74 +272,103 @@ document.addEventListener("DOMContentLoaded", () => {
 
 // ------------- 儀表板：載入資料與繪圖 -------------
 async function loadDashboardData() {
+    // 如果沒有 Chart.js，則不執行任何操作
+    if (typeof Chart === 'undefined') {
+        console.warn("Chart.js 未載入，儀表板無法繪製。");
+        return;
+    }
+
     try {
-        const resp = await fetch(`${API_BASE}/api/dashboard_data`);
-        if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
-        const data = await resp.json();
-
-        // KPI
-        const kpis = data.kpis || {};
-        const lossEl = document.getElementById('kpi-monthly-loss');
-        const casesEl = document.getElementById('kpi-monthly-cases');
-        const aiEl = document.getElementById('kpi-ai-interceptions');
-        if (lossEl) lossEl.textContent = kpis.monthly_loss ?? '--';
-        if (casesEl) casesEl.textContent = (kpis.monthly_cases ?? '--').toString();
-        if (aiEl) aiEl.textContent = (kpis.ai_interceptions ?? '--').toString();
-
-        // 如果沒有載入 Chart.js，則不畫圖
-        if (typeof Chart === 'undefined') return;
-
-        // 圓餅圖：詐騙類型
-        const scamTypes = data.scam_types || { labels: [], data: [] };
-        const pieCtx = document.getElementById('scamTypesChart');
-        if (pieCtx) {
-            new Chart(pieCtx, {
-                type: 'pie',
-                data: {
-                    labels: scamTypes.labels,
-                    datasets: [{
-                        data: scamTypes.data,
-                        backgroundColor: ['#005a9c', '#00a6fb', '#13c4a3', '#f77f00', '#adb5bd'],
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    plugins: {
-                        legend: { position: 'bottom' }
-                    }
-                }
-            });
+        // 1. 載入 KPI 數據
+        const kpiResp = await fetch(`${API_BASE}/api/kpi_data`);
+        if (kpiResp.ok) {
+            const kpis = await kpiResp.json();
+            const lossEl = document.getElementById('kpi-monthly-loss');
+            const casesEl = document.getElementById('kpi-monthly-cases');
+            const aiEl = document.getElementById('kpi-ai-interceptions');
+            if (lossEl) lossEl.textContent = kpis.monthly_loss ?? '--';
+            if (casesEl) casesEl.textContent = (kpis.monthly_cases ?? '--').toString();
+            if (aiEl) aiEl.textContent = (kpis.ai_interceptions ?? '--').toString();
         }
 
-        // 長條圖：受害族群年齡
-        const victimAges = data.victim_ages || { labels: [], data: [] };
-        const barCtx = document.getElementById('victimAgesChart');
-        if (barCtx) {
-            new Chart(barCtx, {
-                type: 'bar',
-                data: {
-                    labels: victimAges.labels,
-                    datasets: [{
-                        label: '件數',
-                        data: victimAges.data,
-                        backgroundColor: '#00a6fb',
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    scales: {
-                        y: { beginAtZero: true }
+        // 2. 載入詐騙類型分佈並繪製圓餅圖
+        const scamTypesResp = await fetch(`${API_BASE}/api/scam_types_data`);
+        if (scamTypesResp.ok) {
+            const scamTypesData = await scamTypesResp.json();
+            const pieCtx = document.getElementById('scamTypesChart');
+            if (pieCtx && scamTypesData.labels && scamTypesData.data) {
+                new Chart(pieCtx, {
+                    type: 'pie',
+                    data: {
+                        labels: scamTypesData.labels,
+                        datasets: [{
+                            data: scamTypesData.data,
+                            backgroundColor: ['#005a9c', '#00a6fb', '#13c4a3', '#f77f00', '#adb5bd'],
+                        }]
                     },
-                    plugins: {
-                        legend: { display: false }
+                    options: { responsive: true, plugins: { legend: { position: 'bottom' } } }
+                });
+            }
+        }
+
+        // 3. 載入受害者年齡分佈並繪製長條圖
+        const victimAgesResp = await fetch(`${API_BASE}/api/victim_ages_data`);
+        if (victimAgesResp.ok) {
+            const victimAgesData = await victimAgesResp.json();
+            const barCtx = document.getElementById('victimAgesChart');
+            if (barCtx && victimAgesData.labels && victimAgesData.data) {
+                new Chart(barCtx, {
+                    type: 'bar',
+                    data: {
+                        labels: victimAgesData.labels,
+                        datasets: [{
+                            label: '件數',
+                            data: victimAgesData.data,
+                            backgroundColor: '#00a6fb',
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        scales: { y: { beginAtZero: true } },
+                        plugins: { legend: { display: false } }
                     }
-                }
-            });
+                });
+            }
+        }
+
+        // 4. 載入新竹各區資料並繪製橫向長條圖
+        const districtResp = await fetch(`${API_BASE}/api/hsinchu_district_data`);
+        if (districtResp.ok) {
+            const districtData = await districtResp.json();
+            const districtCtx = document.getElementById('hsinchuDistrictChart');
+            if (districtCtx && districtData.labels && districtData.data) {
+                new Chart(districtCtx, {
+                    type: 'bar',
+                    data: {
+                        labels: districtData.labels,
+                        datasets: [{
+                            label: '通報案件數',
+                            data: districtData.data,
+                            backgroundColor: '#f77f00',
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        indexAxis: 'y',
+                        scales: { x: { beginAtZero: true } },
+                        plugins: {
+                            legend: { display: false },
+                            title: { display: true, text: '新竹市各區詐騙通報案件' }
+                        }
+                    }
+                });
+            }
         }
 
         // 若成功載入動態儀表板，可選擇隱藏備援圖
         const fallback = document.querySelector('.dashboard-fallback');
         if (fallback) fallback.style.display = 'none';
+
     } catch (e) {
         // 若失敗，保留備援圖
         console.warn('loadDashboardData error:', e);

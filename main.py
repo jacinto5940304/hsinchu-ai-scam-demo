@@ -10,6 +10,7 @@ from fastapi.responses import FileResponse  # 匯入 FileResponse
 import json # 匯入 json 函式庫
 import random
 from typing import Optional, List, Dict
+import csv # 匯入 csv 模組
 
 # --- 1. 匯入你的「Plan B 黃金答案」---
 # (請確保你已經建立了 baked_results.py 檔案)
@@ -80,88 +81,92 @@ except Exception:
         "heatmap_data": [],
     }
 
-def create_prompt(message: str) -> str:
-    # Gemma 專用優化版 Prompt v2.0 (提供範例)
-    # (這是為了 Plan B 未命中時，gemma:2b 也能有最好的表現)
+def create_classification_prompt(message: str) -> str:
+    # v3 分類任務優化版 Prompt
     return f"""
 <start_of_turn>user
-你是一個詐騙分析 AI。請分析以下訊息，並「只回傳」一個 JSON 物件。
+你是一個頂尖的詐騙訊息分類器。你的任務是根據以下訊息，判斷其分類，並「只回傳」一個單字。
 
-JSON 格式必須包含：
-1. "risk_score": 0-100 的整數。
-2. "scam_type": ["假投資", "假冒政府", "假網拍", "假交友", "正常訊息"]。
-3. "analysis": 一句簡短的中文分析。
+可選的分類有三種：
+1. SCAM: 明顯是詐騙、釣魚或意圖不良的訊息。
+2. SUSPICIOUS: 看似正常但含有潛在風險，或需要使用者提高警覺的訊息（例如：要求加 LINE、換手機號碼、引導到不明平台）。
+3. SAFE: 日常對話、正常通知或無害的訊息。
 
-[範例 1]
-訊息: "hihi"
-JSON:
-{{
-  "risk_score": 0,
-  "scam_type": "正常訊息",
-  "analysis": "這是一則正常的打招呼訊息。"
-}}
+[範例]
+訊息: "【飆股訓練營】老師帶你飛，三天保證獲利30%"
+分類: SCAM
 
-[範例 2]
-訊息: "您的帳戶已被凍結，請點 www.xbank-verify.com 驗證"
-JSON:
-{{
-  "risk_score": 95,
-  "scam_type": "假冒政府",
-  "analysis": "偵測到『帳戶凍結』威脅詞彙與可疑釣魚連結。"
-}}
+訊息: "媽，我換手機號碼了，先加我新的 LINE"
+分類: SUSPICIOUS
+
+訊息: "這週末要不要一起去巨城看電影？"
+分類: SAFE
 
 [你的任務]
 訊息: "{message}"
-JSON:
+分類:
 <end_of_turn>
 <start_of_turn>model
-{{
 """
 
-# --- API Endpoint：/analyze（V2：後端驗證，統一格式）---
+# --- API Endpoint：/analyze（V3：分類模型）---
 @app.post("/analyze")
 async def analyze_scam(request: ScamRequest):
     user_text = request.text.strip()
 
-    # 定義保底的錯誤回傳格式
+    # 定義標籤與對應的分析結果
+    LABEL_MAP = {
+        "SCAM": {
+            "risk_score": 90,
+            "scam_type": "高風險詐騙",
+            "analysis": "此訊息包含典型的詐騙特徵，例如保證獲利、釣魚連結或威脅性用語，風險極高。",
+        },
+        "SUSPICIOUS": {
+            "risk_score": 60,
+            "scam_type": "可疑訊息",
+            "analysis": "此訊息可能為詐騙前奏，例如要求切換通訊軟體、不明的身份變更。建議提高警覺，切勿輕易提供個資或金錢。",
+        },
+        "SAFE": {
+            "risk_score": 5,
+            "scam_type": "正常訊息",
+            "analysis": "這看起來像是一則正常的對話或通知。",
+        }
+    }
+    
     fallback_answer = {
         "risk_score": -1,
-        "scam_type": "錯誤",
-        "analysis": "AI 引擎目前負載過高或回傳格式不符，請稍後再試。",
+        "scam_type": "分析錯誤",
+        "analysis": "AI 引擎暫時無法連線或回傳格式不符，請稍後再試。",
         "source": "Fallback-Error"
     }
 
     # --- Plan A: Live AI ---
     try:
-        print(f"--- 嘗試 Plan A (Live AI: {LIVE_AI_MODEL})... ---")
-        prompt = create_prompt(user_text) # 使用 gemma 優化過的 prompt
+        print(f"--- 嘗試 Plan A (分類模型: {LIVE_AI_MODEL})... ---")
+        prompt = create_classification_prompt(user_text)
         payload = {
             "model": LIVE_AI_MODEL,
             "prompt": prompt,
-            "format": "json",
             "stream": False,
         }
-        async with httpx.AsyncClient(timeout=20.0) as client:
+        async with httpx.AsyncClient(timeout=15.0) as client: # 分類任務通常較快
             response = await client.post(LIVE_AI_URL, json=payload)
             response.raise_for_status()
         
         # 在後端解析與驗證
-        raw_response_str = response.json().get("response", "{}")
-        try:
-            # Ollama 的 format="json" 有時仍會包含在字串內，需要解析
-            result = json.loads(raw_response_str)
-            
-            # 驗證必要欄位是否存在
-            if all(k in result for k in ["risk_score", "scam_type", "analysis"]):
-                print("--- Plan A 成功且格式正確！ (Live AI) ---")
-                result["source"] = f"Plan A: Live ({LIVE_AI_MODEL})"
-                return result
-            else:
-                print(f"--- Plan A 格式錯誤：缺少必要欄位。回應：{result}")
-                # 格式錯誤，轉向 Plan B
-        except (json.JSONDecodeError, TypeError) as e:
-            print(f"--- Plan A JSON 解析失敗：{e}。回應：{raw_response_str[:200]}")
-            # 解析失敗，轉向 Plan B
+        raw_response_str = response.json().get("response", "").strip().upper()
+        
+        if raw_response_str in LABEL_MAP:
+            print(f"--- Plan A 成功！分類為: {raw_response_str} ---")
+            result = LABEL_MAP[raw_response_str].copy() # 複製一份以避免修改原始 MAP
+            result["source"] = f"Plan A: Live ({LIVE_AI_MODEL})"
+            # 如果是可疑或詐騙，可以把原始訊息的一部分加到分析中
+            if raw_response_str != "SAFE":
+                 result["analysis"] += f" 偵測到可疑內容：『{user_text[:30]}...』"
+            return result
+        else:
+            print(f"--- Plan A 回傳了無效的分類標籤: '{raw_response_str}' ---")
+            # 格式錯誤，轉向 Plan B
 
     except httpx.TimeoutException:
         print(f"--- Plan A 超時 ---")
@@ -170,17 +175,30 @@ async def analyze_scam(request: ScamRequest):
     except Exception as e:
         print(f"--- Plan A 未知錯誤：{e} ---")
 
-    # --- Plan B: 烘焙答案庫 ---
-    print("--- 切換至 Plan B (烘焙答案)... ---")
-    for key, answer in DEMO_ANSWERS.items():
-        if key in user_text:
-            print("--- Plan B 命中！ (烘焙答案) ---")
-            answer["source"] = "Plan B: Baked-in"
-            return answer
+    # --- Plan B: 關鍵字規則 (取代舊的 baked_answers) ---
+    print("--- 切換至 Plan B (關鍵字規則)... ---")
+    # 簡易的關鍵字規則，可以持續擴充
+    scam_keywords = ["保證獲利", "飆股", "點擊連結更新", "帳戶凍結", "抽中大獎"]
+    suspicious_keywords = ["換手機", "加我新的LINE", "內部消息", "老師帶你"]
+    
+    if any(kw in user_text for kw in scam_keywords):
+        print("--- Plan B 命中！(SCAM 關鍵字) ---")
+        result = LABEL_MAP["SCAM"].copy()
+        result["source"] = "Plan B: Keyword Rule"
+        return result
+        
+    if any(kw in user_text for kw in suspicious_keywords):
+        print("--- Plan B 命中！(SUSPICIOUS 關鍵字) ---")
+        result = LABEL_MAP["SUSPICIOUS"].copy()
+        result["source"] = "Plan B: Keyword Rule"
+        return result
 
-    # --- 都失敗：回傳保底錯誤 ---
-    print("--- Plan B 未命中，回傳保底錯誤 ---")
-    return fallback_answer
+    # --- 都失敗：回傳保底安全 ---
+    # 在分類任務中，如果 AI 跟關鍵字都沒反應，先假設為安全可能比回傳錯誤好
+    print("--- Plan B 未命中，預設為 SAFE ---")
+    final_answer = LABEL_MAP["SAFE"].copy()
+    final_answer["source"] = "Fallback-Default"
+    return final_answer
 
 
 # --- 健康檢查與除錯 ---
@@ -240,11 +258,47 @@ async def team_page():
     return FileResponse("team.html")
 
 
-@app.get("/api/dashboard_data")
-async def api_dashboard_data():
-    """提供前端儀表板所需的暫代資料。"""
-    # 直接回傳已載入的常數資料（未接資料庫前的簡易版）
-    return DASHBOARD_DATA
+def read_csv_data(file_path: str, label_col: str, data_col: str):
+    """通用 CSV 讀取函式"""
+    try:
+        with open(file_path, mode="r", encoding="utf-8") as infile:
+            reader = csv.DictReader(infile)
+            labels = []
+            data = []
+            for row in reader:
+                labels.append(row[label_col])
+                data.append(int(row[data_col]))
+            return {"labels": labels, "data": data}
+    except FileNotFoundError:
+        return {"error": f"{file_path} not found.", "labels": [], "data": []}
+    except Exception as e:
+        return {"error": str(e), "labels": [], "data": []}
+
+@app.get("/api/kpi_data")
+async def api_kpi_data():
+    """僅提供 KPI 數據"""
+    # 在這個版本中，KPI 數據仍然是靜態的，但已從圖表數據中分離出來
+    return {
+        "monthly_loss": "1億 8752萬",
+        "monthly_cases": 401,
+        "ai_interceptions": 1230
+    }
+
+@app.get("/api/scam_types_data")
+async def api_scam_types_data():
+    """從 CSV 讀取詐騙類型分佈"""
+    return read_csv_data("data/scam_types.csv", "type", "cases")
+
+@app.get("/api/victim_ages_data")
+async def api_victim_ages_data():
+    """從 CSV 讀取受害者年齡分佈"""
+    return read_csv_data("data/victim_ages.csv", "age_group", "cases")
+
+@app.get("/api/hsinchu_district_data")
+async def api_hsinchu_district_data():
+    """從 CSV 讀取新竹各區的詐騙案件數據。"""
+    return read_csv_data("data/hsinchu_crime_data.csv", "district", "cases")
+
 
 
 # --- 7. 模擬：預設 5 種腳本，隨機給 1 種 ---
