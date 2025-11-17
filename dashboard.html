@@ -58,12 +58,8 @@
                 </div>
             </div>
 
-            <!-- 備援：靜態示意圖（當 JS 失效或 API 不可用時仍可展示） -->
-            <div class="dashboard-fallback">
-                <picture>
-                    <source srcset="/static/dashboard_mockup.png" type="image/png">
-                    <img src="/static/dashboard_mockup.svg" alt="新竹防詐儀表板概念圖" class="dashboard-image">
-                </picture>
+            <!-- 備援示意圖區塊已被移除，以解決 404 錯誤 -->
+            <div class="dashboard-fallback" style="display: none;">
             </div>
         </div>
     </section>
@@ -72,6 +68,7 @@
         <p>&copy; 2025 新竹政策黑客松 - 清大小夥伴 團隊</p>
     </footer>
 
+    <script src="/static/config.js"></script>
     <script src="/static/main.js" defer></script>
 </body>
 </html>

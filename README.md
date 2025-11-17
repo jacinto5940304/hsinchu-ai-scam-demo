@@ -144,8 +144,49 @@ uvicorn main:app --reload
 - API 文件（FastAPI 自動提供）：`http://127.0.0.1:8000/docs`
 - 儀表板資料 API：`GET http://127.0.0.1:8000/api/dashboard_data`
 - 模擬預設對話 API：`GET http://127.0.0.1:8000/preset_script`
-  - 回傳格式（精簡）：`{ id, title, persona, script, source }`
-  - `persona` 會直接用於後續 `POST /chat_reply` 的提示詞，讓人設與預設對答對應。
+
+---
+
+## 部署（免費方案建議）
+
+你可以先用「前後端分離」的方式免費上線：
+
+1) 後端（FastAPI）→ Render（免費 Web Service）
+
+- 連結 GitHub Repo，建立一個 Web Service
+- Runtime：Python
+- Build Command（可省略）：`pip install -r requirements.txt`
+- Start Command：`uvicorn main:app --host 0.0.0.0 --port $PORT`
+- 部署完成後會得到一個網址，例如：`https://hsinchu-anti-scam.onrender.com`
+
+1) 前端（靜態頁面）→ GitHub Pages（免費）
+
+- 啟用本 Repo 的 GitHub Pages（設定為 `main` 分支 / 根目錄）
+- 在 `static/config.js` 設定：
+
+```html
+<!-- static/config.js 範例（把這段貼進檔案內）-->
+<script>
+  window.API_BASE = "https://hsinchu-anti-scam.onrender.com";
+</script>
+```
+
+注意：本專案已在 `static/main.js` 內支援 `window.API_BASE`，所以當前端與後端不同網域時不用改程式，只要設定這個變數即可。
+
+1) 其他可選免費平台
+
+- Fly.io / Railway：可跑 FastAPI（免費額度依政策可能變動）
+- Hugging Face Spaces（Docker 模式）：可跑 FastAPI，但較適合 ML Demo
+- Cloudflare Pages：靜態前端 OK，後端建議仍用 Render/Fly 作為 API 來源
+
+如果你想要「全都佈在同一個地方」，也可以用：
+
+- Render（僅後端服務，前端文件放在 FastAPI 靜態目錄）：把 `index.html` 等頁面由 FastAPI 直接提供（已內建），不使用 GitHub Pages。
+
+---
+
+  回傳格式（精簡）：`{ id, title, persona, script, source }`
+  `persona` 會直接用於後續 `POST /chat_reply` 的提示詞，讓人設與預設對答對應。
 
 ---
 

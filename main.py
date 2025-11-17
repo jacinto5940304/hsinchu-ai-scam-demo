@@ -1,7 +1,9 @@
 # main.py (混合式戰術 - 最終版)
 
 import httpx
+import os
 from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 from fastapi.staticfiles import StaticFiles # 匯入 StaticFiles
 from fastapi.responses import FileResponse  # 匯入 FileResponse
@@ -36,9 +38,24 @@ class ChatReplyRequest(BaseModel):
 # --- FastAPI App ---
 app = FastAPI()
 
-# --- Ollama & Prompt 設定 (Plan A) ---
+# 允許跨來源（方便前端放在 GitHub Pages 或其他網域時調用 API）
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],  # Demo 階段先全開，正式上線請改為指定網域
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
+# --- Ollama & Prompt 設定 (Plan A：本地生成，供其他端點使用) ---
 OLLAMA_API_URL = "http://127.0.0.1:11434/api/generate"
-OLLAMA_MODEL = "gemma:2b" # 你的 8GB M1 穩定夥伴
+OLLAMA_MODEL = "gemma:2b" # 你的 8GB M1 穩定夥伴（/generate_script、/chat_reply 仍使用）
+
+# --- Live AI（例如外部 4070 Ti 經 ngrok 轉出的 Llama3 服務）---
+# 請在本機或雲端設置環境變數 LIVE_AI_URL，例如：
+# LIVE_AI_URL = "https://random-code.ngrok-free.app/api/generate"
+LIVE_AI_URL = os.environ.get("LIVE_AI_URL", "http://127.0.0.1:11434/api/generate")
+LIVE_AI_MODEL = os.environ.get("LIVE_AI_MODEL", "gemma:2b")  # 可改成 gemma:2b 以符合本機可用模型
 
 # 禁用詞（避免模型跳脫人設，出現道歉/拒絕/安全勸說等字眼）
 BANNED_SAFETY_TERMS = [
@@ -101,57 +118,92 @@ JSON:
 {{
 """
 
-# --- API Endpoint (你最重要的 API) ---
+# --- API Endpoint：/analyze（V2：後端驗證，統一格式）---
 @app.post("/analyze")
 async def analyze_scam(request: ScamRequest):
-    
-    user_text = request.text.strip() # .strip() 去除前後空白
-    
-    # --- 2. 決賽保險：優先檢查「烘焙答案」(Plan B) ---
+    user_text = request.text.strip()
+
+    # 定義保底的錯誤回傳格式
+    fallback_answer = {
+        "risk_score": -1,
+        "scam_type": "錯誤",
+        "analysis": "AI 引擎目前負載過高或回傳格式不符，請稍後再試。",
+        "source": "Fallback-Error"
+    }
+
+    # --- Plan A: Live AI ---
+    try:
+        print(f"--- 嘗試 Plan A (Live AI: {LIVE_AI_MODEL})... ---")
+        prompt = create_prompt(user_text) # 使用 gemma 優化過的 prompt
+        payload = {
+            "model": LIVE_AI_MODEL,
+            "prompt": prompt,
+            "format": "json",
+            "stream": False,
+        }
+        async with httpx.AsyncClient(timeout=20.0) as client:
+            response = await client.post(LIVE_AI_URL, json=payload)
+            response.raise_for_status()
+        
+        # 在後端解析與驗證
+        raw_response_str = response.json().get("response", "{}")
+        try:
+            # Ollama 的 format="json" 有時仍會包含在字串內，需要解析
+            result = json.loads(raw_response_str)
+            
+            # 驗證必要欄位是否存在
+            if all(k in result for k in ["risk_score", "scam_type", "analysis"]):
+                print("--- Plan A 成功且格式正確！ (Live AI) ---")
+                result["source"] = f"Plan A: Live ({LIVE_AI_MODEL})"
+                return result
+            else:
+                print(f"--- Plan A 格式錯誤：缺少必要欄位。回應：{result}")
+                # 格式錯誤，轉向 Plan B
+        except (json.JSONDecodeError, TypeError) as e:
+            print(f"--- Plan A JSON 解析失敗：{e}。回應：{raw_response_str[:200]}")
+            # 解析失敗，轉向 Plan B
+
+    except httpx.TimeoutException:
+        print(f"--- Plan A 超時 ---")
+    except httpx.RequestError as e:
+        print(f"--- Plan A 連線錯誤：{e} ---")
+    except Exception as e:
+        print(f"--- Plan A 未知錯誤：{e} ---")
+
+    # --- Plan B: 烘焙答案庫 ---
+    print("--- 切換至 Plan B (烘焙答案)... ---")
     for key, answer in DEMO_ANSWERS.items():
         if key in user_text:
-            print(f"--- 命中「烘焙答案」(Plan B)，AI 免思考！---")
-            # 我們必須回傳 'raw_llm_output' 格式
-            return {"raw_llm_output": json.dumps(answer), "source": "Plan B: Baked-in"}
+            print("--- Plan B 命中！ (烘焙答案) ---")
+            answer["source"] = "Plan B: Baked-in"
+            return answer
 
-    # --- 3. 如果 Plan B 沒命中，才讓 AI (Gemma) 思考 (Plan A) ---
-    print(f"--- Plan B 未命中，啟動 Plan A (Live Gemma:2b) 運算中... ---")
-    prompt = create_prompt(user_text)
-    
-    payload = {
-        "model": OLLAMA_MODEL,
-        "prompt": prompt,
-        "format": "json",  
-        "stream": False   
-    }
-    
-    # 呼叫你本地的 Ollama API
-    async with httpx.AsyncClient(timeout=60.0) as client: # 延長 timeout
-        try:
-            response = await client.post(OLLAMA_API_URL, json=payload)
-            response.raise_for_status() 
-            
-            llm_json_output = response.json().get("response", "{}")
-            print("--- Plan A 成功！ ---")
-            return {"raw_llm_output": llm_json_output, "source": "Plan A: Live Gemma"}
+    # --- 都失敗：回傳保底錯誤 ---
+    print("--- Plan B 未命中，回傳保底錯誤 ---")
+    return fallback_answer
 
-        except httpx.HTTPStatusError as e:
-            print(f"Ollama API 錯誤 (HTTP Status): {e}")
-            fallback_answer = {
-                "risk_score": -1,
-                "scam_type": "錯誤",
-                "analysis": f"Ollama API 錯誤 (HTTP {e.response.status_code})，AI 模型可能未正確載入。"
-            }
-            return {"raw_llm_output": json.dumps(fallback_answer), "source": "Fallback-HTTPStatusError"}
 
-        except httpx.RequestError as e:
-            print(f"無法連線 AI 引擎: {e}")
-            fallback_answer = {
-                "risk_score": -1,
-                "scam_type": "錯誤",
-                "analysis": f"無法連線 AI 引擎，請確認 Ollama 已啟動: {e}"
-            }
-            return {"raw_llm_output": json.dumps(fallback_answer), "source": "Fallback-RequestError"}
+# --- 健康檢查與除錯 ---
+@app.get("/healthz")
+async def healthz():
+    return {"status": "ok"}
+
+
+@app.get("/debug/live_ai_check")
+async def live_ai_check(q: str = "測試訊息"):
+    """快速檢查 LIVE_AI_URL 是否可用，回傳簡短結果與錯誤摘要。"""
+    info = {"url": LIVE_AI_URL, "model": LIVE_AI_MODEL}
+    prompt = f"[USER]\n分析：'{q}'\n[ASSISTANT]\n(回傳 JSON)"
+    payload = {"model": LIVE_AI_MODEL, "prompt": prompt, "format": "json", "stream": False}
+    try:
+        async with httpx.AsyncClient(timeout=6.0) as client:
+            r = await client.post(LIVE_AI_URL, json=payload)
+            status = r.status_code
+            ok = r.status_code == 200
+            body = r.text[:300]
+            return {"ok": ok, "status": status, "body_preview": body, **info}
+    except Exception as e:
+        return {"ok": False, "error": str(e), **info}
 
 # --- 4. 掛載 "static" 資料夾 ---
 # 告訴 FastAPI，所有 /static 開頭的網址，都去 "static" 資料夾裡找檔案

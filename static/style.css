@@ -443,3 +443,81 @@ button:hover {
     text-align: center;
     padding: 1.5rem 2rem;
 }
+
+/* =====================
+   行動裝置 RWD 強化區
+   ===================== */
+/* 中型螢幕以下（平板 / 大手機） */
+@media (max-width: 768px) {
+    .navbar-container {
+        flex-direction: column;
+        align-items: flex-start;
+        height: auto;
+        padding: 0 1.25rem 0.5rem;
+    }
+    .logo { margin-bottom: 0.4rem; }
+    .navbar nav { display: flex; flex-wrap: wrap; gap: 0.75rem; }
+    .navbar nav a { margin-left: 0; font-size: 0.95rem; padding: 6px 10px; background:#f2f6f9; border-radius:6px; }
+    .hero { padding: 4rem 1.5rem; }
+    .hero h1 { font-size: clamp(2rem, 6vw, 2.6rem); }
+    .hero p { font-size: clamp(1.05rem, 3.2vw, 1.2rem); }
+    section { padding: 3.2rem 1.4rem; }
+    .demo-container { padding: 1.6rem 1.4rem; }
+    textarea { width: 100%; }
+    button, .cta-button, .cta-button-2 { width: 100%; box-sizing: border-box; }
+    .kpi-grid { grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); }
+    .kpi-card { padding: 0.9rem 0.8rem; }
+    .kpi-value { font-size: 1.4rem; }
+    .chart-grid { grid-template-columns: 1fr 1fr; }
+    .chart-card { padding: 0.8rem; }
+    .chart-card canvas { width: 100% !important; height: auto !important; }
+    .team-grid { grid-template-columns: repeat(2, 1fr); }
+    .team-card { min-width: unset; }
+    .simulation-container { padding: 0 0.5rem; }
+    .sim-chat { max-width: 100%; width: 100%; }
+    .sim-body { height: 45vh; -webkit-overflow-scrolling: touch; }
+    .sim-footer input { width: 100%; }
+    .feature-grid { grid-template-columns: repeat(auto-fit, minmax(240px,1fr)); }
+}
+
+/* 小型手機（狹窄螢幕 ≤480px） */
+@media (max-width: 480px) {
+    .navbar nav { gap: 0.5rem; }
+    .navbar nav a { font-size: 0.85rem; padding: 5px 8px; }
+    .hero { padding: 3.2rem 1.1rem; }
+    .hero h1 { font-size: clamp(1.8rem, 7vw, 2.2rem); }
+    .hero p { font-size: clamp(0.95rem, 3.5vw, 1.1rem); }
+    .stats-grid { grid-template-columns: 1fr; }
+    .stat-card h3 { font-size: 2rem; }
+    .demo-container { padding: 1.4rem 1rem; }
+    .chart-grid { grid-template-columns: 1fr; }
+    .kpi-grid { grid-template-columns: 1fr 1fr; }
+    .kpi-value { font-size: 1.25rem; }
+    .team-grid { grid-template-columns: 1fr; }
+    .feature-grid { grid-template-columns: 1fr; }
+    .sim-body { height: 50vh; }
+    .sim-message { font-size: 0.9rem; }
+    .footer { padding: 1.2rem 1rem; font-size: 0.8rem; }
+}
+
+/* 超小裝置或嵌入視窗（≤360px） */
+@media (max-width: 360px) {
+    .navbar nav a { font-size: 0.75rem; }
+    .hero h1 { font-size: 1.7rem; }
+    .hero p { font-size: 0.85rem; }
+    .kpi-grid { grid-template-columns: 1fr; }
+    .demo-container h2 { font-size: 1.2rem; }
+    button, .cta-button, .cta-button-2 { font-size: 0.95rem; padding: 10px 18px; }
+}
+
+/* 觸控優化：增加可點擊區域與避免 hover 依賴 */
+@media (hover: none) {
+    button:hover, .cta-button:hover, .cta-button-2:hover { transform: none; background:#005a9c; color:#fff; }
+}
+
+/* 安全區域（瀏海/動態島）處理 */
+@supports(padding: max(0px)) {
+    body { padding-left: max(0px, env(safe-area-inset-left)); padding-right: max(0px, env(safe-area-inset-right)); }
+    .navbar { padding-top: max(0px, env(safe-area-inset-top)); }
+    .footer { padding-bottom: max(1.2rem, env(safe-area-inset-bottom)); }
+}

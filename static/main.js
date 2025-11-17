@@ -1,4 +1,6 @@
 // static/main.js (已整合所有功能)
+// 可由 /static/config.js 設定 window.API_BASE 指向後端 API 網域（如部署在 Render）。
+const API_BASE = (typeof window !== 'undefined' && window.API_BASE) ? window.API_BASE : '';
 
 document.addEventListener("DOMContentLoaded", () => {
     
@@ -36,7 +38,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
             try {
                 // 關鍵！呼叫我們在 "同一個" 伺服器上的 /analyze API
-                const response = await fetch("/analyze", { // 使用相對路徑
+                const response = await fetch(`${API_BASE}/analyze`, { // 支援相對或跨網域
                     method: "POST",
                     headers: {
                         "Content-Type": "application/json",
@@ -48,13 +50,10 @@ document.addEventListener("DOMContentLoaded", () => {
                     throw new Error(`API 請求失敗 (HTTP ${response.status})`);
                 }
 
-                // 取得 API 回傳的 JSON (第一層)
-                const data = await response.json();
+                // 後端已確保回傳的是格式正確的 JSON 物件
+                const llmResult = await response.json();
                 
-                // 關鍵：解析 AI 產出的 JSON "字串" (第二層)
-                const llmResult = JSON.parse(data.raw_llm_output);
-                
-                // 顯示格式化的結果
+                // 直接顯示格式化的結果
                 displayResult(llmResult);
 
             } catch (error) {
@@ -128,7 +127,7 @@ document.addEventListener("DOMContentLoaded", () => {
         // 預先在頁面載入時就向後端取得一段「預設腳本」，減少點擊等待時間
         const prefetchPromise = (async () => {
             try {
-                    const resp = await fetch("/preset_script");
+                    const resp = await fetch(`${API_BASE}/preset_script`);
                     const data = await resp.json();
                     // 保存人設與標題以供後續續聊與 UI 使用
                     presetPersona = data.persona || null;
@@ -199,7 +198,7 @@ document.addEventListener("DOMContentLoaded", () => {
                         // 無論分析是否成功，都嘗試讓詐騙者續聊
                         try {
                             const historyPayload = chatHistory.filter(m => m.from === "user" || m.from === "scammer");
-                            const replyResp = await fetch("/chat_reply", {
+                            const replyResp = await fetch(`${API_BASE}/chat_reply`, {
                                 method: "POST",
                                 headers: { "Content-Type": "application/json" },
                                 body: JSON.stringify({
@@ -217,7 +216,7 @@ document.addEventListener("DOMContentLoaded", () => {
                             while (isDup && attempts < 2) {
                                 attempts += 1;
                                 try {
-                                    const retryResp = await fetch("/chat_reply", {
+                                    const retryResp = await fetch(`${API_BASE}/chat_reply`, {
                                         method: "POST",
                                         headers: { "Content-Type": "application/json" },
                                         body: JSON.stringify({
@@ -274,7 +273,7 @@ document.addEventListener("DOMContentLoaded", () => {
 // ------------- 儀表板：載入資料與繪圖 -------------
 async function loadDashboardData() {
     try {
-        const resp = await fetch('/api/dashboard_data');
+        const resp = await fetch(`${API_BASE}/api/dashboard_data`);
         if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
         const data = await resp.json();
 
