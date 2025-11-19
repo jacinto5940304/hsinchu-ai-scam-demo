@@ -3,73 +3,295 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>新竹市 AI 防詐偵測 | 清大小夥伴</title>
+    <title>新竹市 AI 防詐偵測 | 首頁</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@300;500;700&family=Orbitron:wght@400;700;900&display=swap" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Custom Styles -->
     <link rel="stylesheet" href="/static/style.css">
 </head>
 <body>
+    <!-- 背景元素 -->
+    <div id="city-bg"></div>
+    <div class="grid-overlay"></div>
+    <canvas id="canvas-bg"></canvas>
 
-    <header class="navbar">
-        <div class="navbar-container">
-            <div class="logo">新竹 AI 防詐專案</div>
-            <nav>
-                <a href="/">首頁</a>
-                <a href="/detect">AI 立即偵測</a>
-                <a href="/dashboard">防詐儀表板</a>
-                <a href="/simulation">互動模擬</a>
-                <a href="/team">團隊與聯絡</a>
-            </nav>
+    <!-- 導覽列 -->
+    <nav class="fixed top-0 w-full z-50 px-6 py-4 flex justify-between items-center border-b border-white/10 bg-black/80 backdrop-blur-md">
+        <a href="/" class="text-2xl font-bold font-tech tracking-widest flex items-center gap-2">
+            <i class="fa-solid fa-shield-halved text-cyan-400"></i>
+            <span class="bg-clip-text text-transparent bg-gradient-to-r from-cyan-400 to-purple-500">HSINCHU ANTI-SCAM</span>
+        </a>
+        <div class="hidden md:flex gap-8 text-sm">
+            <a href="/" class="nav-link active">HOME</a>
+            <a href="/detect" class="nav-link">DETECTION</a>
+            <a href="/dashboard" class="nav-link">DASHBOARD</a>
+            <a href="/simulation" class="nav-link">SIMULATION</a>
+            <a href="/incidents" class="nav-link">INCIDENTS</a>
+            <a href="/team" class="nav-link">TEAM</a>
         </div>
-    </header>
+        <!-- Mobile Menu Button -->
+        <div class="md:hidden">
+            <button id="mobile-menu-button" class="text-white focus:outline-none">
+                <i class="fa-solid fa-bars text-2xl"></i>
+            </button>
+        </div>
+        <button class="cyber-btn px-4 py-1 text-xs rounded-sm hidden">LOGIN</button>
+    </nav>
 
-    <section id="hero" class="hero">
-        <h1>讓 AI 成為城市的「警覺神經」</h1>
-        <p>打造一個結合科技、防詐教育與社區共治的智慧生態</p>
-        <a href="/detect" class="cta-button">立即體驗 AI 偵測</a>
-    </section>
+    <!-- Mobile Menu -->
+    <div id="mobile-menu" class="hidden md:hidden fixed top-0 left-0 w-full h-full bg-black/90 z-[60] backdrop-blur-md">
+        <div class="flex flex-col items-center justify-center h-full gap-8">
+            <a href="/" class="mobile-menu-link nav-link active text-2xl">HOME</a>
+            <a href="/detect" class="mobile-menu-link nav-link text-2xl">DETECTION</a>
+            <a href="/dashboard" class="mobile-menu-link nav-link text-2xl">DASHBOARD</a>
+            <a href="/simulation" class="mobile-menu-link nav-link text-2xl">SIMULATION</a>
+            <a href="/incidents" class="mobile-menu-link nav-link text-2xl">INCIDENTS</a>
+            <a href="/team" class="mobile-menu-link nav-link text-2xl">TEAM</a>
+        </div>
+    </div>
 
-    <section id="problem" class="section-light">
-        <h2>科技城市的反面：新竹成為詐騙重災區</h2>
-        <div class="stats-grid">
-            <div class="stat-card">
-                <h3>1 億 8752 萬</h3>
-                <p>2025 年 4 月，新竹市單月財損金額</p>
-            </div>
-            <div class="stat-card">
-                <h3>全台最高之一</h3>
-                <p>每十萬人案件數</p>
-            </div>
-            <div class="stat-card">
-                <h3>20-40 歲</h3>
-                <p>受害族群集中於青年與科技業從業者</p>
+    <!-- 主內容 -->
+    <main class="relative pt-32 pb-20 px-6 flex flex-col justify-center items-center text-center min-h-screen">
+        <div class="text-cyan-400 font-tech text-sm tracking-[0.5em] mb-4 opacity-80">SYSTEM ONLINE // HSINCHU CITY</div>
+        <h1 class="text-5xl md:text-7xl font-bold mb-6 font-tech leading-tight">
+            <span id="typewriter" data-text="AI ANTI-SCAM DEFENSE"></span><span class="cursor" style="display: none;">&nbsp;</span>
+        </h1>
+        <p class="text-gray-400 max-w-2xl text-lg mb-10">
+            <span class="block">新竹市次世代 AI 防詐機器人上線。</span>
+            <span class="block">透過大數據神經網絡，一鍵審查詐騙訊息，守護市民數位資產安全。</span>
+            <span class="block">整合即時數據儀表板與互動式詐騙模擬，強化識詐能力。</span>
+        </p>
+        
+        <div class="flex flex-col md:flex-row gap-6">
+            <a href="/detect" class="cyber-btn px-8 py-4 text-lg font-bold rounded-sm flex items-center justify-center gap-2">
+                <i class="fa-solid fa-radar"></i> 啟動 AI 偵測
+            </a>
+            <a href="/dashboard" class="px-8 py-4 border border-white/20 text-gray-300 hover:bg-white/5 transition-all rounded-sm font-tech tracking-wider">
+                VIEW DASHBOARD
+            </a>
+        </div>
+
+        <!-- 原始數據塊 -->
+        <div class="w-full max-w-6xl mt-16 p-4 border border-white/10 rounded-lg">
+            <h2 class="text-center text-lg text-red-400 font-tech tracking-widest mb-4">科技城市的反面：新竹成為詐騙重災區</h2>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4 text-center">
+                <div class="p-4 bg-white/5 rounded">
+                    <p class="text-2xl font-tech text-red-400">1 億 8752 萬</p>
+                    <p class="text-sm text-gray-400">2025 年 4 月單月財損金額</p>
+                </div>
+                <div class="p-4 bg-white/5 rounded">
+                    <p class="text-2xl font-tech text-red-400">全台最高之一</p>
+                    <p class="text-sm text-gray-400">每十萬人案件數</p>
+                </div>
+                <div class="p-4 bg-white/5 rounded">
+                    <p class="text-2xl font-tech text-red-400">20-40 歲</p>
+                    <p class="text-sm text-gray-400">受害族群集中於青年與科技業從業者</p>
+                </div>
             </div>
         </div>
-    </section>
 
-    <section id="features" class="section-light">
-        <h2>專案核心功能</h2>
-        <div class="feature-grid">
-            <div class="feature-card">
-                <h3>AI 智慧偵測系統</h3>
-                <p>分析簡訊、來電、社群貼文中的詐騙語氣。對可疑內容即時警示，並提供一鍵查證。</p>
+
+
+        <!-- 核心功能卡片 -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mt-20 w-full max-w-6xl">
+            <div class="cyber-card p-6 rounded-xl text-left cursor-pointer hover:scale-105 transition-transform" onclick="openModal('ai-detection')">
+                <div class="text-3xl text-cyan-400 mb-3"><i class="fa-solid fa-brain"></i></div>
+                <h3 class="text-xl font-bold font-tech text-white mb-2">AI 智慧偵測</h3>
+                <p class="text-gray-400 text-sm">分析簡訊、社群貼文中的詐騙語氣，對可疑內容即時警示，並提供一鍵查證。</p>
+                <div class="mt-3 text-cyan-400 text-xs font-tech">點擊查看更多 →</div>
             </div>
-            <div class="feature-card">
-                <h3>互動式防詐模擬</h3>
-                <p>設計 App 或 Line Bot 互動模組，模擬詐騙對話、釣魚信件，透過遊戲化學習提升識詐能力。</p>
+            <div class="cyber-card p-6 rounded-xl text-left cursor-pointer hover:scale-105 transition-transform" onclick="openModal('simulation')">
+                <div class="text-3xl text-purple-400 mb-3"><i class="fa-solid fa-vr-cardboard"></i></div>
+                <h3 class="text-xl font-bold font-tech text-white mb-2">互動式防詐模擬</h3>
+                <p class="text-gray-400 text-sm">模擬詐騙對話、釣魚信件，透過遊戲化學習提升識詐能力。</p>
+                <div class="mt-3 text-purple-400 text-xs font-tech">點擊查看更多 →</div>
             </div>
-            <div class="feature-card">
-                <h3>Scam Response Team</h3>
-                <p>成立快速反應資訊小組，即時掌握新詐騙手法並推播警示，建立社區共治機制。</p>
+            <div class="cyber-card p-6 rounded-xl text-left cursor-pointer hover:scale-105 transition-transform" onclick="openModal('response-team')">
+                <div class="text-3xl text-green-400 mb-3"><i class="fa-solid fa-people-group"></i></div>
+                <h3 class="text-xl font-bold font-tech text-white mb-2">Scam Response Team</h3>
+                <p class="text-gray-400 text-sm">成立快速反應資訊小組，即時掌握新詐騙手法並推播警示，建立社區共治機制。</p>
+                <div class="mt-3 text-green-400 text-xs font-tech">點擊查看更多 →</div>
             </div>
         </div>
-    </section>
 
-    
+        <!-- 最新詐騙手法解析 -->
+        <div class="w-full max-w-6xl mt-20 p-8 bg-gray-900/50 rounded-xl border border-white/10">
+            <h2 class="text-3xl md:text-4xl font-bold font-tech text-white mb-4 text-center">最新詐騙手法解析</h2>
+            <p class="text-gray-400 text-lg mb-10 text-center max-w-3xl mx-auto">
+                掌握最新詐騙趨勢，提升防詐意識。以下為近期高發詐騙案例與手法分析。
+            </p>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <a href="/scam_report_investment" class="cyber-card p-6 rounded-xl text-left hover:scale-105 transition-transform block">
+                    <span class="text-purple-400 text-xs font-tech mb-2 block">投資詐騙案例</span>
+                    <h3 class="text-xl font-bold font-tech text-white mb-2">假投資真詐財：虛擬貨幣高利誘惑</h3>
+                    <p class="text-gray-400 text-sm mb-4 line-clamp-3">詐騙集團利用社群媒體或交友軟體，假冒投資專家，誘騙民眾投入虛擬貨幣交易，初期小額獲利，後期捲款潛逃。</p>
+                    <div class="flex justify-between items-center text-xs text-gray-500">
+                        <span><i class="fa-solid fa-calendar-days"></i> 2025/11/15</span>
+                        <span><i class="fa-solid fa-tag"></i> 投資詐騙</span>
+                    </div>
+                    <span class="mt-4 inline-block text-cyan-400 text-sm font-tech hover:underline">閱讀更多 →</span>
+                </a>
+                <a href="/scam_report_police" class="cyber-card p-6 rounded-xl text-left hover:scale-105 transition-transform block">
+                    <span class="text-green-400 text-xs font-tech mb-2 block">假冒公務案例</span>
+                    <h3 class="text-xl font-bold font-tech text-white mb-2">假冒檢警：電話恐嚇與資產凍結</h3>
+                    <p class="text-gray-400 text-sm mb-4 line-clamp-3">詐騙集團假冒檢察官或警察，謊稱民眾涉案，要求將存款轉入「監管帳戶」，否則將凍結資產。</p>
+                    <div class="flex justify-between items-items-center text-xs text-gray-500">
+                        <span><i class="fa-solid fa-calendar-days"></i> 2025/11/10</span>
+                        <span><i class="fa-solid fa-tag"></i> 假冒公務</span>
+                    </div>
+                    <span class="mt-4 inline-block text-cyan-400 text-sm font-tech hover:underline">閱讀更多 →</span>
+                </a>
+                <a href="/scam_report_installment" class="cyber-card p-6 rounded-xl text-left hover:scale-105 transition-transform block">
+                    <span class="text-red-400 text-xs font-tech mb-2 block">網購詐騙案例</span>
+                    <h3 class="text-xl font-bold font-tech text-white mb-2">解除分期付款：網購個資外洩陷阱</h3>
+                    <p class="text-gray-400 text-sm mb-4 line-clamp-3">詐騙集團假冒電商客服，謊稱訂單設定錯誤導致重複扣款，引導民眾操作 ATM 或網路銀行解除分期付款。</p>
+                    <div class="flex justify-between items-center text-xs text-gray-500">
+                        <span><i class="fa-solid fa-calendar-days"></i> 2025/11/08</span>
+                        <span><i class="fa-solid fa-tag"></i> 網購詐騙</span>
+                    </div>
+                    <span class="mt-4 inline-block text-cyan-400 text-sm font-tech hover:underline">閱讀更多 →</span>
+                </a>
+            </div>
+        </div>
+    </main>
 
-    <footer class="footer">
-        <p>&copy; 2025 新竹政策黑客松 - 清大小夥伴 團隊</p>
-    </footer>
+    <!-- Modal 彈窗 -->
+    <div id="feature-modal" class="hidden fixed inset-0 z-[100] flex items-center justify-center px-4" onclick="closeModal(event)">
+        <div class="absolute inset-0 bg-black/80 backdrop-blur-sm"></div>
+        <div class="relative cyber-card rounded-2xl p-8 max-w-2xl w-full max-h-[80vh] overflow-y-auto" onclick="event.stopPropagation()">
+            <button onclick="closeModal()" class="absolute top-4 right-4 text-gray-400 hover:text-white transition-colors text-2xl">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+            <div id="modal-content"></div>
+        </div>
+    </div>
 
+    <!-- Scripts -->
     <script src="/static/config.js"></script>
+    <script src="/static/animations.js"></script>
     <script src="/static/main.js" defer></script>
+    <script>
+        const modalData = {
+            'ai-detection': {
+                icon: 'fa-brain',
+                color: 'cyan',
+                title: 'AI 智慧偵測系統',
+                sections: [
+                    {
+                        subtitle: '核心技術',
+                        content: '採用先進的自然語言處理（NLP）技術與深度學習模型，針對台灣常見詐騙話術建立專屬語料庫。系統能夠辨識語意中的緊迫感、誘導性詞彙、異常金融要求等關鍵特徵。'
+                    },
+                    {
+                        subtitle: '即時警示機制',
+                        content: '當使用者輸入或貼上疑似詐騙訊息時，系統會在 3 秒內完成分析，並以顏色標示風險等級（綠色-安全、黃色-可疑、紅色-高危），同時提供詳細的風險解析報告。'
+                    },
+                    {
+                        subtitle: '一鍵查證功能',
+                        content: '整合 165 反詐騙資料庫、金管會公告、警政署通報案例等多重數據源，讓市民能快速交叉比對可疑電話、帳號、網址，降低受騙風險。'
+                    },
+                    {
+                        subtitle: '使用場景',
+                        content: '適用於簡訊、Line 對話、Facebook 私訊、求職廣告、投資理財推銷等多種場景，保護市民免於假投資、假交友、假網拍、假公務機關等詐騙手法。'
+                    }
+                ]
+            },
+            'simulation': {
+                icon: 'fa-vr-cardboard',
+                color: 'purple',
+                title: '互動式防詐模擬訓練',
+                sections: [
+                    {
+                        subtitle: '沉浸式情境設計',
+                        content: '透過角色扮演的方式，讓使用者進入真實詐騙對話場景。系統會模擬詐騙集團的話術節奏、情感操控、施壓策略，並根據使用者的回應動態調整劇情走向。'
+                    },
+                    {
+                        subtitle: '遊戲化學習體驗',
+                        content: '每次完成模擬後，系統會評估使用者的識詐能力，給予積分與成就徽章。使用者可解鎖不同難度關卡（新手村→進階→專家），持續提升防詐意識。'
+                    },
+                    {
+                        subtitle: '多元詐騙類型',
+                        content: '涵蓋投資詐騙（飆股群組、虛擬貨幣）、愛情詐騙（交友 App 騙局）、假冒親友（Line 帳號被盜）、假公務機關（假檢警）等超過 15 種常見詐騙劇本。'
+                    },
+                    {
+                        subtitle: '即時回饋與學習',
+                        content: '每個對話選擇後都會顯示正確/錯誤提示，並解釋詐騙集團的心理戰術，幫助使用者建立正確的應對策略與自我保護機制。'
+                    }
+                ]
+            },
+            'response-team': {
+                icon: 'fa-people-group',
+                color: 'green',
+                title: 'Scam Response Team 快速反應小組',
+                sections: [
+                    {
+                        subtitle: '即時情資掌握',
+                        content: '由警政、科技、社工、金融專業人員組成的跨域團隊，每日監控社群媒體、通訊軟體、網路論壇中的最新詐騙手法，建立動態威脅情資庫。'
+                    },
+                    {
+                        subtitle: '主動推播警示',
+                        content: '當偵測到新型詐騙手法或大規模詐騙活動時，系統會透過 LINE 官方帳號、簡訊、App 推播等多管道，在黃金 24 小時內通知高風險族群與全體市民。'
+                    },
+                    {
+                        subtitle: '社區共治機制',
+                        content: '建立市民通報平台，讓民眾能即時回報可疑訊息。經驗證後的案例會加入 AI 訓練資料庫，形成「全民防詐網」，提升整體社會的防詐韌性。'
+                    },
+                    {
+                        subtitle: '教育推廣行動',
+                        content: '定期舉辦社區講座、企業培訓、校園宣導，針對高齡長者、青年族群、科技業從業者等不同受眾，提供客製化的防詐教育內容與應變策略。'
+                    }
+                ]
+            }
+        };
+
+        function openModal(type) {
+            const data = modalData[type];
+            const colorMap = {
+                'cyan': { text: 'text-cyan-400', border: 'border-cyan-400', shadow: 'shadow-cyan-400/50' },
+                'purple': { text: 'text-purple-400', border: 'border-purple-400', shadow: 'shadow-purple-400/50' },
+                'green': { text: 'text-green-400', border: 'border-green-400', shadow: 'shadow-green-400/50' }
+            };
+            const colors = colorMap[data.color];
+
+            let sectionsHtml = data.sections.map(section => `
+                <div class="mb-6">
+                    <h4 class="text-lg font-bold ${colors.text} mb-2 flex items-center gap-2">
+                        <i class="fa-solid fa-angle-right"></i> ${section.subtitle}
+                    </h4>
+                    <p class="text-gray-300 leading-relaxed">${section.content}</p>
+                </div>
+            `).join('');
+
+            document.getElementById('modal-content').innerHTML = `
+                <div class="text-center mb-6">
+                    <div class="inline-block text-5xl ${colors.text} mb-4">
+                        <i class="fa-solid ${data.icon}"></i>
+                    </div>
+                    <h3 class="text-3xl font-bold font-tech ${colors.text}">${data.title}</h3>
+                </div>
+                <div class="border-t ${colors.border} pt-6">
+                    ${sectionsHtml}
+                </div>
+            `;
+
+            document.getElementById('feature-modal').classList.remove('hidden');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeModal(event) {
+            if (!event || event.target.id === 'feature-modal') {
+                document.getElementById('feature-modal').classList.add('hidden');
+                document.body.style.overflow = '';
+            }
+        }
+
+        // ESC key to close modal
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') closeModal();
+        });
+    </script>
 </body>
 </html>

@@ -3,90 +3,130 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>團隊與聯絡 | 新竹市 AI 防詐偵測</title>
+    <title>團隊 | 新竹防詐</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@300;500;700&family=Orbitron:wght@400;700;900&display=swap" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Custom Styles -->
     <link rel="stylesheet" href="/static/style.css">
 </head>
 <body>
+    <!-- 背景元素 -->
+    <div id="city-bg"></div>
+    <div class="grid-overlay"></div>
+    <canvas id="canvas-bg"></canvas>
 
-    <header class="navbar">
-        <div class="navbar-container">
-            <div class="logo">新竹 AI 防詐專案</div>
-            <nav>
-                <a href="/">首頁</a>
-                <a href="/detect">AI 立即偵測</a>
-                <a href="/dashboard">防詐儀表板</a>
-                <a href="/simulation">互動模擬</a>
-                <a href="/team">團隊與聯絡</a>
-            </nav>
+    <!-- 導覽列 -->
+    <nav class="fixed top-0 w-full z-50 px-6 py-4 flex justify-between items-center border-b border-white/10 bg-black/80 backdrop-blur-md">
+        <a href="/" class="text-2xl font-bold font-tech tracking-widest flex items-center gap-2">
+            <i class="fa-solid fa-shield-halved text-cyan-400"></i>
+            <span class="bg-clip-text text-transparent bg-gradient-to-r from-cyan-400 to-purple-500">HSINCHU ANTI-SCAM</span>
+        </a>
+        <div class="hidden md:flex gap-8 text-sm">
+            <a href="/" class="nav-link">HOME</a>
+            <a href="/detect" class="nav-link">DETECTION</a>
+            <a href="/dashboard" class="nav-link">DASHBOARD</a>
+            <a href="/simulation" class="nav-link">SIMULATION</a>
+            <a href="/incidents" class="nav-link">INCIDENTS</a>
+            <a href="/team" class="nav-link active">TEAM</a>
         </div>
-    </header>
+        <!-- Mobile Menu Button -->
+        <div class="md:hidden">
+            <button id="mobile-menu-button" class="text-white focus:outline-none">
+                <i class="fa-solid fa-bars text-2xl"></i>
+            </button>
+        </div>
+        <button class="cyber-btn px-4 py-1 text-xs rounded-sm hidden">LOGIN</button>
+    </nav>
 
-    <section id="team" class="section-light">
-        <h2>我們的團隊</h2>
-        <div class="team-grid" style="margin-top: 0.5rem;">
-            <div class="team-card">
-                <img class="team-avatar" src="/static/team/member_ypx.svg" alt="余品萱 avatar">
-                <h3>余品萱</h3>
-                <p class="role">組長｜政策設計與簡報</p>
-                <ul>
-                    <li>政策背景與問題現況整理</li>
-                    <li>決賽簡報統籌與講稿</li>
-                    <li>政府與社會協作對接</li>
+    <!-- Mobile Menu -->
+    <div id="mobile-menu" class="hidden md:hidden fixed top-0 left-0 w-full h-full bg-black/90 z-[60] backdrop-blur-md">
+        <div class="flex flex-col items-center justify-center h-full gap-8">
+            <a href="/" class="mobile-menu-link nav-link text-2xl">HOME</a>
+            <a href="/detect" class="mobile-menu-link nav-link text-2xl">DETECTION</a>
+            <a href="/dashboard" class="mobile-menu-link nav-link text-2xl">DASHBOARD</a>
+            <a href="/simulation" class="mobile-menu-link nav-link text-2xl">SIMULATION</a>
+            <a href="/incidents" class="mobile-menu-link nav-link text-2xl">INCIDENTS</a>
+            <a href="/team" class="mobile-menu-link nav-link text-2xl">TEAM</a>
+        </div>
+    </div>
+
+    <!-- 主內容 -->
+    <main class="relative pt-32 pb-20 px-6 flex flex-col items-center min-h-screen">
+        <div class="text-center mb-12">
+            <h1 class="text-5xl md:text-6xl font-bold font-tech neon-text">UNIT MEMBERS</h1>
+            <p class="text-gray-400 max-w-2xl text-lg mt-4">構成防禦矩陣的核心人員。</p>
+        </div>
+
+        <!-- 團隊卡片 -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 w-full max-w-6xl">
+            <div class="cyber-card p-6 rounded-xl text-center">
+                <img class="w-28 h-28 rounded-full mx-auto mb-4 border-2 border-cyan-400/50" src="/static/team/member_ypx.svg" alt="余品萱 avatar">
+                <h3 class="text-xl font-bold text-white">余品萱</h3>
+                <p class="font-tech text-cyan-400 text-sm mb-3">LEAD / STRATEGIST</p>
+                <ul class="text-gray-400 text-sm text-left list-disc list-inside">
+                    <li>政策背景與問題分析</li>
+                    <li>決賽簡報統籌</li>
+                    <li>跨部門協作對接</li>
                 </ul>
             </div>
 
-            <div class="team-card">
-                <img class="team-avatar" src="/static/team/member_lyh.svg" alt="李語涵 avatar">
-                <h3>李語涵</h3>
-                <p class="role">互動設計與內容劇本</p>
-                <ul>
+            <div class="cyber-card p-6 rounded-xl text-center">
+                <img class="w-28 h-28 rounded-full mx-auto mb-4 border-2 border-purple-400/50" src="/static/team/member_lyh.svg" alt="李語涵 avatar">
+                <h3 class="text-xl font-bold text-white">李語涵</h3>
+                <p class="font-tech text-purple-400 text-sm mb-3">UX / CONTENT DESIGN</p>
+                <ul class="text-gray-400 text-sm text-left list-disc list-inside">
                     <li>對話腳本與介面體驗</li>
-                    <li>三大情境素材蒐集</li>
-                    <li>教學與演練內容優化</li>
+                    <li>情境素材蒐集</li>
+                    <li>教育內容優化</li>
                 </ul>
             </div>
 
-            <div class="team-card">
-                <img class="team-avatar" src="/static/team/member_zeq.svg" alt="莊恩齊 avatar">
-                <h3>莊恩齊</h3>
-                <p class="role">專案管理與資料分析</p>
-                <ul>
+            <div class="cyber-card p-6 rounded-xl text-center">
+                <img class="w-28 h-28 rounded-full mx-auto mb-4 border-2 border-green-400/50" src="/static/team/member_zeq.svg" alt="莊恩齊 avatar">
+                <h3 class="text-xl font-bold text-white">莊恩齊</h3>
+                <p class="font-tech text-green-400 text-sm mb-3">DATA / PM</p>
+                <ul class="text-gray-400 text-sm text-left list-disc list-inside">
                     <li>指標設計與儀表板數據</li>
                     <li>資料蒐整與可視化</li>
-                    <li>熱區/趨勢概念圖產出</li>
+                    <li>熱區趨勢概念產出</li>
                 </ul>
             </div>
 
-            <div class="team-card">
-                <img class="team-avatar" src="/static/team/member_ljf.svg" alt="李晉方 avatar">
-                <h3>李晉方</h3>
-                <p class="role">AI 模型與系統整合</p>
-                <ul>
+            <div class="cyber-card p-6 rounded-xl text-center">
+                <img class="w-28 h-28 rounded-full mx-auto mb-4 border-2 border-orange-400/50" src="/static/team/member_ljf.svg" alt="李晉方 avatar">
+                <h3 class="text-xl font-bold text-white">李晉方</h3>
+                <p class="font-tech text-orange-400 text-sm mb-3">AI / SYSTEM ARCHITECT</p>
+                <ul class="text-gray-400 text-sm text-left list-disc list-inside">
                     <li>FastAPI + 本地 LLM</li>
                     <li>模擬人設與穩定回退</li>
                     <li>前後端串接與部署</li>
                 </ul>
             </div>
         </div>
-    </section>
 
-    <section id="contact" class="section-dark">
-        <h2>聯絡我們</h2>
-        <div class="demo-container" style="max-width:700px;">
-            <p>若您有合作意願、資料接入或教育推廣等需求，歡迎透過以下方式聯繫：</p>
-            <ul style="text-align:left; max-width:520px; margin: 1rem auto;">
-                <li>Email：contact@hsinchu-anti-scam.demo</li>
-                <li>GitHub：<a href="#" target="_blank" rel="noopener">專案 repo（內部）</a></li>
-                <li>現場 Demo：請於黑客松會場直接找清大小夥伴</li>
-            </ul>
+        <!-- 聯絡區 -->
+        <div class="cyber-card w-full max-w-3xl mt-12 p-8 rounded-xl">
+            <h2 class="text-3xl font-bold font-tech text-center mb-4">CONTACT & DEPLOYMENT</h2>
+            <p class="text-gray-400 text-center mb-6">若您有合作意願、資料接入或教育推廣等需求，歡迎聯繫。</p>
+            <div class="text-center font-tech text-cyan-400 text-lg">
+                contact@hsinchu-anti-scam.demo
+            </div>
+            <div class="mt-6 flex justify-center">
+                <a href="https://github.com/jacinto5940304/hsinchu-ai-scam-demo" target="_blank" rel="noopener" class="inline-flex items-center gap-3 px-5 py-3 border border-white/20 rounded-lg text-gray-300 hover:bg-white/5 hover:text-white transition-all">
+                    <i class="fa-brands fa-github text-2xl"></i>
+                    <span class="font-tech tracking-wider">GitHub Repository</span>
+                </a>
+            </div>
         </div>
-    </section>
+    </main>
 
-    <footer class="footer">
-        <p>&copy; 2025 新竹政策黑客松 - 清大小夥伴 團隊</p>
-    </footer>
-
+    <!-- Scripts -->
     <script src="/static/config.js"></script>
+    <script src="/static/animations.js"></script>
     <script src="/static/main.js" defer></script>
 </body>
 </html>

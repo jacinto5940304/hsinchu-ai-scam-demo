@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>新竹市 AI 防詐偵測 | 假投資真詐財：虛擬貨幣高利誘惑</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@300;500;700&family=Orbitron:wght@400;700;900&display=swap" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Custom Styles -->
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+    <!-- 背景元素 -->
+    <div id="city-bg"></div>
+    <div class="grid-overlay"></div>
+    <canvas id="canvas-bg"></canvas>
+
+    <!-- 導覽列 -->
+    <nav class="fixed top-0 w-full z-50 px-6 py-4 flex justify-between items-center border-b border-white/10 bg-black/80 backdrop-blur-md">
+        <a href="/" class="text-2xl font-bold font-tech tracking-widest flex items-center gap-2">
+            <i class="fa-solid fa-shield-halved text-cyan-400"></i>
+            <span class="bg-clip-text text-transparent bg-gradient-to-r from-cyan-400 to-purple-500">HSINCHU ANTI-SCAM</span>
+        </a>
+        <div class="hidden md:flex gap-8 text-sm">
+            <a href="/" class="nav-link">HOME</a>
+            <a href="/detect" class="nav-link">DETECTION</a>
+            <a href="/dashboard" class="nav-link">DASHBOARD</a>
+            <a href="/simulation" class="nav-link">SIMULATION</a>
+            <a href="/incidents" class="nav-link active">INCIDENTS</a>
+            <a href="/team" class="nav-link">TEAM</a>
+        </div>
+        <!-- Mobile Menu Button -->
+        <div class="md:hidden">
+            <button id="mobile-menu-button" class="text-white focus:outline-none">
+                <i class="fa-solid fa-bars text-2xl"></i>
+            </button>
+        </div>
+        <button class="cyber-btn px-4 py-1 text-xs rounded-sm hidden">LOGIN</button>
+    </nav>
+
+    <!-- Mobile Menu -->
+    <div id="mobile-menu" class="hidden md:hidden fixed top-0 left-0 w-full h-full bg-black/90 z-40">
+        <div class="flex flex-col items-center justify-center h-full gap-8">
+            <a href="/" class="nav-link text-2xl">HOME</a>
+            <a href="/detect" class="nav-link text-2xl">DETECTION</a>
+            <a href="/dashboard" class="nav-link text-2xl">DASHBOARD</a>
+            <a href="/simulation" class="nav-link text-2xl">SIMULATION</a>
+            <a href="/incidents" class="nav-link active text-2xl">INCIDENTS</a>
+            <a href="/team" class="nav-link text-2xl">TEAM</a>
+        </div>
+    </div>
+
+    <!-- 主內容 -->
+    <main class="relative pt-32 pb-20 px-6 flex flex-col justify-center items-center text-center min-h-screen">
+        <div class="w-full max-w-4xl text-left">
+            <a href="/incidents" class="text-cyan-400 hover:underline mb-4 inline-block">← 返回詐騙事件列表</a>
+            <h1 class="text-4xl md:text-5xl font-bold font-tech leading-tight text-white mb-4">
+                假投資真詐財：虛擬貨幣高利誘惑
+            </h1>
+            <div class="flex items-center text-gray-500 text-sm mb-6">
+                <span class="mr-4"><i class="fa-solid fa-calendar-days"></i> 2025/11/15</span>
+                <span><i class="fa-solid fa-tag"></i> 投資詐騙</span>
+            </div>
+            
+            <div class="prose prose-invert max-w-none text-gray-300">
+                <p>近期，詐騙集團利用社群媒體（如 Facebook、Instagram）和交友軟體（如 Tinder、探探）廣泛散佈假投資訊息，以「高額獲利」、「保證收益」、「內部消息」等話術，誘騙民眾投入虛擬貨幣交易。</p>
+                
+                <h2>詐騙手法解析</h2>
+                <h3>1. 建立信任關係</h3>
+                <p>詐騙分子通常會偽裝成事業有成的專業人士、金融顧問或虛擬貨幣專家，透過長時間的聊天建立信任關係。他們會分享虛假的成功案例、豪華生活照片，甚至對受害者噓寒問暖，營造出「朋友」或「戀人」的假象。</p>
+                
+                <h3>2. 誘導入金</h3>
+                <p>一旦信任建立，詐騙分子便會開始推薦「獨家」的投資平台或虛擬貨幣項目，聲稱這些項目能帶來遠超市場平均的高額回報。他們會引導受害者在這些假平台上註冊帳戶，並進行小額入金。</p>
+                
+                <h3>3. 初期小額獲利</h3>
+                <p>為了讓受害者深信不疑，詐騙集團會讓受害者在初期獲得小額「盈利」，並成功提現。這會大大增加受害者的信心，促使他們投入更多資金。</p>
+                
+                <h3>4. 誘導追加投資</h3>
+                <p>當受害者嘗到甜頭後，詐騙分子會以各種理由（如「錯過這次就沒了」、「加大投資能賺更多」、「升級VIP帳戶」）誘導受害者追加投資，金額從數十萬到數百萬不等。</p>
+                
+                <h3>5. 無法出金與捲款潛逃</h3>
+                <p>當受害者投入大量資金後，詐騙集團便會露出真面目。他們會以系統維護、稅務問題、帳戶凍結等藉口，拒絕受害者的提現申請，並要求支付高額「手續費」或「保證金」。最終，詐騙分子會人間蒸發，受害者投入的資金也血本無歸。</p>
+
+                <h2>防範建議</h2>
+                <ul>
+                    <li><strong>保持警惕：</strong> 對於任何聲稱「高額獲利」、「穩賺不賠」的投資機會，務必保持高度警惕。</li>
+                    <li><strong>查證平台：</strong> 投資前務必查證平台是否合法、受監管。可向金管會、證期局等官方機構查詢。</li>
+                    <li><strong>不輕信陌生人：</strong> 不要輕易相信網路上的陌生人推薦的投資機會，特別是涉及金錢往來時。</li>
+                    <li><strong>保護個資：</strong> 不要隨意透露個人身份、銀行帳戶、密碼等敏感資訊。</li>
+                    <li><strong>諮詢專業：</strong> 如有疑問，應向正規金融機構或專業人士諮詢，或撥打 165 反詐騙專線。</li>
+                </ul>
+            </div>
+        </div>
+    </main>
+
+    <!-- Scripts -->
+    <script src="/static/config.js"></script>
+    <script src="/static/animations.js"></script>
+    <script src="/static/main.js" defer></script>
+    <script>
+        // Mobile menu toggle
+        document.getElementById('mobile-menu-button').addEventListener('click', function() {
+            document.getElementById('mobile-menu').classList.toggle('hidden');
+            document.body.style.overflow = document.getElementById('mobile-menu').classList.contains('hidden') ? '' : 'hidden';
+        });
+
+        document.getElementById('mobile-menu').addEventListener('click', function(event) {
+            if (event.target === this) {
+                this.classList.add('hidden');
+                document.body.style.overflow = '';
+            }
+        });
+    </script>
+</body>
+</html>

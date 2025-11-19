@@ -260,12 +260,64 @@ document.addEventListener("DOMContentLoaded", () => {
             const msgElement = document.createElement("div");
             msgElement.classList.add("sim-message", from);
             msgElement.textContent = text;
+
+            // 根據發送者添加對齊 class
+            if (from === 'user') {
+                msgElement.classList.add('self-end'); // 靠右
+            } else {
+                msgElement.classList.add('self-start'); // 靠左
+            }
             simBody.appendChild(msgElement);
             simBody.scrollTop = simBody.scrollHeight;
             if (record && (from === "user" || from === "scammer")) {
                 chatHistory.push({ from, text });
             }
         }
+    }
+
+    // --- 
+    // --- 區塊 3：漢堡選單邏輯 ---
+    // --- 
+    const mobileMenuButton = document.getElementById("mobile-menu-button");
+    const mobileMenu = document.getElementById("mobile-menu");
+
+    if (mobileMenuButton && mobileMenu) {
+        const menuIcon = mobileMenuButton.querySelector("i");
+        
+        // 開關選單功能
+        const toggleMenu = () => {
+            if (mobileMenu.classList.contains("hidden")) {
+                mobileMenu.classList.remove("hidden");
+                menuIcon.classList.remove("fa-bars");
+                menuIcon.classList.add("fa-times");
+                document.body.style.overflow = "hidden"; // 防止背景滾動
+            } else {
+                mobileMenu.classList.add("hidden");
+                menuIcon.classList.remove("fa-times");
+                menuIcon.classList.add("fa-bars");
+                document.body.style.overflow = "auto"; // 恢復滾動
+            }
+        };
+        
+        mobileMenuButton.addEventListener("click", toggleMenu);
+        
+        // 點擊選單項目後關閉選單
+        const mobileMenuLinks = document.querySelectorAll(".mobile-menu-link");
+        mobileMenuLinks.forEach(link => {
+            link.addEventListener("click", () => {
+                mobileMenu.classList.add("hidden");
+                menuIcon.classList.remove("fa-times");
+                menuIcon.classList.add("fa-bars");
+                document.body.style.overflow = "auto";
+            });
+        });
+        
+        // 點擊選單背景關閉選單
+        mobileMenu.addEventListener("click", (e) => {
+            if (e.target === mobileMenu) {
+                toggleMenu();
+            }
+        });
     }
 
 }); // 確保 DOMContentLoaded 是最外層的括號
@@ -277,6 +329,10 @@ async function loadDashboardData() {
         console.warn("Chart.js 未載入，儀表板無法繪製。");
         return;
     }
+
+    // --- 全域 Chart.js 深色主題設定 ---
+    Chart.defaults.color = 'rgba(255, 255, 255, 0.7)';
+    Chart.defaults.borderColor = 'rgba(255, 255, 255, 0.1)';
 
     try {
         // 1. 載入 KPI 數據
@@ -303,10 +359,22 @@ async function loadDashboardData() {
                         labels: scamTypesData.labels,
                         datasets: [{
                             data: scamTypesData.data,
-                            backgroundColor: ['#005a9c', '#00a6fb', '#13c4a3', '#f77f00', '#adb5bd'],
+                            backgroundColor: ['#00f3ff', '#bc13fe', '#00ff87', '#ffdd00', '#ff005d'],
+                            borderColor: 'rgba(0,0,0,0.3)',
                         }]
                     },
-                    options: { responsive: true, plugins: { legend: { position: 'bottom' } } }
+                    options: { 
+                        responsive: true,
+                        maintainAspectRatio: false, 
+                        plugins: { 
+                            legend: { 
+                                position: 'bottom',
+                                labels: {
+                                    color: 'rgba(255, 255, 255, 0.7)',
+                                }
+                            } 
+                        } 
+                    }
                 });
             }
         }
@@ -324,12 +392,25 @@ async function loadDashboardData() {
                         datasets: [{
                             label: '件數',
                             data: victimAgesData.data,
-                            backgroundColor: '#00a6fb',
+                            backgroundColor: 'rgba(0, 243, 255, 0.6)',
+                            borderColor: '#00f3ff',
+                            borderWidth: 1,
                         }]
                     },
                     options: {
+                        maintainAspectRatio: false,
                         responsive: true,
-                        scales: { y: { beginAtZero: true } },
+                        scales: { 
+                            y: { 
+                                beginAtZero: true,
+                                grid: { color: 'rgba(255, 255, 255, 0.1)' },
+                                ticks: { color: 'rgba(255, 255, 255, 0.7)' }
+                            },
+                            x: {
+                                grid: { display: false },
+                                ticks: { color: 'rgba(255, 255, 255, 0.7)' }
+                            }
+                        },
                         plugins: { legend: { display: false } }
                     }
                 });
@@ -349,16 +430,29 @@ async function loadDashboardData() {
                         datasets: [{
                             label: '通報案件數',
                             data: districtData.data,
-                            backgroundColor: '#f77f00',
+                            backgroundColor: 'rgba(188, 19, 254, 0.6)',
+                            borderColor: '#bc13fe',
+                            borderWidth: 1,
                         }]
                     },
                     options: {
+                        maintainAspectRatio: false,
                         responsive: true,
                         indexAxis: 'y',
-                        scales: { x: { beginAtZero: true } },
+                        scales: { 
+                            x: { 
+                                beginAtZero: true,
+                                grid: { color: 'rgba(255, 255, 255, 0.1)' },
+                                ticks: { color: 'rgba(255, 255, 255, 0.7)' }
+                            },
+                            y: {
+                                grid: { display: false },
+                                ticks: { color: 'rgba(255, 255, 255, 0.7)' }
+                            }
+                        },
                         plugins: {
                             legend: { display: false },
-                            title: { display: true, text: '新竹市各區詐騙通報案件' }
+                            title: { display: false }
                         }
                     }
                 });
@@ -368,12 +462,7 @@ async function loadDashboardData() {
         // 5. 載入熱區圖資料並初始化地圖
         initMap();
 
-        // 若成功載入動態儀表板，可選擇隱藏備援圖
-        const fallback = document.querySelector('.dashboard-fallback');
-        if (fallback) fallback.style.display = 'none';
-
     } catch (e) {
-        // 若失敗，保留備援圖
         console.warn('loadDashboardData error:', e);
     }
 }
@@ -385,57 +474,156 @@ async function initMap() {
         return;
     }
 
+    // 深色地圖樣式
+    const mapStyle = [
+        { elementType: "geometry", stylers: [{ color: "#1d2c4d" }] },
+        { elementType: "labels.text.fill", stylers: [{ color: "#8ec3b9" }] },
+        { elementType: "labels.text.stroke", stylers: [{ color: "#1a3646" }] },
+        { featureType: "administrative.country", elementType: "geometry.stroke", stylers: [{ color: "#4b6878" }] },
+        { featureType: "administrative.land_parcel", elementType: "labels.text.fill", stylers: [{ color: "#64779e" }] },
+        { featureType: "administrative.province", elementType: "geometry.stroke", stylers: [{ color: "#4b6878" }] },
+        { featureType: "landscape.man_made", elementType: "geometry.stroke", stylers: [{ color: "#334e87" }] },
+        { featureType: "landscape.natural", elementType: "geometry", stylers: [{ color: "#023e58" }] },
+        { featureType: "poi", elementType: "geometry", stylers: [{ color: "#283d6a" }] },
+        { featureType: "poi", elementType: "labels.text.fill", stylers: [{ color: "#6f9ba5" }] },
+        { featureType: "poi", elementType: "labels.text.stroke", stylers: [{ color: "#1d2c4d" }] },
+        { featureType: "poi.park", elementType: "geometry.fill", stylers: [{ color: "#023e58" }] },
+        { featureType: "poi.park", elementType: "labels.text.fill", stylers: [{ color: "#3C7680" }] },
+        { featureType: "road", elementType: "geometry", stylers: [{ color: "#304a7d" }] },
+        { featureType: "road", elementType: "labels.text.fill", stylers: [{ color: "#98a5be" }] },
+        { featureType: "road", elementType: "labels.text.stroke", stylers: [{ color: "#1d2c4d" }] },
+        { featureType: "road.highway", elementType: "geometry", stylers: [{ color: "#2c6675" }] },
+        { featureType: "road.highway", elementType: "geometry.stroke", stylers: [{ color: "#255763" }] },
+        { featureType: "road.highway", elementType: "labels.text.fill", stylers: [{ color: "#b0d5ce" }] },
+        { featureType: "road.highway", elementType: "labels.text.stroke", stylers: [{ color: "#023e58" }] },
+        { featureType: "transit", elementType: "labels.text.fill", stylers: [{ color: "#98a5be" }] },
+        { featureType: "transit", elementType: "labels.text.stroke", stylers: [{ color: "#1d2c4d" }] },
+        { featureType: "transit.line", elementType: "geometry.fill", stylers: [{ color: "#283d6a" }] },
+        { featureType: "transit.station", elementType: "geometry", stylers: [{ color: "#3a4762" }] },
+        { featureType: "water", elementType: "geometry", stylers: [{ color: "#0e1626" }] },
+        { featureType: "water", elementType: "labels.text.fill", stylers: [{ color: "#4e6d70" }] },
+    ];
+
     try {
-        const response = await fetch(`${API_BASE}/api/heatmap_data`);
-        if (!response.ok) {
-            throw new Error(`無法獲取熱區圖資料 (HTTP ${response.status})`);
-        }
-        const heatmapData = await response.json();
-
-        if (heatmapData.error || !Array.isArray(heatmapData) || heatmapData.length === 0) {
-            console.warn("熱區圖資料格式錯誤或為空。", heatmapData.error || '');
-            document.getElementById('map').textContent = '熱區圖資料載入失敗。';
-            return;
-        }
-
-        // 將後端資料轉換為 Google Maps 需要的格式
-        const heatMapPoints = heatmapData.map(point => ({
-            location: new google.maps.LatLng(point.lat, point.lng),
-            weight: point.weight
-        }));
-
-        // 初始化地圖
         const map = new google.maps.Map(document.getElementById("map"), {
-            center: { lat: 24.804, lng: 120.972 }, // 地圖中心點設為新竹市
-            zoom: 12, // 縮放等級
-            mapTypeId: 'satellite' // 可以是 'roadmap', 'satellite', 'hybrid', 'terrain'
+            center: { lat: 24.804, lng: 120.972 },
+            zoom: 12,
+            styles: mapStyle,
+            mapTypeControl: true,
+            streetViewControl: true,
+            zoomControl: true,
+            fullscreenControl: true,
+            mapTypeControlOptions: {
+                style: google.maps.MapTypeControlStyle.HORIZONTAL_BAR,
+                position: google.maps.ControlPosition.TOP_RIGHT,
+                mapTypeIds: ['roadmap', 'satellite', 'hybrid']
+            },
         });
 
-        // 建立熱區圖層
-        const heatmap = new google.maps.visualization.HeatmapLayer({
-            data: heatMapPoints,
-            map: map
-        });
+        // --- 1. 熱區圖層 ---
+        const heatmapResp = await fetch(`${API_BASE}/api/heatmap_data`);
+        if (!heatmapResp.ok) throw new Error(`無法獲取熱區圖資料 (HTTP ${heatmapResp.status})`);
+        const heatmapData = await heatmapResp.json();
 
-        // 設定熱區圖層的樣式
-        heatmap.set("radius", 20); // 熱點半徑
-        heatmap.set("opacity", 0.8); // 透明度
-        heatmap.set("gradient", [
-            "rgba(0, 255, 255, 0)",
-            "rgba(0, 255, 255, 1)",
-            "rgba(0, 191, 255, 1)",
-            "rgba(0, 127, 255, 1)",
-            "rgba(0, 63, 255, 1)",
-            "rgba(0, 0, 255, 1)",
-            "rgba(0, 0, 223, 1)",
-            "rgba(0, 0, 191, 1)",
-            "rgba(0, 0, 159, 1)",
-            "rgba(0, 0, 127, 1)",
-            "rgba(63, 0, 91, 1)",
-            "rgba(127, 0, 63, 1)",
-            "rgba(191, 0, 31, 1)",
-            "rgba(255, 0, 0, 1)"
-        ]);
+        let heatmap;
+        if (heatmapData && !heatmapData.error && Array.isArray(heatmapData) && heatmapData.length > 0) {
+            const heatMapPoints = heatmapData.map(point => ({
+                location: new google.maps.LatLng(point.lat, point.lng),
+                weight: point.weight
+            }));
+
+            heatmap = new google.maps.visualization.HeatmapLayer({
+                data: heatMapPoints,
+                map: map // 預設顯示
+            });
+
+            heatmap.set("radius", 20);
+            heatmap.set("opacity", 0.7);
+            heatmap.set("gradient", [
+                "rgba(0, 243, 255, 0)",
+                "rgba(0, 243, 255, 1)",
+                "rgba(188, 19, 254, 1)",
+                "rgba(255, 0, 93, 1)"
+            ]);
+        } else {
+            console.warn("熱區圖資料格式錯誤或為空。", heatmapData.error || '');
+        }
+
+        // --- 2. 案件標記圖層 ---
+        const markersResp = await fetch(`${API_BASE}/api/crime_data`);
+        let markers = [];
+        if (markersResp.ok) {
+            const crimeData = await markersResp.json();
+            const infoWindow = new google.maps.InfoWindow();
+
+            if (crimeData && Array.isArray(crimeData)) {
+                markers = crimeData.map(crime => {
+                    const marker = new google.maps.Marker({
+                        position: { lat: crime.lat, lng: crime.lng },
+                        map: null, // 預設不顯示
+                        icon: {
+                            path: google.maps.SymbolPath.CIRCLE,
+                            scale: 5,
+                            fillColor: "#FF4136", // 亮紅色
+                            fillOpacity: 0.8,
+                            strokeWeight: 1,
+                            strokeColor: "#fff"
+                        },
+                        title: crime.type || '詐騙案件'
+                    });
+
+                    marker.addListener('click', () => {
+                        const content = `
+                            <div style="color: #333; font-family: 'Noto Sans TC', sans-serif;">
+                                <h4 style="font-weight: bold; margin-bottom: 5px;">${crime.type || '詐騙案件'}</h4>
+                                <p>日期: ${crime.date || '未知'}</p>
+                                <p>地點: ${crime.location || '未知'}</p>
+                            </div>`;
+                        infoWindow.setContent(content);
+                        infoWindow.open(map, marker);
+                    });
+                    return marker;
+                });
+            }
+        } else {
+            console.warn("無法獲取案件標記資料。");
+        }
+
+        // --- 3. 建立圖層切換控制 UI ---
+        const layerControlDiv = document.createElement("div");
+        layerControlDiv.style.margin = "10px";
+        layerControlDiv.style.padding = "5px";
+        layerControlDiv.style.backgroundColor = "rgba(5, 5, 5, 0.8)";
+        layerControlDiv.style.border = "1px solid rgba(255, 255, 255, 0.1)";
+        layerControlDiv.style.borderRadius = "3px";
+        layerControlDiv.style.color = "#fff";
+        layerControlDiv.style.fontFamily = "'Orbitron', sans-serif";
+        layerControlDiv.innerHTML = `
+            <h4 style="margin: 0 0 5px 0; font-size: 14px; font-weight: bold;">LAYERS</h4>
+            <label style="display: block; font-size: 12px; margin-bottom: 5px;">
+                <input type="checkbox" id="toggle-heatmap" checked /> Heatmap
+            </label>
+            <label style="display: block; font-size: 12px;">
+                <input type="checkbox" id="toggle-markers" /> Markers
+            </label>
+        `;
+        map.controls[google.maps.ControlPosition.LEFT_TOP].push(layerControlDiv);
+
+        // --- 4. 綁定圖層切換事件 ---
+        const toggleHeatmap = document.getElementById('toggle-heatmap');
+        if (toggleHeatmap && heatmap) {
+            toggleHeatmap.addEventListener('change', (e) => {
+                heatmap.setMap(e.target.checked ? map : null);
+            });
+        }
+
+        const toggleMarkers = document.getElementById('toggle-markers');
+        if (toggleMarkers && markers.length > 0) {
+            toggleMarkers.addEventListener('change', (e) => {
+                const targetMap = e.target.checked ? map : null;
+                markers.forEach(marker => marker.setMap(targetMap));
+            });
+        }
 
     } catch (error) {
         console.error("初始化地圖失敗:", error);

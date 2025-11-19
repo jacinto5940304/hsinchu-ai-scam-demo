@@ -3,45 +3,95 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>互動式防詐模擬 | 新竹市 AI 防詐偵測</title>
+    <title>互動模擬 | 新竹防詐</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@300;500;700&family=Orbitron:wght@400;700;900&display=swap" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Custom Styles -->
     <link rel="stylesheet" href="/static/style.css">
 </head>
 <body>
+    <!-- 背景元素 -->
+    <div id="city-bg"></div>
+    <div class="grid-overlay"></div>
+    <canvas id="canvas-bg"></canvas>
 
-    <header class="navbar">
-        <div class="navbar-container">
-            <div class="logo">新竹 AI 防詐專案</div>
-            <nav>
-                <a href="/">首頁</a>
-                <a href="/detect">AI 立即偵測</a>
-                <a href="/dashboard">防詐儀表板</a>
-                <a href="/simulation">互動模擬</a>
-                <a href="/team">團隊與聯絡</a>
-            </nav>
+    <!-- 導覽列 -->
+    <nav class="fixed top-0 w-full z-50 px-6 py-4 flex justify-between items-center border-b border-white/10 bg-black/80 backdrop-blur-md">
+        <a href="/" class="text-2xl font-bold font-tech tracking-widest flex items-center gap-2">
+            <i class="fa-solid fa-shield-halved text-cyan-400"></i>
+            <span class="bg-clip-text text-transparent bg-gradient-to-r from-cyan-400 to-purple-500">HSINCHU ANTI-SCAM</span>
+        </a>
+        <div class="hidden md:flex gap-8 text-sm">
+            <a href="/" class="nav-link">HOME</a>
+            <a href="/detect" class="nav-link">DETECTION</a>
+            <a href="/dashboard" class="nav-link">DASHBOARD</a>
+            <a href="/simulation" class="nav-link active">SIMULATION</a>
+            <a href="/incidents" class="nav-link">INCIDENTS</a>
+            <a href="/team" class="nav-link">TEAM</a>
         </div>
-    </header>
+        <!-- Mobile Menu Button -->
+        <div class="md:hidden">
+            <button id="mobile-menu-button" class="text-white focus:outline-none">
+                <i class="fa-solid fa-bars text-2xl"></i>
+            </button>
+        </div>
+        <button class="cyber-btn px-4 py-1 text-xs rounded-sm hidden">LOGIN</button>
+    </nav>
 
-    <section id="simulation" class="section-dark">
-        <h2>互動式防詐模擬 (情境演練)</h2>
-        <div class="simulation-container">
-            <p>光說不練不夠。點擊下方按鈕，體驗「假投資」詐騙情境。</p>
-            <button id="startSimButton" class="cta-button-2">開始「老師帶你飛」情境模擬</button>
+    <!-- Mobile Menu -->
+    <div id="mobile-menu" class="hidden md:hidden fixed top-0 left-0 w-full h-full bg-black/90 z-[60] backdrop-blur-md">
+        <div class="flex flex-col items-center justify-center h-full gap-8">
+            <a href="/" class="mobile-menu-link nav-link text-2xl">HOME</a>
+            <a href="/detect" class="mobile-menu-link nav-link text-2xl">DETECTION</a>
+            <a href="/dashboard" class="mobile-menu-link nav-link text-2xl">DASHBOARD</a>
+            <a href="/simulation" class="mobile-menu-link nav-link active text-2xl">SIMULATION</a>
+            <a href="/incidents" class="mobile-menu-link nav-link text-2xl">INCIDENTS</a>
+            <a href="/team" class="mobile-menu-link nav-link text-2xl">TEAM</a>
+        </div>
+    </div>
+
+    <!-- 主內容 -->
+    <main class="relative pt-32 pb-20 px-6 flex flex-col items-center min-h-screen">
+        <div class="text-center mb-12">
+            <h1 class="text-5xl md:text-6xl font-bold font-tech neon-text">COMBAT SIMULATION</h1>
+            <p class="text-gray-400 max-w-2xl text-lg mt-4">進入沉浸式模擬情境，訓練您對詐騙話術的直覺反應。</p>
+        </div>
+
+        <div class="w-full max-w-2xl">
+            <button id="startSimButton" class="cyber-btn w-full py-4 text-lg font-bold rounded-lg flex items-center justify-center gap-3 transition-all hover:scale-105">
+                <i class="fa-solid fa-play"></i> INITIATE SIMULATION
+            </button>
             
-            <div id="simChat" class="sim-chat">
-                <div class="sim-header">投資理財-穩賺不賠 (3)</div>
-                <div class="sim-body"></div>
-                <div class="sim-footer">
-                    <input type="text" placeholder="輸入訊息..." disabled>
+            <div id="simChat" class="sim-chat rounded-2xl overflow-hidden" style="display: none;">
+                <div class="sim-header text-center py-4 relative">
+                    <div class="absolute top-2 left-4 flex gap-2">
+                        <div class="w-3 h-3 rounded-full bg-red-500/60 animate-pulse"></div>
+                        <div class="w-3 h-3 rounded-full bg-yellow-500/60 animate-pulse" style="animation-delay: 0.2s"></div>
+                        <div class="w-3 h-3 rounded-full bg-green-500/60 animate-pulse" style="animation-delay: 0.4s"></div>
+                    </div>
+                    <div class="font-tech text-cyan-400 text-lg tracking-widest">[ SCENARIO ACTIVE ]</div>
+                    <div class="absolute top-2 right-4 text-xs text-gray-500 font-tech">ENCRYPTED</div>
+                </div>
+                <div class="sim-body h-[28rem] p-6 overflow-y-auto"></div>
+                <div class="sim-footer p-4">
+                    <div class="flex items-center gap-3">
+                        <input type="text" class="flex-1 bg-black/60 border border-cyan-400/40 rounded-xl px-5 py-3 outline-none focus:border-cyan-400 focus:ring-2 focus:ring-cyan-400/30 transition-all text-white placeholder-gray-500" placeholder="Type your response..." disabled>
+                        <button class="cyber-send-btn p-3 rounded-xl">
+                            <i class="fa-solid fa-paper-plane"></i>
+                        </button>
+                    </div>
                 </div>
             </div>
         </div>
-    </section>
+    </main>
 
-    <footer class="footer">
-        <p>&copy; 2025 新竹政策黑客松 - 清大小夥伴 團隊</p>
-    </footer>
-
+    <!-- Scripts -->
     <script src="/static/config.js"></script>
+    <script src="/static/animations.js"></script>
     <script src="/static/main.js" defer></script>
 </body>
 </html>

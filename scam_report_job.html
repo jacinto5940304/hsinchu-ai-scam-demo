@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>新竹市 AI 防詐偵測 | 求職詐騙：高薪輕鬆工作背後的騙局</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@300;500;700&family=Orbitron:wght@400;700;900&display=swap" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Custom Styles -->
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+    <!-- 背景元素 -->
+    <div id="city-bg"></div>
+    <div class="grid-overlay"></div>
+    <canvas id="canvas-bg"></canvas>
+
+    <!-- 導覽列 -->
+    <nav class="fixed top-0 w-full z-50 px-6 py-4 flex justify-between items-center border-b border-white/10 bg-black/80 backdrop-blur-md">
+        <a href="/" class="text-2xl font-bold font-tech tracking-widest flex items-center gap-2">
+            <i class="fa-solid fa-shield-halved text-cyan-400"></i>
+            <span class="bg-clip-text text-transparent bg-gradient-to-r from-cyan-400 to-purple-500">HSINCHU ANTI-SCAM</span>
+        </a>
+        <div class="hidden md:flex gap-8 text-sm">
+            <a href="/" class="nav-link">HOME</a>
+            <a href="/detect" class="nav-link">DETECTION</a>
+            <a href="/dashboard" class="nav-link">DASHBOARD</a>
+            <a href="/simulation" class="nav-link">SIMULATION</a>
+            <a href="/incidents" class="nav-link active">INCIDENTS</a>
+            <a href="/team" class="nav-link">TEAM</a>
+        </div>
+        <!-- Mobile Menu Button -->
+        <div class="md:hidden">
+            <button id="mobile-menu-button" class="text-white focus:outline-none">
+                <i class="fa-solid fa-bars text-2xl"></i>
+            </button>
+        </div>
+        <button class="cyber-btn px-4 py-1 text-xs rounded-sm hidden">LOGIN</button>
+    </nav>
+
+    <!-- Mobile Menu -->
+    <div id="mobile-menu" class="hidden md:hidden fixed top-0 left-0 w-full h-full bg-black/90 z-40">
+        <div class="flex flex-col items-center justify-center h-full gap-8">
+            <a href="/" class="nav-link text-2xl">HOME</a>
+            <a href="/detect" class="nav-link text-2xl">DETECTION</a>
+            <a href="/dashboard" class="nav-link text-2xl">DASHBOARD</a>
+            <a href="/simulation" class="nav-link text-2xl">SIMULATION</a>
+            <a href="/incidents" class="nav-link active text-2xl">INCIDENTS</a>
+            <a href="/team" class="nav-link text-2xl">TEAM</a>
+        </div>
+    </div>
+
+    <!-- 主內容 -->
+    <main class="relative pt-32 pb-20 px-6 flex flex-col justify-center items-center text-center min-h-screen">
+        <div class="w-full max-w-4xl text-left">
+            <a href="/incidents" class="text-cyan-400 hover:underline mb-4 inline-block">← 返回詐騙事件列表</a>
+            <h1 class="text-4xl md:text-5xl font-bold font-tech leading-tight text-white mb-4">
+                求職詐騙：高薪輕鬆工作背後的騙局
+            </h1>
+            <div class="flex items-center text-gray-500 text-sm mb-6">
+                <span class="mr-4"><i class="fa-solid fa-calendar-days"></i> 2025/10/28</span>
+                <span><i class="fa-solid fa-tag"></i> 求職詐騙</span>
+            </div>
+            
+            <div class="prose prose-invert max-w-none text-gray-300">
+                <p>求職詐騙利用求職者急於找工作、賺錢的心態，以「高薪、輕鬆、免經驗」等誘人條件吸引受害者，實則要求繳交保證金、購買產品、辦理貸款，甚至淪為詐騙集團的人頭帳戶或車手。</p>
+                
+                <h2>詐騙手法解析</h2>
+                <h3>1. 刊登不實職缺，誘騙上鉤</h3>
+                <p>詐騙集團會在社群媒體、求職網站或簡訊中，刊登薪資異常優渥、工作內容輕鬆、不需經驗的職缺，如「網路刷單員」、「在家兼職」、「高薪客服」等，吸引求職者投遞履歷。</p>
+                
+                <h3>2. 要求繳交費用或購買產品</h3>
+                <p>面試後，詐騙分子會以各種名目要求求職者繳交費用，如「服裝費」、「訓練費」、「保證金」、「入會費」等，或要求購買高價產品作為「業績」或「培訓材料」。</p>
+                
+                <h3>3. 辦理貸款或開設人頭帳戶</h3>
+                <p>有些詐騙集團會要求求職者提供銀行帳戶、提款卡、存摺，聲稱是為了「薪資轉帳」或「公司業務需求」，實則將其帳戶作為人頭帳戶，進行非法洗錢活動。更甚者，會誘導求職者辦理小額貸款，將款項轉交給詐騙集團。</p>
+                
+                <h3>4. 淪為詐騙車手</h3>
+                <p>部分求職詐騙會要求受害者協助「收送包裹」、「領取款項」，聲稱是公司業務，實則讓受害者淪為詐騙集團的車手，面臨法律責任。</p>
+
+                <h2>防範建議</h2>
+                <ul>
+                    <li><strong>查證公司資訊：</strong> 對於不熟悉的徵才公司，務必上網搜尋公司名稱、地址、電話，確認是否為合法登記的公司。</li>
+                    <li><strong>不繳交不明費用：</strong> 合法公司不會在面試或錄取前要求求職者繳交任何費用。</li>
+                    <li><strong>不提供重要證件：</strong> 身份證、健保卡、銀行存摺、提款卡及密碼等重要證件，絕不可交給他人。</li>
+                    <li><strong>不辦理不明貸款：</strong> 任何要求辦理貸款或開設帳戶的要求，都應提高警惕。</li>
+                    <li><strong>高薪輕鬆是陷阱：</strong> 對於「高薪、輕鬆、免經驗」的工作，應保持懷疑，多數是詐騙陷阱。</li>
+                </ul>
+            </div>
+        </div>
+    </main>
+
+    <!-- Scripts -->
+    <script src="/static/config.js"></script>
+    <script src="/static/animations.js"></script>
+    <script src="/static/main.js" defer></script>
+    <script>
+        // Mobile menu toggle
+        document.getElementById('mobile-menu-button').addEventListener('click', function() {
+            document.getElementById('mobile-menu').classList.toggle('hidden');
+            document.body.style.overflow = document.getElementById('mobile-menu').classList.contains('hidden') ? '' : 'hidden';
+        });
+
+        document.getElementById('mobile-menu').addEventListener('click', function(event) {
+            if (event.target === this) {
+                this.classList.add('hidden');
+                document.body.style.overflow = '';
+            }
+        });
+    </script>
+</body>
+</html>

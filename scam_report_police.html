@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>新竹市 AI 防詐偵測 | 假冒檢警：電話恐嚇與資產凍結</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@300;500;700&family=Orbitron:wght@400;700;900&display=swap" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Custom Styles -->
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+    <!-- 背景元素 -->
+    <div id="city-bg"></div>
+    <div class="grid-overlay"></div>
+    <canvas id="canvas-bg"></canvas>
+
+    <!-- 導覽列 -->
+    <nav class="fixed top-0 w-full z-50 px-6 py-4 flex justify-between items-center border-b border-white/10 bg-black/80 backdrop-blur-md">
+        <a href="/" class="text-2xl font-bold font-tech tracking-widest flex items-center gap-2">
+            <i class="fa-solid fa-shield-halved text-cyan-400"></i>
+            <span class="bg-clip-text text-transparent bg-gradient-to-r from-cyan-400 to-purple-500">HSINCHU ANTI-SCAM</span>
+        </a>
+        <div class="hidden md:flex gap-8 text-sm">
+            <a href="/" class="nav-link">HOME</a>
+            <a href="/detect" class="nav-link">DETECTION</a>
+            <a href="/dashboard" class="nav-link">DASHBOARD</a>
+            <a href="/simulation" class="nav-link">SIMULATION</a>
+            <a href="/incidents" class="nav-link active">INCIDENTS</a>
+            <a href="/team" class="nav-link">TEAM</a>
+        </div>
+        <!-- Mobile Menu Button -->
+        <div class="md:hidden">
+            <button id="mobile-menu-button" class="text-white focus:outline-none">
+                <i class="fa-solid fa-bars text-2xl"></i>
+            </button>
+        </div>
+        <button class="cyber-btn px-4 py-1 text-xs rounded-sm hidden">LOGIN</button>
+    </nav>
+
+    <!-- Mobile Menu -->
+    <div id="mobile-menu" class="hidden md:hidden fixed top-0 left-0 w-full h-full bg-black/90 z-40">
+        <div class="flex flex-col items-center justify-center h-full gap-8">
+            <a href="/" class="nav-link text-2xl">HOME</a>
+            <a href="/detect" class="nav-link text-2xl">DETECTION</a>
+            <a href="/dashboard" class="nav-link text-2xl">DASHBOARD</a>
+            <a href="/simulation" class="nav-link text-2xl">SIMULATION</a>
+            <a href="/incidents" class="nav-link active text-2xl">INCIDENTS</a>
+            <a href="/team" class="nav-link text-2xl">TEAM</a>
+        </div>
+    </div>
+
+    <!-- 主內容 -->
+    <main class="relative pt-32 pb-20 px-6 flex flex-col justify-center items-center text-center min-h-screen">
+        <div class="w-full max-w-4xl text-left">
+            <a href="/incidents" class="text-cyan-400 hover:underline mb-4 inline-block">← 返回詐騙事件列表</a>
+            <h1 class="text-4xl md:text-5xl font-bold font-tech leading-tight text-white mb-4">
+                假冒檢警：電話恐嚇與資產凍結
+            </h1>
+            <div class="flex items-center text-gray-500 text-sm mb-6">
+                <span class="mr-4"><i class="fa-solid fa-calendar-days"></i> 2025/11/10</span>
+                <span><i class="fa-solid fa-tag"></i> 假冒公務</span>
+            </div>
+            
+            <div class="prose prose-invert max-w-none text-gray-300">
+                <p>詐騙集團常假冒檢察官、警察或調查局人員，透過電話或簡訊聯繫民眾，謊稱其身份遭冒用、涉嫌洗錢、販毒等重大刑案，或健保卡被盜用、銀行帳戶異常等，藉此恐嚇民眾。</p>
+                
+                <h2>詐騙手法解析</h2>
+                <h3>1. 假冒身份，製造恐慌</h3>
+                <p>詐騙分子會自稱是檢察官、警察、調查官等，並使用偽造的機關電話號碼（透過竄改來電顯示），語氣嚴肅、專業，讓受害者信以為真。他們會強調案件的機密性、嚴重性，禁止受害者向任何人透露，製造恐慌情緒。</p>
+                
+                <h3>2. 謊稱涉案，要求監管帳戶</h3>
+                <p>詐騙集團會謊稱受害者的銀行帳戶涉及不法，需要進行「資金清查」或「資產監管」，要求受害者將所有存款轉入指定的「安全帳戶」或「監管帳戶」。這些帳戶實際上都是詐騙集團的人頭帳戶。</p>
+                
+                <h3>3. 威脅利誘，步步緊逼</h3>
+                <p>詐騙分子會威脅受害者，若不配合將會被逮捕、凍結所有資產，甚至影響家人。同時，他們也會利誘，聲稱只要配合調查，案件結束後資金會全數歸還，並給予「清白證明」。</p>
+                
+                <h3>4. 誘導操作，遠端控制</h3>
+                <p>有些詐騙集團會引導受害者下載不明的遠端操控軟體，或要求受害者前往銀行 ATM 進行轉帳操作，並在電話中一步步指示，確保資金轉入詐騙集團的帳戶。</p>
+
+                <h2>防範建議</h2>
+                <ul>
+                    <li><strong>公務機關不會監管帳戶：</strong> 檢警調等公務機關偵辦案件，絕對不會要求民眾將存款轉入任何「監管帳戶」。</li>
+                    <li><strong>查證電話號碼：</strong> 收到可疑電話時，應立即掛斷，並撥打 165 反詐騙專線或 110 查證。切勿回撥詐騙集團提供的號碼。</li>
+                    <li><strong>不透露個資：</strong> 公務機關不會在電話中要求民眾提供銀行帳號、密碼、身份證字號等個人資料。</li>
+                    <li><strong>不點擊不明連結：</strong> 不要點擊簡訊或郵件中來路不明的連結，以免下載惡意軟體。</li>
+                    <li><strong>保持冷靜：</strong> 遇到類似情況，務必保持冷靜，多方查證，並與家人朋友商量。</li>
+                </ul>
+            </div>
+        </div>
+    </main>
+
+    <!-- Scripts -->
+    <script src="/static/config.js"></script>
+    <script src="/static/animations.js"></script>
+    <script src="/static/main.js" defer></script>
+    <script>
+        // Mobile menu toggle
+        document.getElementById('mobile-menu-button').addEventListener('click', function() {
+            document.getElementById('mobile-menu').classList.toggle('hidden');
+            document.body.style.overflow = document.getElementById('mobile-menu').classList.contains('hidden') ? '' : 'hidden';
+        });
+
+        document.getElementById('mobile-menu').addEventListener('click', function(event) {
+            if (event.target === this) {
+                this.classList.add('hidden');
+                document.body.style.overflow = '';
+            }
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>新竹市 AI 防詐偵測 | 解除分期付款：網購個資外洩陷阱</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@300;500;700&family=Orbitron:wght@400;700;900&display=swap" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Custom Styles -->
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+    <!-- 背景元素 -->
+    <div id="city-bg"></div>
+    <div class="grid-overlay"></div>
+    <canvas id="canvas-bg"></canvas>
+
+    <!-- 導覽列 -->
+    <nav class="fixed top-0 w-full z-50 px-6 py-4 flex justify-between items-center border-b border-white/10 bg-black/80 backdrop-blur-md">
+        <a href="/" class="text-2xl font-bold font-tech tracking-widest flex items-center gap-2">
+            <i class="fa-solid fa-shield-halved text-cyan-400"></i>
+            <span class="bg-clip-text text-transparent bg-gradient-to-r from-cyan-400 to-purple-500">HSINCHU ANTI-SCAM</span>
+        </a>
+        <div class="hidden md:flex gap-8 text-sm">
+            <a href="/" class="nav-link">HOME</a>
+            <a href="/detect" class="nav-link">DETECTION</a>
+            <a href="/dashboard" class="nav-link">DASHBOARD</a>
+            <a href="/simulation" class="nav-link">SIMULATION</a>
+            <a href="/incidents" class="nav-link active">INCIDENTS</a>
+            <a href="/team" class="nav-link">TEAM</a>
+        </div>
+        <!-- Mobile Menu Button -->
+        <div class="md:hidden">
+            <button id="mobile-menu-button" class="text-white focus:outline-none">
+                <i class="fa-solid fa-bars text-2xl"></i>
+            </button>
+        </div>
+        <button class="cyber-btn px-4 py-1 text-xs rounded-sm hidden">LOGIN</button>
+    </nav>
+
+    <!-- Mobile Menu -->
+    <div id="mobile-menu" class="hidden md:hidden fixed top-0 left-0 w-full h-full bg-black/90 z-40">
+        <div class="flex flex-col items-center justify-center h-full gap-8">
+            <a href="/" class="nav-link text-2xl">HOME</a>
+            <a href="/detect" class="nav-link text-2xl">DETECTION</a>
+            <a href="/dashboard" class="nav-link text-2xl">DASHBOARD</a>
+            <a href="/simulation" class="nav-link text-2xl">SIMULATION</a>
+            <a href="/incidents" class="nav-link active text-2xl">INCIDENTS</a>
+            <a href="/team" class="nav-link text-2xl">TEAM</a>
+        </div>
+    </div>
+
+    <!-- 主內容 -->
+    <main class="relative pt-32 pb-20 px-6 flex flex-col justify-center items-center text-center min-h-screen">
+        <div class="w-full max-w-4xl text-left">
+            <a href="/incidents" class="text-cyan-400 hover:underline mb-4 inline-block">← 返回詐騙事件列表</a>
+            <h1 class="text-4xl md:text-5xl font-bold font-tech leading-tight text-white mb-4">
+                解除分期付款：網購個資外洩陷阱
+            </h1>
+            <div class="flex items-center text-gray-500 text-sm mb-6">
+                <span class="mr-4"><i class="fa-solid fa-calendar-days"></i> 2025/11/08</span>
+                <span><i class="fa-solid fa-tag"></i> 網購詐騙</span>
+            </div>
+            
+            <div class="prose prose-invert max-w-none text-gray-300">
+                <p>「解除分期付款」是常見的網路購物詐騙手法。詐騙集團通常會假冒電商平台客服或銀行人員，謊稱民眾的網購訂單因系統錯誤、設定成批發商、重複扣款等原因，導致會被連續扣款，要求民眾操作 ATM 或網路銀行「解除分期付款」。</p>
+                
+                <h2>詐騙手法解析</h2>
+                <h3>1. 個資外洩，精準詐騙</h3>
+                <p>詐騙集團通常已掌握受害者的網購訂單資訊（商品名稱、金額、收件人等），這讓受害者更容易相信詐騙電話或簡訊的真實性。這些個資可能來自於電商平台、物流公司或第三方支付平台的資料外洩。</p>
+                
+                <h3>2. 假冒客服，製造恐慌</h3>
+                <p>詐騙分子會自稱是電商客服或銀行人員，語氣專業且急迫，謊稱因「系統出錯」、「誤設分期付款」、「重複扣款」等理由，導致受害者將被連續扣款數十次。他們會強調若不立即處理，將會造成巨大損失，製造受害者的恐慌情緒。</p>
+                
+                <h3>3. 誘導操作 ATM 或網路銀行</h3>
+                <p>詐騙集團會引導受害者前往 ATM 或登入網路銀行，聲稱要進行「解除分期付款」或「取消設定」的操作。實際上，這些操作都是將受害者的錢轉入詐騙集團指定的人頭帳戶。</p>
+                
+                <h3>4. 假冒銀行人員，二次詐騙</h3>
+                <p>有時，詐騙集團會分飾兩角，先假冒電商客服，再假冒銀行人員，聲稱要協助受害者處理「錯誤」，進一步誘導受害者進行轉帳操作。</p>
+
+                <h2>防範建議</h2>
+                <ul>
+                    <li><strong>查證電話：</strong> 接到自稱客服或銀行人員的電話，務必掛斷後自行撥打官方客服電話查證，切勿回撥對方提供的號碼。</li>
+                    <li><strong>ATM 無解除分期功能：</strong> ATM 只有提款、轉帳、繳費等功能，沒有任何「解除分期付款」或「取消設定」的功能。</li>
+                    <li><strong>不透露個資：</strong> 任何情況下，都不要在電話中透露銀行帳號、密碼、信用卡資料等個人敏感資訊。</li>
+                    <li><strong>官方管道確認：</strong> 收到任何關於訂單異常的通知，應透過官方網站或 App 查詢訂單狀態，而非透過不明電話或簡訊。</li>
+                    <li><strong>安裝防詐軟體：</strong> 在手機安裝防詐騙 App，可有效阻擋詐騙電話和簡訊。</li>
+                </ul>
+            </div>
+        </div>
+    </main>
+
+    <!-- Scripts -->
+    <script src="/static/config.js"></script>
+    <script src="/static/animations.js"></script>
+    <script src="/static/main.js" defer></script>
+    <script>
+        // Mobile menu toggle
+        document.getElementById('mobile-menu-button').addEventListener('click', function() {
+            document.getElementById('mobile-menu').classList.toggle('hidden');
+            document.body.style.overflow = document.getElementById('mobile-menu').classList.contains('hidden') ? '' : 'hidden';
+        });
+
+        document.getElementById('mobile-menu').addEventListener('click', function(event) {
+            if (event.target === this) {
+                this.classList.add('hidden');
+                document.body.style.overflow = '';
+            }
+        });
+    </script>
+</body>
+</html>

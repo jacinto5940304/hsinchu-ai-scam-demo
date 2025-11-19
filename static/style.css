@@ -1,544 +1,399 @@
-/* static/style.css (v2.0 - 專案登陸頁) */
+:root {
+    --neon-blue: #00f3ff;
+    --neon-purple: #bc13fe;
+    --bg-dark: #050505;
+    --glass-bg: rgba(255, 255, 255, 0.03);
+    --glass-border: rgba(255, 255, 255, 0.1);
+}
 
 /* --- 全域設定 --- */
 html {
-    scroll-behavior: smooth; /* 點擊導覽列時平滑捲動 */
+    scroll-behavior: smooth;
 }
 
 body {
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-    margin: 0;
-    padding: 0;
-    background-color: #f4f7f6;
-    color: #333;
-    line-height: 1.6;
+    font-family: 'Noto Sans TC', sans-serif;
+    background-color: var(--bg-dark);
+    color: #fff;
+    overflow-x: hidden;
 }
 
-/* --- 導覽列 --- */
-.navbar {
-    background: #ffffff;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-    position: sticky;
-    top: 0;
-    z-index: 1000;
+.font-tech {
+    font-family: 'Orbitron', sans-serif;
 }
 
-.navbar-container {
-    max-width: 1100px;
-    margin: 0 auto;
-    padding: 0 2rem;
+/* --- 背景層次設定 --- */
+#city-bg {
+    position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -3;
+    background: url('/static/hsinchu_skyline.jpg') no-repeat center center/cover;
+    opacity: 0.1;
+    filter: grayscale(100%) brightness(50%);
+    pointer-events: none;
+}
+.grid-overlay {
+    position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -2;
+    background-image: linear-gradient(rgba(0, 243, 255, 0.05) 1px, transparent 1px),
+                      linear-gradient(90deg, rgba(0, 243, 255, 0.05) 1px, transparent 1px);
+    background-size: 40px 40px;
+    opacity: 0.2;
+    pointer-events: none;
+}
+#canvas-bg {
+    position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1;
+    /* background: radial-gradient(circle at center, rgba(26, 26, 46, 0.8) 0%, rgba(0, 0, 0, 0.95) 100%); */
+}
+
+/* --- 元件樣式 --- */
+.neon-text {
+    text-shadow: 0 0 10px rgba(0, 243, 255, 0.7);
+}
+
+.cyber-card {
+    background: var(--glass-bg);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border: 1px solid var(--glass-border);
+    transition: 0.3s;
+}
+
+.cyber-card:hover {
+    transform: translateY(-5px);
+    border-color: var(--neon-blue);
+    box-shadow: 0 0 20px rgba(0, 243, 255, 0.2);
+}
+
+.cyber-btn {
+    border: 1px solid var(--neon-blue);
+    color: var(--neon-blue);
+    transition: 0.3s;
+    font-family: 'Orbitron', sans-serif;
+}
+
+.cyber-btn:hover {
+    background: var(--neon-blue);
+    color: #000;
+    box-shadow: 0 0 20px rgba(0, 243, 255, 0.6);
+}
+
+.nav-link {
+    color: #9ca3af;
+    transition: 0.3s;
+    font-family: 'Orbitron', sans-serif;
+    letter-spacing: 1px;
+    position: relative;
+    padding-bottom: 4px;
+}
+
+.nav-link:hover,
+.nav-link.active {
+    color: var(--neon-blue);
+    text-shadow: 0 0 8px rgba(0, 243, 255, 0.5);
+}
+
+/* 底線動畫 */
+.nav-link::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 2px;
+    background-color: var(--neon-blue);
+    transform: scaleX(0);
+    transform-origin: bottom right;
+    transition: transform 0.3s ease-out;
+}
+
+.nav-link.active::after,
+.nav-link:hover::after {
+    transform: scaleX(1);
+    transform-origin: bottom left;
+}
+
+
+.cursor {
+    display: inline-block;
+    width: 10px;
+    background-color: var(--neon-blue);
+    animation: blink 1s infinite;
+}
+
+@keyframes blink {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0; }
+}
+
+/* --- 舊版樣式相容 (逐步汰換) --- */
+.section-dark { background: transparent; }
+.section-light { background: transparent; }
+.demo-container {
+    background: var(--glass-bg);
+    backdrop-filter: blur(16px);
+    border: 1px solid var(--glass-border);
+    text-align: center;
+}
+#analyzeButton {
+    border: 1px solid var(--neon-blue);
+    color: var(--neon-blue);
+    background: transparent;
+    font-family: 'Orbitron', sans-serif;
+}
+#analyzeButton:hover {
+    background: var(--neon-blue);
+    color: #000;
+    box-shadow: 0 0 20px rgba(0, 243, 255, 0.6);
+}
+textarea {
+    background: rgba(0,0,0,0.3);
+    border-color: var(--glass-border);
+    color: #fff;
+}
+#result-container {
+    background: transparent;
+    border: none;
+}
+.result-box {
+    background: var(--glass-bg);
+    border: 1px solid var(--glass-border);
+}
+
+/* --- 模擬聊天室 (Cyberpunk 風格) --- */
+.sim-chat {
+    background: linear-gradient(145deg, rgba(10, 15, 30, 0.98) 0%, rgba(5, 10, 25, 0.98) 100%);
+    border: 2px solid rgba(0, 243, 255, 0.4);
+    box-shadow: 
+        0 0 50px rgba(0, 243, 255, 0.3),
+        0 0 100px rgba(188, 19, 254, 0.2),
+        inset 0 0 80px rgba(0, 243, 255, 0.03);
+    backdrop-filter: blur(10px);
+    position: relative;
+}
+
+.sim-chat::before {
+    content: '';
+    position: absolute;
+    top: -2px;
+    left: -2px;
+    right: -2px;
+    bottom: -2px;
+    background: linear-gradient(45deg, #00f3ff, #bc13fe, #00f3ff);
+    border-radius: 1rem;
+    z-index: -1;
+    opacity: 0;
+    transition: opacity 0.3s;
+    filter: blur(10px);
+}
+
+.sim-chat:hover::before {
+    opacity: 0.5;
+    animation: glow-pulse 2s ease-in-out infinite;
+}
+
+@keyframes glow-pulse {
+    0%, 100% { opacity: 0.3; }
+    50% { opacity: 0.6; }
+}
+
+.sim-header {
+    background: linear-gradient(180deg, 
+        rgba(0, 243, 255, 0.15) 0%, 
+        rgba(0, 243, 255, 0.05) 50%,
+        rgba(0, 0, 0, 0.3) 100%);
+    border-bottom: 1px solid rgba(0, 243, 255, 0.4);
+    font-family: 'Orbitron', sans-serif;
+    text-shadow: 0 0 15px rgba(0, 243, 255, 1), 0 0 30px rgba(0, 243, 255, 0.5);
+}
+
+.sim-body {
     display: flex;
-    justify-content: space-between;
-    align-items: center;
-    height: 60px;
+    flex-direction: column;
+    gap: 1.25rem;
+    background: 
+        radial-gradient(circle at 20% 30%, rgba(0, 243, 255, 0.03) 0%, transparent 50%),
+        radial-gradient(circle at 80% 70%, rgba(188, 19, 254, 0.03) 0%, transparent 50%),
+        rgba(0, 0, 0, 0.4);
 }
 
-.logo {
-    font-size: 1.3rem;
-    font-weight: 700;
-    color: #005a9c; /* 新竹藍 */
+.sim-body::-webkit-scrollbar {
+    width: 8px;
 }
 
-.navbar nav a {
-    color: #555;
-    text-decoration: none;
-    margin-left: 20px;
-    font-weight: 500;
-    transition: color 0.2s ease;
+.sim-body::-webkit-scrollbar-track {
+    background: rgba(0, 0, 0, 0.3);
+    border-radius: 10px;
 }
 
-.navbar nav a:hover {
-    color: #005a9c;
+.sim-body::-webkit-scrollbar-thumb {
+    background: linear-gradient(180deg, #00f3ff, #bc13fe);
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 243, 255, 0.5);
 }
 
-/* --- 區塊通用樣式 --- */
-section {
-    padding: 4rem 2rem;
+.sim-message {
+    padding: 1rem 1.375rem;
+    max-width: 80%;
+    word-wrap: break-word;
+    position: relative;
+    line-height: 1.7;
+    border-radius: 1.25rem;
+    font-size: 0.975rem;
+    animation: messageSlideIn 0.3s ease-out;
+    transition: all 0.3s;
 }
 
-section h2 {
-    text-align: center;
-    font-size: 2.2rem;
-    margin-top: 0;
-    margin-bottom: 3rem;
-    color: #333;
+@keyframes messageSlideIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
 }
 
-.section-light {
-    background: #ffffff;
-}
-.section-dark {
-    background: #f4f7f6;
-}
-
-/* --- 1. 專案願景 (Hero) --- */
-.hero {
-    /* 使用專案 static 資料夾中的新竹市天際線圖片，外加一層藍色漸層遮罩提高文字可讀性 */
-    background: linear-gradient(rgba(0, 90, 156, 0.7), rgba(0, 90, 156, 0.7)), url('/static/hsinchu_skyline.jpg');
-    background-size: cover;
-    background-position: center;
-    background-repeat: no-repeat;
-    color: white;
-    text-align: center;
-    padding: 6rem 2rem;
-}
-
-.hero h1 {
-    font-size: 3rem;
-    margin-bottom: 1rem;
-}
-
-.hero p {
-    font-size: 1.3rem;
-    margin-bottom: 2rem;
-    opacity: 0.9;
-}
-
-.cta-button {
-    background: #ffffff;
-    color: #005a9c;
-    padding: 12px 25px;
-    border-radius: 8px;
-    text-decoration: none;
-    font-size: 1.1rem;
-    font-weight: 700;
-    transition: all 0.3s ease;
-}
-
-.cta-button:hover {
-    background: #eee;
+.sim-message:hover {
     transform: translateY(-2px);
 }
 
-/* --- 2. 問題界定 (Problem) --- */
-.stats-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-    gap: 2rem;
-    max-width: 1100px;
-    margin: 0 auto;
+/* 詐騙方訊息 (左邊, 霓虹紫) */
+.sim-message.scammer {
+    background: linear-gradient(135deg, 
+        rgba(188, 19, 254, 0.35) 0%, 
+        rgba(188, 19, 254, 0.20) 50%,
+        rgba(139, 0, 200, 0.25) 100%);
+    border: 2px solid rgba(188, 19, 254, 0.6);
+    color: #f0d6ff;
+    box-shadow: 
+        0 4px 20px rgba(188, 19, 254, 0.4),
+        inset 0 1px 0 rgba(255, 255, 255, 0.1);
+    border-bottom-left-radius: 0.25rem;
+    align-self: flex-start;
+    text-shadow: 0 0 10px rgba(188, 19, 254, 0.5);
 }
 
-.stat-card {
-    background: #f9f9f9;
-    border: 1px solid #eee;
-    padding: 2rem;
-    border-radius: 8px;
-    text-align: center;
+.sim-message.scammer::before {
+    content: '';
+    position: absolute;
+    left: -8px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 4px;
+    height: 60%;
+    background: linear-gradient(180deg, #bc13fe, transparent);
+    border-radius: 2px;
+    box-shadow: 0 0 10px #bc13fe;
 }
 
-.stat-card h3 {
-    font-size: 2.5rem;
-    color: #d90429; /* 警示紅 */
-    margin: 0 0 10px 0;
+/* 使用者訊息 (右邊, 霓虹藍) */
+.sim-message.user {
+    background: linear-gradient(135deg, 
+        rgba(0, 243, 255, 0.35) 0%, 
+        rgba(0, 243, 255, 0.20) 50%,
+        rgba(0, 180, 255, 0.25) 100%);
+    border: 2px solid rgba(0, 243, 255, 0.6);
+    color: #d6f8ff;
+    box-shadow: 
+        0 4px 20px rgba(0, 243, 255, 0.4),
+        inset 0 1px 0 rgba(255, 255, 255, 0.1);
+    border-bottom-right-radius: 0.25rem;
+    align-self: flex-end;
+    text-shadow: 0 0 10px rgba(0, 243, 255, 0.5);
 }
 
-.stat-card p {
-    font-size: 1.1rem;
-    margin: 0;
+.sim-message.user::before {
+    content: '';
+    position: absolute;
+    right: -8px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 4px;
+    height: 60%;
+    background: linear-gradient(180deg, #00f3ff, transparent);
+    border-radius: 2px;
+    box-shadow: 0 0 10px #00f3ff;
 }
 
-/* --- 3. AI 偵測 (Demo Tool) --- */
-.demo-container {
-    max-width: 700px;
-    margin: 0 auto;
-    background: #ffffff;
-    padding: 2rem 2.5rem;
-    border-radius: 12px;
-    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.07);
-    text-align: center;
+/* 輸入框 */
+.sim-footer {
+    background: linear-gradient(0deg, 
+        rgba(0, 0, 0, 0.6) 0%, 
+        rgba(0, 243, 255, 0.05) 100%);
+    border-top: 1px solid rgba(0, 243, 255, 0.3);
 }
 
-.demo-container h2 {
-    color: #005a9c;
-    margin-bottom: 1.5rem;
+.sim-footer input {
+    background: rgba(0, 0, 0, 0.6);
+    border-color: rgba(0, 243, 255, 0.4);
+    color: #fff;
+    font-size: 0.95rem;
 }
 
-textarea {
-    width: 95%; /* 確保 padding 不會撐破 */
-    height: 120px;
-    padding: 12px;
-    border-radius: 8px;
-    border: 1px solid #ccc;
-    font-size: 1rem;
-    resize: vertical;
+.sim-footer input:focus {
+    background: rgba(0, 0, 0, 0.8);
+    border-color: rgba(0, 243, 255, 0.9);
+    box-shadow: 0 0 25px rgba(0, 243, 255, 0.5);
 }
 
-button {
-    background-color: #005a9c;
-    color: white;
-    padding: 12px 25px;
-    border: none;
-    border-radius: 8px;
-    font-size: 1.1rem;
-    font-weight: 600;
+.cyber-send-btn {
+    background: linear-gradient(135deg, rgba(0, 243, 255, 0.3), rgba(0, 243, 255, 0.1));
+    border: 2px solid rgba(0, 243, 255, 0.5);
+    color: #00f3ff;
+    transition: all 0.3s;
     cursor: pointer;
-    margin-top: 15px;
-    transition: background-color 0.2s ease;
 }
 
-button:hover {
-    background-color: #003d6b;
+.cyber-send-btn:hover {
+    background: linear-gradient(135deg, rgba(0, 243, 255, 0.5), rgba(0, 243, 255, 0.3));
+    box-shadow: 0 0 20px rgba(0, 243, 255, 0.6);
+    transform: scale(1.05);
 }
 
-#loading {
-    display: none;
-    margin-top: 15px;
-    color: #555;
-    font-style: italic;
+/* 開始按鈕 */
+#startSimButton {
+    border: 1px solid var(--neon-blue);
+    color: var(--neon-blue);
+    background: transparent;
+}
+#startSimButton:hover {
+    background: var(--neon-blue);
+    color: #000;
 }
 
-#result-container {
-    margin-top: 25px;
-    background: #f9f9f9;
-    border: 1px solid #eee;
-    padding: 20px;
-    border-radius: 8px;
-    display: none; /* 預設隱藏 */
-    text-align: left; /* 結果靠左對齊 */
+/* 儀表板 */
+.kpi-card, .chart-card, .map-container {
+    background: var(--glass-bg);
+    backdrop-filter: blur(16px);
+    border: 1px solid var(--glass-border);
 }
-
-.result-box {
-    font-size: 1.1rem;
-    line-height: 1.6;
+.kpi-title, .chart-card h3, .map-container h3 {
+    color: #a0a0a0;
 }
-
-.risk-high { color: #d90429; }
-.risk-medium { color: #f77f00; }
-.risk-low { color: #008000; }
-
-.result-box strong {
-    font-size: 1.5rem;
-    margin-right: 10px;
-}
-
-.result-box p {
-    margin: 10px 0 0;
-}
-
-/* --- 4. 防詐儀表板 (Dashboard) --- */
-.dashboard-container {
-    max-width: 1100px;
-    margin: 0 auto;
-    text-align: center;
+.kpi-value {
+    color: var(--neon-blue);
 }
 .dashboard-container p {
-    font-size: 1.1rem;
-    color: #555;
-    margin-bottom: 2rem;
-}
-.dashboard-image {
-    width: 100%;
-    max-width: 900px; /* 限制最大寬度 */
-    border-radius: 8px;
-    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
-    border: 1px solid #ddd;
-}
-
-/* 動態儀表板：KPI 與圖表 */
-.kpi-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-    gap: 1rem;
-    margin: 0 auto 2rem;
-}
-
-.kpi-card {
-    background: #f9f9f9;
-    border: 1px solid #eee;
-    border-radius: 10px;
-    padding: 1.2rem 1rem;
-    text-align: left;
-}
-
-.kpi-title {
-    font-size: 0.95rem;
-    color: #666;
-    margin-bottom: 0.3rem;
-}
-
-.kpi-value {
-    font-size: 1.8rem;
-    font-weight: 700;
-    color: #005a9c;
-}
-
-.chart-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-    gap: 1.5rem;
-    margin-top: 1rem;
-}
-
-.chart-card {
-    background: #fff;
-    border: 1px solid #eee;
-    border-radius: 10px;
-    padding: 1rem;
-    text-align: left;
-}
-
-.chart-card h3 {
-    margin: 0 0 0.8rem 0;
-    color: #333;
-}
-
-/* 熱區地圖容器 */
-.map-container {
-    margin-top: 2rem;
-    background: #fff;
-    border: 1px solid #eee;
-    border-radius: 10px;
-    padding: 1rem;
-}
-
-.map-container h3 {
-    margin: 0 0 0.8rem 0;
-    color: #333;
-    text-align: left;
+    color: #a0a0a0;
 }
 
 #map {
-    width: 100%;
-    height: 450px; /* 給地圖一個固定的高度 */
-    border-radius: 8px;
+    overflow: hidden;
 }
 
-/* 預設顯示動態儀表板，若 JS 成功載入可選擇隱藏 fallback */
-.dashboard-fallback {
-    margin-top: 1.5rem;
-}
-
-/* --- 5. 核心功能 (Features) --- */
-.feature-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-    gap: 2rem;
-    max-width: 1100px;
-    margin: 0 auto;
-}
-
-.feature-card {
-    background: #f9f9f9;
-    border: 1px solid #eee;
-    padding: 2rem;
-    border-radius: 8px;
-}
-
-.feature-card h3 {
-    font-size: 1.5rem;
-    color: #005a9c;
-    margin-top: 0;
-}
-
-/* --- 團隊卡片 --- */
-.team-grid {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr); /* 固定四欄，並列同一排 */
-    gap: 1.5rem;
-    max-width: 1100px;
-    margin: 0 auto;
-}
+/* 團隊頁 */
 .team-card {
-    background: #f9f9f9;
-    border: 1px solid #eee;
-    border-radius: 12px;
-    padding: 1.25rem 1.25rem 1.5rem;
-    text-align: center;
+    background: var(--glass-bg);
+    backdrop-filter: blur(16px);
+    border: 1px solid var(--glass-border);
 }
-.team-card { min-width: 240px; }
-.team-card img.team-avatar {
-    width: 110px;
-    height: 110px;
-    border-radius: 50%;
-    display: block;
-    margin: 0 auto 0.8rem;
-    box-shadow: 0 3px 10px rgba(0,0,0,0.08);
-    background: #fff;
+.team-card:hover {
+    transform: translateY(-5px);
+    border-color: var(--neon-blue);
+    box-shadow: 0 0 20px rgba(0, 243, 255, 0.2);
 }
 .team-card .role {
-    color: #555;
-    margin: 0.2rem 0 0.6rem;
+    color: #a0a0a0;
 }
 .team-card ul {
-    text-align: left;
-    margin: 0.6rem 0 0;
-    padding-left: 1.2rem;
-}
-.team-card ul li { margin-bottom: 0.35rem; }
-
-/* --- 6. 互動式防詐模擬 --- */
-.simulation-container {
-    max-width: 700px;
-    margin: 0 auto;
-    text-align: center;
-}
-.simulation-container p {
-    font-size: 1.1rem;
-    color: #555;
-    margin-bottom: 2rem;
-}
-.cta-button-2 { /* 一個新樣式的按鈕 */
-    background: #008000; /* 綠色 */
-    color: white;
-    padding: 12px 25px;
-    border-radius: 8px;
-    text-decoration: none;
-    font-size: 1.1rem;
-    font-weight: 700;
-    transition: all 0.3s ease;
-    border: none;
-    cursor: pointer;
-}
-.cta-button-2:hover {
-    background: #006400;
-}
-
-.sim-chat {
-    max-width: 400px; /* 模擬手機寬度 */
-    margin: 2rem auto 0;
-    border: 1px solid #ccc;
-    background: #ACE2E1; /* LINE 的背景色 */
-    border-radius: 12px;
-    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
-    display: none; /* 預設隱藏 */
-}
-.sim-header {
-    background: #333;
-    color: white;
-    padding: 10px 15px;
-    font-weight: bold;
-    border-top-left-radius: 12px;
-    border-top-right-radius: 12px;
-}
-.sim-body {
-    padding: 15px;
-    height: 300px;
-    overflow-y: auto;
-    display: flex;
-    flex-direction: column;
-}
-.sim-message {
-    padding: 8px 12px;
-    border-radius: 10px;
-    margin-bottom: 10px;
-    max-width: 80%;
-    line-height: 1.4;
-    opacity: 0; /* 預設透明 */
-    animation: fadeIn 0.5s forwards; /* 淡入動畫 */
-}
-.sim-message.scammer { /* 詐騙者在左邊 */
-    background: #fff;
-    align-self: flex-start;
-}
-.sim-message.user { /* 用戶在右邊 */
-    background: #90EE90; /* 綠色對話框 */
-    align-self: flex-end;
-}
-.sim-message.system { /* 系統/AI 分析訊息 */
-    background: #fff3cd; /* 淡黃色提示背景 */
-    border: 1px solid #ffeeba;
-    color: #856404;
-    align-self: center;
-}
-.sim-footer {
-    padding: 10px;
-    background: #f9f9f9;
-    border-bottom-left-radius: 12px;
-    border-bottom-right-radius: 12px;
-}
-.sim-footer input {
-    width: 90%;
-    padding: 8px;
-    border: 1px solid #ccc;
-    border-radius: 20px;
-}
-@keyframes fadeIn {
-    to { opacity: 1; }
-}
-
-/* --- 7. 頁尾 --- */
-.footer {
-    background: #333;
-    color: #aaa;
-    text-align: center;
-    padding: 1.5rem 2rem;
-}
-
-/* =====================
-   行動裝置 RWD 強化區
-   ===================== */
-/* 中型螢幕以下（平板 / 大手機） */
-@media (max-width: 768px) {
-    .navbar-container {
-        flex-direction: column;
-        align-items: flex-start;
-        height: auto;
-        padding: 0 1.25rem 0.5rem;
-    }
-    .logo { margin-bottom: 0.4rem; }
-    .navbar nav { display: flex; flex-wrap: wrap; gap: 0.75rem; }
-    .navbar nav a { margin-left: 0; font-size: 0.95rem; padding: 6px 10px; background:#f2f6f9; border-radius:6px; }
-    .hero { padding: 4rem 1.5rem; }
-    .hero h1 { font-size: clamp(2rem, 6vw, 2.6rem); }
-    .hero p { font-size: clamp(1.05rem, 3.2vw, 1.2rem); }
-    section { padding: 3.2rem 1.4rem; }
-    .demo-container { padding: 1.6rem 1.4rem; }
-    textarea { width: 100%; }
-    button, .cta-button, .cta-button-2 { width: 100%; box-sizing: border-box; }
-    .kpi-grid { grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); }
-    .kpi-card { padding: 0.9rem 0.8rem; }
-    .kpi-value { font-size: 1.4rem; }
-    .chart-grid { grid-template-columns: 1fr 1fr; }
-    .chart-card { padding: 0.8rem; }
-    .chart-card canvas { width: 100% !important; height: auto !important; }
-    .team-grid { grid-template-columns: repeat(2, 1fr); }
-    .team-card { min-width: unset; }
-    .simulation-container { padding: 0 0.5rem; }
-    .sim-chat { max-width: 100%; width: 100%; }
-    .sim-body { height: 45vh; -webkit-overflow-scrolling: touch; }
-    .sim-footer input { width: 100%; }
-    .feature-grid { grid-template-columns: repeat(auto-fit, minmax(240px,1fr)); }
-}
-
-/* 小型手機（狹窄螢幕 ≤480px） */
-@media (max-width: 480px) {
-    .navbar nav { gap: 0.5rem; }
-    .navbar nav a { font-size: 0.85rem; padding: 5px 8px; }
-    .hero { padding: 3.2rem 1.1rem; }
-    .hero h1 { font-size: clamp(1.8rem, 7vw, 2.2rem); }
-    .hero p { font-size: clamp(0.95rem, 3.5vw, 1.1rem); }
-    .stats-grid { grid-template-columns: 1fr; }
-    .stat-card h3 { font-size: 2rem; }
-    .demo-container { padding: 1.4rem 1rem; }
-    .chart-grid { grid-template-columns: 1fr; }
-    .kpi-grid { grid-template-columns: 1fr 1fr; }
-    .kpi-value { font-size: 1.25rem; }
-    .team-grid { grid-template-columns: 1fr; }
-    .feature-grid { grid-template-columns: 1fr; }
-    .sim-body { height: 50vh; }
-    .sim-message { font-size: 0.9rem; }
-    .footer { padding: 1.2rem 1rem; font-size: 0.8rem; }
-}
-
-/* 超小裝置或嵌入視窗（≤360px） */
-@media (max-width: 360px) {
-    .navbar nav a { font-size: 0.75rem; }
-    .hero h1 { font-size: 1.7rem; }
-    .hero p { font-size: 0.85rem; }
-    .kpi-grid { grid-template-columns: 1fr; }
-    .demo-container h2 { font-size: 1.2rem; }
-    button, .cta-button, .cta-button-2 { font-size: 0.95rem; padding: 10px 18px; }
-}
-
-/* 觸控優化：增加可點擊區域與避免 hover 依賴 */
-@media (hover: none) {
-    button:hover, .cta-button:hover, .cta-button-2:hover { transform: none; background:#005a9c; color:#fff; }
-}
-
-/* 安全區域（瀏海/動態島）處理 */
-@supports(padding: max(0px)) {
-    body { padding-left: max(0px, env(safe-area-inset-left)); padding-right: max(0px, env(safe-area-inset-right)); }
-    .navbar { padding-top: max(0px, env(safe-area-inset-top)); }
-    .footer { padding-bottom: max(1.2rem, env(safe-area-inset-bottom)); }
+    color: #ccc;
 }

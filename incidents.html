@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>新竹市 AI 防詐偵測 | 詐騙事件資料集</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@300;500;700&family=Orbitron:wght@400;700;900&display=swap" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Custom Styles -->
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+    <!-- 背景元素 -->
+    <div id="city-bg"></div>
+    <div class="grid-overlay"></div>
+    <canvas id="canvas-bg"></canvas>
+
+    <!-- 導覽列 -->
+    <nav class="fixed top-0 w-full z-50 px-6 py-4 flex justify-between items-center border-b border-white/10 bg-black/80 backdrop-blur-md">
+        <a href="/" class="text-2xl font-bold font-tech tracking-widest flex items-center gap-2">
+            <i class="fa-solid fa-shield-halved text-cyan-400"></i>
+            <span class="bg-clip-text text-transparent bg-gradient-to-r from-cyan-400 to-purple-500">HSINCHU ANTI-SCAM</span>
+        </a>
+        <div class="hidden md:flex gap-8 text-sm">
+            <a href="/" class="nav-link">HOME</a>
+            <a href="/detect" class="nav-link">DETECTION</a>
+            <a href="/dashboard" class="nav-link">DASHBOARD</a>
+            <a href="/simulation" class="nav-link">SIMULATION</a>
+            <a href="/incidents" class="nav-link active">INCIDENTS</a>
+            <a href="/team" class="nav-link">TEAM</a>
+        </div>
+        <!-- Mobile Menu Button -->
+        <div class="md:hidden">
+            <button id="mobile-menu-button" class="text-white focus:outline-none">
+                <i class="fa-solid fa-bars text-2xl"></i>
+            </button>
+        </div>
+        <button class="cyber-btn px-4 py-1 text-xs rounded-sm hidden">LOGIN</button>
+    </nav>
+
+    <!-- Mobile Menu -->
+    <div id="mobile-menu" class="hidden md:hidden fixed top-0 left-0 w-full h-full bg-black/90 z-[60] backdrop-blur-md">
+        <div class="flex flex-col items-center justify-center h-full gap-8">
+            <a href="/" class="mobile-menu-link nav-link text-2xl">HOME</a>
+            <a href="/detect" class="mobile-menu-link nav-link text-2xl">DETECTION</a>
+            <a href="/dashboard" class="mobile-menu-link nav-link text-2xl">DASHBOARD</a>
+            <a href="/simulation" class="mobile-menu-link nav-link text-2xl">SIMULATION</a>
+            <a href="/incidents" class="mobile-menu-link nav-link active text-2xl">INCIDENTS</a>
+            <a href="/team" class="mobile-menu-link nav-link text-2xl">TEAM</a>
+        </div>
+    </div>
+
+    <!-- 主內容 -->
+    <main class="relative pt-32 pb-20 px-6 flex flex-col justify-center items-center text-center min-h-screen">
+        <h1 class="text-5xl md:text-6xl font-bold mb-6 font-tech leading-tight text-cyan-400">
+            最新詐騙手法資料集
+        </h1>
+        <p class="text-gray-400 max-w-3xl text-lg mb-10">
+            掌握最新詐騙趨勢，提升防詐意識。以下為近期高發詐騙案例與手法分析。
+        </p>
+
+        <div class="w-full max-w-6xl grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mt-10">
+            <!-- 詐騙案例卡片範例 -->
+            <a href="/scam_report_investment" class="cyber-card p-6 rounded-xl text-left block h-full hover:scale-105 transition-transform">
+                <h3 class="text-xl font-bold font-tech text-white mb-2">假投資真詐財：虛擬貨幣高利誘惑</h3>
+                <p class="text-gray-400 text-sm mb-4">詐騙集團利用社群媒體或交友軟體，假冒投資專家，誘騙民眾投入虛擬貨幣交易，初期小額獲利，後期捲款潛逃。</p>
+                <div class="flex justify-between items-center text-xs text-gray-500">
+                    <span><i class="fa-solid fa-calendar-days"></i> 2025/11/15</span>
+                    <span><i class="fa-solid fa-tag"></i> 投資詐騙</span>
+                </div>
+                <span class="mt-4 inline-block text-cyan-400 text-sm font-tech hover:underline">閱讀更多 →</span>
+            </a>
+
+            <a href="/scam_report_police" class="cyber-card p-6 rounded-xl text-left block h-full hover:scale-105 transition-transform">
+                <h3 class="text-xl font-bold font-tech text-white mb-2">假冒檢警：電話恐嚇與資產凍結</h3>
+                <p class="text-gray-400 text-sm mb-4">詐騙集團假冒檢察官或警察，謊稱民眾涉案，要求將存款轉入「監管帳戶」，否則將凍結資產。</p>
+                <div class="flex justify-between items-center text-xs text-gray-500">
+                    <span><i class="fa-solid fa-calendar-days"></i> 2025/11/10</span>
+                    <span><i class="fa-solid fa-tag"></i> 假冒公務</span>
+                </div>
+                <span class="mt-4 inline-block text-cyan-400 text-sm font-tech hover:underline">閱讀更多 →</span>
+            </a>
+
+            <a href="/scam_report_installment" class="cyber-card p-6 rounded-xl text-left block h-full hover:scale-105 transition-transform">
+                <h3 class="text-xl font-bold font-tech text-white mb-2">解除分期付款：網購個資外洩陷阱</h3>
+                <p class="text-gray-400 text-sm mb-4">詐騙集團假冒電商客服，謊稱訂單設定錯誤導致重複扣款，引導民眾操作 ATM 或網路銀行解除分期付款。</p>
+                <div class="flex justify-between items-center text-xs text-gray-500">
+                    <span><i class="fa-solid fa-calendar-days"></i> 2025/11/08</span>
+                    <span><i class="fa-solid fa-tag"></i> 網購詐騙</span>
+                </div>
+                <span class="mt-4 inline-block text-cyan-400 text-sm font-tech hover:underline">閱讀更多 →</span>
+            </a>
+            
+            <a href="/scam_report_fakeshop" class="cyber-card p-6 rounded-xl text-left block h-full hover:scale-105 transition-transform">
+                <h3 class="text-xl font-bold font-tech text-white mb-2">假網拍詐騙：低價誘惑，錢貨兩失</h3>
+                <p class="text-gray-400 text-sm mb-4">詐騙集團利用民眾貪小便宜的心態，在社群平台、拍賣網站或二手交易平台刊登低於市價的商品，誘騙買家匯款後卻不出貨。</p>
+                <div class="flex justify-between items-center text-xs text-gray-500">
+                    <span><i class="fa-solid fa-calendar-days"></i> 2025/11/05</span>
+                    <span><i class="fa-solid fa-tag"></i> 網拍詐騙</span>
+                </div>
+                <span class="mt-4 inline-block text-cyan-400 text-sm font-tech hover:underline">閱讀更多 →</span>
+            </a>
+
+            <a href="/scam_report_romance" class="cyber-card p-6 rounded-xl text-left block h-full hover:scale-105 transition-transform">
+                <h3 class="text-xl font-bold font-tech text-white mb-2">愛情詐騙：甜言蜜語下的金錢陷阱</h3>
+                <p class="text-gray-400 text-sm mb-4">詐騙集團在交友軟體、社群媒體上偽裝成高富帥、白富美，與受害者建立戀愛關係，待受害者投入感情後，再以各種理由誘騙其投資或匯款。</p>
+                <div class="flex justify-between items-center text-xs text-gray-500">
+                    <span><i class="fa-solid fa-calendar-days"></i> 2025/11/01</span>
+                    <span><i class="fa-solid fa-tag"></i> 愛情詐騙</span>
+                </div>
+                <span class="mt-4 inline-block text-cyan-400 text-sm font-tech hover:underline">閱讀更多 →</span>
+            </a>
+
+            <a href="/scam_report_job" class="cyber-card p-6 rounded-xl text-left block h-full hover:scale-105 transition-transform">
+                <h3 class="text-xl font-bold font-tech text-white mb-2">求職詐騙：高薪輕鬆工作背後的騙局</h3>
+                <p class="text-gray-400 text-sm mb-4">詐騙集團利用求職者急於找工作、賺錢的心態，以「高薪、輕鬆、免經驗」等誘人條件吸引受害者，實則要求繳交保證金、辦理貸款。</p>
+                <div class="flex justify-between items-center text-xs text-gray-500">
+                    <span><i class="fa-solid fa-calendar-days"></i> 2025/10/28</span>
+                    <span><i class="fa-solid fa-tag"></i> 求職詐騙</span>
+                </div>
+                <span class="mt-4 inline-block text-cyan-400 text-sm font-tech hover:underline">閱讀更多 →</span>
+            </a>
+            <!-- 更多案例卡片... -->
+        </div>
+    </main>
+
+    <!-- Scripts -->
+    <script src="/static/config.js"></script>
+    <script src="/static/animations.js"></script>
+    <script src="/static/main.js" defer></script>
+    <script src="/static/main.js" defer></script>
+</body>
+</html>

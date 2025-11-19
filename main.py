@@ -247,14 +247,386 @@ async def dashboard_page():
 
 
 @app.get("/simulation")
+
+
 async def simulation_page():
+
+
     """互動式防詐模擬頁"""
+
+
     return FileResponse("simulation.html")
 
 
+
+
+
+@app.get("/incidents")
+
+
+
+
+
+async def incidents_page():
+
+
+
+
+
+    """詐騙事件資料集頁面"""
+
+
+
+
+
+    return FileResponse("incidents.html")
+
+
+
+
+
+
+
+
+
+
+
+@app.get("/scam_report_investment")
+
+
+
+
+
+async def scam_report_investment_page():
+
+
+
+
+
+    """假投資真詐財：虛擬貨幣高利誘惑 報告頁面"""
+
+
+
+
+
+    return FileResponse("scam_report_investment.html")
+
+
+
+
+
+
+
+
+
+
+
+@app.get("/scam_report_police")
+
+
+
+
+
+async def scam_report_police_page():
+
+
+
+
+
+    """假冒檢警：電話恐嚇與資產凍結 報告頁面"""
+
+
+
+
+
+    return FileResponse("scam_report_police.html")
+
+
+
+
+
+
+
+
+
+
+
+@app.get("/scam_report_installment")
+
+
+
+
+
+
+
+
+
+
+
+async def scam_report_installment_page():
+
+
+
+
+
+
+
+
+
+
+
+    """解除分期付款：網購個資外洩陷阱 報告頁面"""
+
+
+
+
+
+
+
+
+
+
+
+    return FileResponse("scam_report_installment.html")
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+@app.get("/scam_report_fakeshop")
+
+
+
+
+
+
+
+
+
+
+
+async def scam_report_fakeshop_page():
+
+
+
+
+
+
+
+
+
+
+
+    """假網拍詐騙：低價誘惑，錢貨兩失 報告頁面"""
+
+
+
+
+
+
+
+
+
+
+
+    return FileResponse("scam_report_fakeshop.html")
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+@app.get("/scam_report_romance")
+
+
+
+
+
+
+
+
+
+
+
+async def scam_report_romance_page():
+
+
+
+
+
+
+
+
+
+
+
+    """愛情詐騙：甜言蜜語下的金錢陷阱 報告頁面"""
+
+
+
+
+
+
+
+
+
+
+
+    return FileResponse("scam_report_romance.html")
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+@app.get("/scam_report_job")
+
+
+
+
+
+
+
+
+
+
+
+async def scam_report_job_page():
+
+
+
+
+
+
+
+
+
+
+
+    """求職詐騙：高薪輕鬆工作背後的騙局 報告頁面"""
+
+
+
+
+
+
+
+
+
+
+
+    return FileResponse("scam_report_job.html")
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 @app.get("/team")
+
+
+
+
+
+
+
+
+
+
+
 async def team_page():
+
+
+
+
+
+
+
+
+
+
+
     """團隊與聯絡頁"""
+
+
+
+
+
+
+
+
+
+
+
     return FileResponse("team.html")
 
 
@@ -319,6 +691,62 @@ async def api_heatmap_data():
         return {"error": "heatmap_data.csv not found."}
     except Exception as e:
         return {"error": str(e)}
+
+
+@app.get("/api/crime_data")
+async def api_crime_data():
+    """
+    動態生成用於地圖標記的模擬案件資料。
+    它會讀取 heatmap_data.csv 來取得各區中心點與案件數，
+    然後在中心點周圍隨機生成指定數量的案件標記。
+    """
+    try:
+        # 讀取詐騙類型以供隨機選用
+        scam_types = []
+        with open("data/scam_types.csv", mode="r", encoding="utf-8") as infile:
+            reader = csv.DictReader(infile)
+            scam_types = [row["type"] for row in reader]
+        if not scam_types:
+            scam_types = ["假投資", "假網拍"] # Fallback
+
+        # 讀取各區中心點和案件數
+        districts = []
+        with open("data/heatmap_data.csv", mode="r", encoding="utf-8") as infile:
+            reader = csv.DictReader(infile)
+            for row in reader:
+                districts.append({
+                    "name": row["district"],
+                    "lat": float(row["lat"]),
+                    "lng": float(row["lng"]),
+                    "cases": int(row["cases"])
+                })
+
+        # 開始生成隨機資料點
+        crime_points = []
+        for district in districts:
+            for _ in range(district["cases"]):
+                # 在中心點附近加上微小的隨機偏移
+                lat_offset = (random.random() - 0.5) * 0.05 # 約 5.5km 範圍
+                lng_offset = (random.random() - 0.5) * 0.05 # 約 5.5km 範圍
+                
+                # 隨機生成日期 (過去30天內)
+                day_offset = random.randint(1, 30)
+                
+                crime_points.append({
+                    "lat": district["lat"] + lat_offset,
+                    "lng": district["lng"] + lng_offset,
+                    "type": random.choice(scam_types),
+                    "date": f"2025-04-{day_offset}",
+                    "location": f"{district['name']}某處"
+                })
+        
+        return crime_points
+
+    except FileNotFoundError:
+        return {"error": "Required data file not found."}
+    except Exception as e:
+        return {"error": str(e)}
+
 
 
 # --- 7. 模擬：預設 5 種腳本，隨機給 1 種 ---

@@ -3,46 +3,85 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AI 立即偵測 | 新竹市 AI 防詐偵測</title>
+    <title>AI 偵測 | 新竹防詐</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@300;500;700&family=Orbitron:wght@400;700;900&display=swap" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Custom Styles -->
     <link rel="stylesheet" href="/static/style.css">
 </head>
 <body>
+    <!-- 背景元素 -->
+    <div id="city-bg"></div>
+    <div class="grid-overlay"></div>
+    <canvas id="canvas-bg"></canvas>
 
-    <header class="navbar">
-        <div class="navbar-container">
-            <div class="logo">新竹 AI 防詐專案</div>
-            <nav>
-                <a href="/">首頁</a>
-                <a href="/detect">AI 立即偵測</a>
-                <a href="/dashboard">防詐儀表板</a>
-                <a href="/simulation">互動模擬</a>
-                <a href="/team">團隊與聯絡</a>
-            </nav>
+    <!-- 導覽列 -->
+    <nav class="fixed top-0 w-full z-50 px-6 py-4 flex justify-between items-center border-b border-white/10 bg-black/80 backdrop-blur-md">
+        <a href="/" class="text-2xl font-bold font-tech tracking-widest flex items-center gap-2">
+            <i class="fa-solid fa-shield-halved text-cyan-400"></i>
+            <span class="bg-clip-text text-transparent bg-gradient-to-r from-cyan-400 to-purple-500">HSINCHU ANTI-SCAM</span>
+        </a>
+        <div class="hidden md:flex gap-8 text-sm">
+            <a href="/" class="nav-link">HOME</a>
+            <a href="/detect" class="nav-link active">DETECTION</a>
+            <a href="/dashboard" class="nav-link">DASHBOARD</a>
+            <a href="/simulation" class="nav-link">SIMULATION</a>
+            <a href="/incidents" class="nav-link">INCIDENTS</a>
+            <a href="/team" class="nav-link">TEAM</a>
         </div>
-    </header>
+        <!-- Mobile Menu Button -->
+        <div class="md:hidden">
+            <button id="mobile-menu-button" class="text-white focus:outline-none">
+                <i class="fa-solid fa-bars text-2xl"></i>
+            </button>
+        </div>
+        <button class="cyber-btn px-4 py-1 text-xs rounded-sm hidden">LOGIN</button>
+    </nav>
 
-    <section id="demo" class="section-dark">
-        <div class="demo-container">
-            <h2>AI 立即偵測 (Live Demo)</h2>
-            <p>請貼上您懷疑是詐騙的訊息，AI 將立即為您分析風險。</p>
+    <!-- Mobile Menu -->
+    <div id="mobile-menu" class="hidden md:hidden fixed top-0 left-0 w-full h-full bg-black/90 z-[60] backdrop-blur-md">
+        <div class="flex flex-col items-center justify-center h-full gap-8">
+            <a href="/" class="mobile-menu-link nav-link text-2xl">HOME</a>
+            <a href="/detect" class="mobile-menu-link nav-link active text-2xl">DETECTION</a>
+            <a href="/dashboard" class="mobile-menu-link nav-link text-2xl">DASHBOARD</a>
+            <a href="/simulation" class="mobile-menu-link nav-link text-2xl">SIMULATION</a>
+            <a href="/incidents" class="mobile-menu-link nav-link text-2xl">INCIDENTS</a>
+            <a href="/team" class="mobile-menu-link nav-link text-2xl">TEAM</a>
+        </div>
+    </div>
 
-            <textarea id="scamText" placeholder="例如：[緊急通知] 您的帳戶因安全問題已被凍結，請立即點擊..."></textarea>
+    <!-- 主內容 -->
+    <main class="relative pt-32 pb-20 px-6 flex flex-col items-center min-h-screen">
+        <div class="text-center mb-12">
+            <h1 class="text-5xl md:text-6xl font-bold font-tech neon-text">AI REAL-TIME DETECTION</h1>
+            <p class="text-gray-400 max-w-2xl text-lg mt-4">將可疑訊息貼入下方分析矩陣，神經網絡將立即進行威脅評估。</p>
+        </div>
+
+        <div class="w-full max-w-3xl cyber-card rounded-xl p-6 md:p-8">
+            <textarea id="scamText" class="w-full h-32 p-4 rounded-lg bg-black/30 border border-white/10 focus:ring-2 focus:ring-cyan-400 focus:border-cyan-400 outline-none transition-all text-base" placeholder="[SYSTEM] 請輸入待分析文本..."></textarea>
             
-            <button id="analyzeButton">立即 AI 分析</button>
+            <button id="analyzeButton" class="cyber-btn w-full mt-4 py-3 text-lg font-bold rounded-lg flex items-center justify-center gap-2">
+                <i class="fa-solid fa-microchip"></i> ANALYZE
+            </button>
 
-            <div id="loading">分析中... (AI 引擎正在思考 🧠)</div>
-            
-            <div id="result-container">
-                <div id="result-box" class="result-box"></div>
+            <div id="loading" class="text-center mt-4 text-cyan-400 font-tech tracking-widest" style="display: none;">
+                ANALYZING... <i class="fa-solid fa-spinner fa-spin"></i>
             </div>
-        </div>
-    </section>
+            
+            <div id="result-container" class="mt-6" style="display: none;">
+                <div id="result-box" class="result-box p-4 rounded-lg text-left">
+                    <!-- 結果將由 JS 動態填入 -->
+                </div>
+            </div>
+        </main>
 
-    <footer class="footer">
-        <p>&copy; 2025 新竹政策黑客松 - 清大小夥伴 團隊</p>
-    </footer>
-
+    <!-- Scripts -->
     <script src="/static/config.js"></script>
+    <script src="/static/animations.js"></script>
     <script src="/static/main.js" defer></script>
 </body>
 </html>

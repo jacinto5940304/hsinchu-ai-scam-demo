@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>新竹市 AI 防詐偵測 | 愛情詐騙：甜言蜜語下的金錢陷阱</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@300;500;700&family=Orbitron:wght@400;700;900&display=swap" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Custom Styles -->
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+    <!-- 背景元素 -->
+    <div id="city-bg"></div>
+    <div class="grid-overlay"></div>
+    <canvas id="canvas-bg"></canvas>
+
+    <!-- 導覽列 -->
+    <nav class="fixed top-0 w-full z-50 px-6 py-4 flex justify-between items-center border-b border-white/10 bg-black/80 backdrop-blur-md">
+        <a href="/" class="text-2xl font-bold font-tech tracking-widest flex items-center gap-2">
+            <i class="fa-solid fa-shield-halved text-cyan-400"></i>
+            <span class="bg-clip-text text-transparent bg-gradient-to-r from-cyan-400 to-purple-500">HSINCHU ANTI-SCAM</span>
+        </a>
+        <div class="hidden md:flex gap-8 text-sm">
+            <a href="/" class="nav-link">HOME</a>
+            <a href="/detect" class="nav-link">DETECTION</a>
+            <a href="/dashboard" class="nav-link">DASHBOARD</a>
+            <a href="/simulation" class="nav-link">SIMULATION</a>
+            <a href="/incidents" class="nav-link active">INCIDENTS</a>
+            <a href="/team" class="nav-link">TEAM</a>
+        </div>
+        <!-- Mobile Menu Button -->
+        <div class="md:hidden">
+            <button id="mobile-menu-button" class="text-white focus:outline-none">
+                <i class="fa-solid fa-bars text-2xl"></i>
+            </button>
+        </div>
+        <button class="cyber-btn px-4 py-1 text-xs rounded-sm hidden">LOGIN</button>
+    </nav>
+
+    <!-- Mobile Menu -->
+    <div id="mobile-menu" class="hidden md:hidden fixed top-0 left-0 w-full h-full bg-black/90 z-40">
+        <div class="flex flex-col items-center justify-center h-full gap-8">
+            <a href="/" class="nav-link text-2xl">HOME</a>
+            <a href="/detect" class="nav-link text-2xl">DETECTION</a>
+            <a href="/dashboard" class="nav-link text-2xl">DASHBOARD</a>
+            <a href="/simulation" class="nav-link text-2xl">SIMULATION</a>
+            <a href="/incidents" class="nav-link active text-2xl">INCIDENTS</a>
+            <a href="/team" class="nav-link text-2xl">TEAM</a>
+        </div>
+    </div>
+
+    <!-- 主內容 -->
+    <main class="relative pt-32 pb-20 px-6 flex flex-col justify-center items-center text-center min-h-screen">
+        <div class="w-full max-w-4xl text-left">
+            <a href="/incidents" class="text-cyan-400 hover:underline mb-4 inline-block">← 返回詐騙事件列表</a>
+            <h1 class="text-4xl md:text-5xl font-bold font-tech leading-tight text-white mb-4">
+                愛情詐騙：甜言蜜語下的金錢陷阱
+            </h1>
+            <div class="flex items-center text-gray-500 text-sm mb-6">
+                <span class="mr-4"><i class="fa-solid fa-calendar-days"></i> 2025/11/01</span>
+                <span><i class="fa-solid fa-tag"></i> 愛情詐騙</span>
+            </div>
+            
+            <div class="prose prose-invert max-w-none text-gray-300">
+                <p>愛情詐騙（或稱「殺豬盤」）是一種利用情感操縱進行的詐騙。詐騙集團會在交友軟體、社群媒體上偽裝成高富帥、白富美，與受害者建立戀愛關係，待受害者投入感情後，再以各種理由誘騙其投資或匯款。</p>
+                
+                <h2>詐騙手法解析</h2>
+                <h3>1. 建立虛假人設，尋找目標</h3>
+                <p>詐騙分子會精心打造虛假身份，通常是外貌出眾、事業有成、生活優渥的形象，並在交友軟體或社群媒體上主動接觸潛在受害者。他們會展現出極高的耐心和關懷，快速與受害者建立親密關係。</p>
+                
+                <h3>2. 甜言蜜語，情感攻勢</h3>
+                <p>透過頻繁的訊息、電話，詐騙分子會對受害者展開猛烈的情感攻勢，不斷表達愛意、承諾未來，讓受害者深陷其中。他們會避免見面，或以各種理由推託，以維持虛假身份。</p>
+                
+                <h3>3. 鋪墊投資或金錢需求</h3>
+                <p>在情感關係穩定後，詐騙分子會開始「不經意地」透露自己有「內線消息」、「穩賺不賠的投資項目」，或聲稱自己遇到緊急困難（如家人重病、生意周轉不靈、海關扣押資產等），需要資金周轉。</p>
+                
+                <h3>4. 誘導投資或匯款</h3>
+                <p>一旦受害者心軟或被高額回報誘惑，詐騙分子便會引導其在假投資平台註冊、匯款至指定帳戶，或直接要求金錢援助。初期可能讓受害者小額獲利，以增加信任，誘騙投入更多資金。</p>
+                
+                <h3>5. 消失無蹤，人財兩空</h3>
+                <p>當受害者投入大量金錢後，詐騙分子便會突然消失，或以各種理由拒絕出金、還款，最終讓受害者人財兩空，身心俱疲。</p>
+
+                <h2>防範建議</h2>
+                <ul>
+                    <li><strong>保持理性：</strong> 在網路交友時，對過於完美的對象保持警惕，不要輕易投入真感情。</li>
+                    <li><strong>查證身份：</strong> 嘗試透過視訊通話、搜尋對方社群媒體等方式查證對方身份，但詐騙集團通常會規避。</li>
+                    <li><strong>不談錢：</strong> 網路交友不談錢，任何要求匯款、投資、借貸的行為都是詐騙警訊。</li>
+                    <li><strong>多方諮詢：</strong> 若對方提及投資或金錢需求，應與親友商量或向 165 反詐騙專線諮詢。</li>
+                    <li><strong>保護個資：</strong> 不要隨意透露個人隱私資訊，如銀行帳號、密碼、家庭住址等。</li>
+                </ul>
+            </div>
+        </div>
+    </main>
+
+    <!-- Scripts -->
+    <script src="/static/config.js"></script>
+    <script src="/static/animations.js"></script>
+    <script src="/static/main.js" defer></script>
+    <script>
+        // Mobile menu toggle
+        document.getElementById('mobile-menu-button').addEventListener('click', function() {
+            document.getElementById('mobile-menu').classList.toggle('hidden');
+            document.body.style.overflow = document.getElementById('mobile-menu').classList.contains('hidden') ? '' : 'hidden';
+        });
+
+        document.getElementById('mobile-menu').addEventListener('click', function(event) {
+            if (event.target === this) {
+                this.classList.add('hidden');
+                document.body.style.overflow = '';
+            }
+        });
+    </script>
+</body>
+</html>

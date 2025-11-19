@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>新竹市 AI 防詐偵測 | 假網拍詐騙：低價誘惑，錢貨兩失</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@300;500;700&family=Orbitron:wght@400;700;900&display=swap" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Custom Styles -->
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+    <!-- 背景元素 -->
+    <div id="city-bg"></div>
+    <div class="grid-overlay"></div>
+    <canvas id="canvas-bg"></canvas>
+
+    <!-- 導覽列 -->
+    <nav class="fixed top-0 w-full z-50 px-6 py-4 flex justify-between items-center border-b border-white/10 bg-black/80 backdrop-blur-md">
+        <a href="/" class="text-2xl font-bold font-tech tracking-widest flex items-center gap-2">
+            <i class="fa-solid fa-shield-halved text-cyan-400"></i>
+            <span class="bg-clip-text text-transparent bg-gradient-to-r from-cyan-400 to-purple-500">HSINCHU ANTI-SCAM</span>
+        </a>
+        <div class="hidden md:flex gap-8 text-sm">
+            <a href="/" class="nav-link">HOME</a>
+            <a href="/detect" class="nav-link">DETECTION</a>
+            <a href="/dashboard" class="nav-link">DASHBOARD</a>
+            <a href="/simulation" class="nav-link">SIMULATION</a>
+            <a href="/incidents" class="nav-link active">INCIDENTS</a>
+            <a href="/team" class="nav-link">TEAM</a>
+        </div>
+        <!-- Mobile Menu Button -->
+        <div class="md:hidden">
+            <button id="mobile-menu-button" class="text-white focus:outline-none">
+                <i class="fa-solid fa-bars text-2xl"></i>
+            </button>
+        </div>
+        <button class="cyber-btn px-4 py-1 text-xs rounded-sm hidden">LOGIN</button>
+    </nav>
+
+    <!-- Mobile Menu -->
+    <div id="mobile-menu" class="hidden md:hidden fixed top-0 left-0 w-full h-full bg-black/90 z-40">
+        <div class="flex flex-col items-center justify-center h-full gap-8">
+            <a href="/" class="nav-link text-2xl">HOME</a>
+            <a href="/detect" class="nav-link text-2xl">DETECTION</a>
+            <a href="/dashboard" class="nav-link text-2xl">DASHBOARD</a>
+            <a href="/simulation" class="nav-link text-2xl">SIMULATION</a>
+            <a href="/incidents" class="nav-link active text-2xl">INCIDENTS</a>
+            <a href="/team" class="nav-link text-2xl">TEAM</a>
+        </div>
+    </div>
+
+    <!-- 主內容 -->
+    <main class="relative pt-32 pb-20 px-6 flex flex-col justify-center items-center text-center min-h-screen">
+        <div class="w-full max-w-4xl text-left">
+            <a href="/incidents" class="text-cyan-400 hover:underline mb-4 inline-block">← 返回詐騙事件列表</a>
+            <h1 class="text-4xl md:text-5xl font-bold font-tech leading-tight text-white mb-4">
+                假網拍詐騙：低價誘惑，錢貨兩失
+            </h1>
+            <div class="flex items-center text-gray-500 text-sm mb-6">
+                <span class="mr-4"><i class="fa-solid fa-calendar-days"></i> 2025/11/05</span>
+                <span><i class="fa-solid fa-tag"></i> 網拍詐騙</span>
+            </div>
+            
+            <div class="prose prose-invert max-w-none text-gray-300">
+                <p>假網拍詐騙是常見的詐騙手法之一，詐騙集團利用民眾貪小便宜的心態，在社群平台、拍賣網站或二手交易平台刊登低於市價的商品，誘騙買家匯款後卻不出貨，或寄送劣質品、空包裹。</p>
+                
+                <h2>詐騙手法解析</h2>
+                <h3>1. 刊登低價商品，吸引買家</h3>
+                <p>詐騙集團會盜用他人商品圖片，並以遠低於市價的價格刊登熱門商品，如名牌包、限量公仔、高價電子產品等，吸引急於購買或貪小便宜的買家。</p>
+                
+                <h3>2. 誘導至非官方平台交易</h3>
+                <p>當買家詢問商品時，詐騙分子會以各種理由（如「平台手續費高」、「私下交易有優惠」）誘導買家脫離正規交易平台，轉至 LINE、Facebook 私訊或其他通訊軟體進行聯繫和匯款。</p>
+                
+                <h3>3. 要求先匯款，製造假證明</h3>
+                <p>詐騙集團會要求買家先將款項匯入指定帳戶，並可能提供偽造的匯款證明、出貨單號，甚至假冒物流公司傳送假的包裹追蹤訊息，讓買家誤以為商品已寄出。</p>
+                
+                <h3>4. 錢貨兩失，人間蒸發</h3>
+                <p>一旦買家匯款後，詐騙集團便會消失無蹤，不回覆訊息、不接電話，買家最終錢財盡失，也收不到商品。有些情況下，詐騙集團會寄送空包裹或不相關的劣質品。</p>
+
+                <h2>防範建議</h2>
+                <ul>
+                    <li><strong>選擇正規平台：</strong> 盡量在有完善交易保障機制的正規電商平台進行購物。</li>
+                    <li><strong>避免私下交易：</strong> 不要輕易相信賣家提出的私下交易要求，特別是要求直接匯款到個人帳戶。</li>
+                    <li><strong>查證賣家評價：</strong> 仔細查看賣家的評價、交易紀錄，新帳號或評價過低的賣家應提高警惕。</li>
+                    <li><strong>貨到付款或第三方支付：</strong> 優先選擇貨到付款或有第三方支付保障的交易方式。</li>
+                    <li><strong>價格過低有詐：</strong> 對於價格明顯低於市價的商品，應保持懷疑，可能是詐騙陷阱。</li>
+                </ul>
+            </div>
+        </div>
+    </main>
+
+    <!-- Scripts -->
+    <script src="/static/config.js"></script>
+    <script src="/static/animations.js"></script>
+    <script src="/static/main.js" defer></script>
+    <script>
+        // Mobile menu toggle
+        document.getElementById('mobile-menu-button').addEventListener('click', function() {
+            document.getElementById('mobile-menu').classList.toggle('hidden');
+            document.body.style.overflow = document.getElementById('mobile-menu').classList.contains('hidden') ? '' : 'hidden';
+        });
+
+        document.getElementById('mobile-menu').addEventListener('click', function(event) {
+            if (event.target === this) {
+                this.classList.add('hidden');
+                document.body.style.overflow = '';
+            }
+        });
+    </script>
+</body>
+</html>

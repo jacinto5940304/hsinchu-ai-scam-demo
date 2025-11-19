@@ -3,83 +3,121 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>防詐儀表板 | 新竹市 AI 防詐偵測</title>
+    <title>儀表板 | 新竹防詐</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@300;500;700&family=Orbitron:wght@400;700;900&display=swap" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Custom Styles -->
     <link rel="stylesheet" href="/static/style.css">
-    <!-- Chart.js CDN 僅在儀表板頁載入 -->
+    <!-- Chart.js -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+    <!-- Google Maps API -->
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAdKJjWhCddLaS9HsvC_1tVFIvlCdLPblo&libraries=visualization" defer></script>
 </head>
 <body>
+    <!-- 背景元素 -->
+    <div id="city-bg"></div>
+    <div class="grid-overlay"></div>
+    <canvas id="canvas-bg"></canvas>
 
-    <header class="navbar">
-        <div class="navbar-container">
-            <div class="logo">新竹 AI 防詐專案</div>
-            <nav>
-                <a href="/">首頁</a>
-                <a href="/detect">AI 立即偵測</a>
-                <a href="/dashboard">防詐儀表板</a>
-                <a href="/simulation">互動模擬</a>
-                <a href="/team">團隊與聯絡</a>
-            </nav>
+    <!-- 導覽列 -->
+    <nav class="fixed top-0 w-full z-50 px-6 py-4 flex justify-between items-center border-b border-white/10 bg-black/80 backdrop-blur-md">
+        <a href="/" class="text-2xl font-bold font-tech tracking-widest flex items-center gap-2">
+            <i class="fa-solid fa-shield-halved text-cyan-400"></i>
+            <span class="bg-clip-text text-transparent bg-gradient-to-r from-cyan-400 to-purple-500">HSINCHU ANTI-SCAM</span>
+        </a>
+        <div class="hidden md:flex gap-8 text-sm">
+            <a href="/" class="nav-link">HOME</a>
+            <a href="/detect" class="nav-link">DETECTION</a>
+            <a href="/dashboard" class="nav-link active">DASHBOARD</a>
+            <a href="/simulation" class="nav-link">SIMULATION</a>
+            <a href="/incidents" class="nav-link">INCIDENTS</a>
+            <a href="/team" class="nav-link">TEAM</a>
         </div>
-    </header>
+        <!-- Mobile Menu Button -->
+        <div class="md:hidden">
+            <button id="mobile-menu-button" class="text-white focus:outline-none">
+                <i class="fa-solid fa-bars text-2xl"></i>
+            </button>
+        </div>
+        <button class="cyber-btn px-4 py-1 text-xs rounded-sm hidden">LOGIN</button>
+    </nav>
 
-    <section id="dashboard" class="section-light">
-        <h2>新竹防詐儀表板</h2>
-        <div class="dashboard-container">
-            <p>下方為動態儀表板（暫代資料）；若腳本未載入，將顯示靜態示意圖作為備援。</p>
+    <!-- Mobile Menu -->
+    <div id="mobile-menu" class="hidden md:hidden fixed top-0 left-0 w-full h-full bg-black/90 z-[60] backdrop-blur-md">
+        <div class="flex flex-col items-center justify-center h-full gap-8">
+            <a href="/" class="mobile-menu-link nav-link text-2xl">HOME</a>
+            <a href="/detect" class="mobile-menu-link nav-link text-2xl">DETECTION</a>
+            <a href="/dashboard" class="mobile-menu-link nav-link active text-2xl">DASHBOARD</a>
+            <a href="/simulation" class="mobile-menu-link nav-link text-2xl">SIMULATION</a>
+            <a href="/incidents" class="mobile-menu-link nav-link text-2xl">INCIDENTS</a>
+            <a href="/team" class="mobile-menu-link nav-link text-2xl">TEAM</a>
+        </div>
+    </div>
 
-            <!-- 動態 KPI 區塊 -->
-            <div id="dynamic-dashboard">
-                <div class="kpi-grid">
-                    <div class="kpi-card">
-                        <div class="kpi-title">本月財損</div>
-                        <div class="kpi-value" id="kpi-monthly-loss">--</div>
-                    </div>
-                    <div class="kpi-card">
-                        <div class="kpi-title">本月通報件數</div>
-                        <div class="kpi-value" id="kpi-monthly-cases">--</div>
-                    </div>
-                    <div class="kpi-card">
-                        <div class="kpi-title">AI 攔截次數</div>
-                        <div class="kpi-value" id="kpi-ai-interceptions">--</div>
-                    </div>
+    <!-- 主內容 -->
+    <main class="relative pt-32 pb-20 px-6">
+        <div class="text-center mb-12">
+            <h1 class="text-5xl md:text-6xl font-bold font-tech neon-text">THREAT DASHBOARD</h1>
+            <p class="text-gray-400 max-w-3xl mx-auto text-lg mt-4">即時監控新竹市詐騙活動數據，分析威脅趨勢與熱點分佈。</p>
+        </div>
+
+        <div id="dynamic-dashboard" class="w-full max-w-7xl mx-auto">
+            <!-- KPI 區塊 -->
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
+                <div class="cyber-card p-6 rounded-xl">
+                    <div class="font-tech text-gray-400 text-sm">MONTHLY FINANCIAL LOSS</div>
+                    <div id="kpi-monthly-loss" class="text-4xl font-bold text-cyan-400 mt-2">--</div>
                 </div>
-
-                <!-- 圖表區 -->
-                <div class="chart-grid">
-                    <div class="chart-card">
-                        <h3>詐騙類型分布</h3>
-                        <canvas id="scamTypesChart" width="400" height="300"></canvas>
-                    </div>
-                    <div class="chart-card">
-                        <h3>受害族群年齡</h3>
-                        <canvas id="victimAgesChart" width="400" height="300"></canvas>
-                    </div>
-                    <div class="chart-card">
-                        <h3>新竹各區案件分佈</h3>
-                        <canvas id="hsinchuDistrictChart" width="400" height="300"></canvas>
-                    </div>
+                <div class="cyber-card p-6 rounded-xl">
+                    <div class="font-tech text-gray-400 text-sm">MONTHLY REPORTED CASES</div>
+                    <div id="kpi-monthly-cases" class="text-4xl font-bold text-cyan-400 mt-2">--</div>
                 </div>
-                <!-- 熱區地圖 -->
-                <div class="map-container">
-                    <h3>詐騙熱區地圖</h3>
-                    <div id="map"></div>
+                <div class="cyber-card p-6 rounded-xl">
+                    <div class="font-tech text-gray-400 text-sm">AI INTERCEPTION COUNT</div>
+                    <div id="kpi-ai-interceptions" class="text-4xl font-bold text-cyan-400 mt-2">--</div>
                 </div>
             </div>
 
-            <!-- 備援示意圖區塊已被移除，以解決 404 錯誤 -->
-            <div class="dashboard-fallback" style="display: none;">
+            <!-- 圖表與地圖區 -->
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                <!-- Scam Type Distribution -->
+                <div class="cyber-card p-6 rounded-xl">
+                    <h3 class="font-tech text-lg text-white mb-4">SCAM TYPE DISTRIBUTION</h3>
+                    <div class="relative" style="height: 280px;">
+                        <canvas id="scamTypesChart"></canvas>
+                    </div>
+                </div>
+                <!-- Victim Age Groups -->
+                <div class="cyber-card p-6 rounded-xl">
+                    <h3 class="font-tech text-lg text-white mb-4">VICTIM AGE GROUPS</h3>
+                    <div class="relative" style="height: 280px;">
+                        <canvas id="victimAgesChart"></canvas>
+                    </div>
+                </div>
+                <!-- Cases by District -->
+                <div class="cyber-card p-6 rounded-xl">
+                    <h3 class="font-tech text-lg text-white mb-4">CASES BY DISTRICT</h3>
+                    <div class="relative" style="height: 280px;">
+                        <canvas id="hsinchuDistrictChart"></canvas>
+                    </div>
+                </div>
+                
+                <!-- Heatmap -->
+                <div class="cyber-card p-6 rounded-xl flex flex-col lg:col-span-3">
+                    <h3 class="font-tech text-lg text-white mb-4">SCAM HEATMAP</h3>
+                    <div id="map" class="w-full rounded-lg bg-black/20 h-[32rem]"></div>
+                </div>
             </div>
         </div>
-    </section>
+    </main>
 
-    <footer class="footer">
-        <p>&copy; 2025 新竹政策黑客松 - 清大小夥伴 團隊</p>
-    </footer>
-
+    <!-- Scripts -->
     <script src="/static/config.js"></script>
+    <script src="/static/animations.js"></script>
     <script src="/static/main.js" defer></script>
-    <!-- Google Maps API，請記得填入你的 API Key -->
-    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAdKJjWhCddLaS9HsvC_1tVFIvlCdLPblo&libraries=visualization" defer></script>
 </body>
 </html>
