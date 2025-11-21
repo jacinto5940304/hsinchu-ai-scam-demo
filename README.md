@@ -65,8 +65,6 @@ FastAPI 主程式，提供以下端點：
 | `simulation.html` | 互動模擬 - 詐騙情境演練 |
 | `incidents.html` | 詐騙事件資料集 - 6 大類詐騙案例 |
 | `team.html` | 團隊介紹與聯絡方式 |
-| `privacy.html` | 隱私權政策頁面 |
-| `terms.html` | 服務條款頁面 |
 | `scam_report_*.html` | 各類詐騙手法詳細解析頁 |
 
 ### 核心模組

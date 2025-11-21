@@ -277,6 +277,15 @@ async def scam_report_job_page(): return FileResponse("scam_report_job.html")
 @app.get("/team")
 async def team_page(): return FileResponse("team.html")
 
+# --- 儀表板資料 API ---
+@app.get("/api/kpi_data")
+async def api_kpi_data():
+    return {
+        "monthly_loss": "1億 8752萬",
+        "monthly_cases": 401,
+        "ai_interceptions": 1230
+    }
+
 # --- 讀取 CSV Helper ---
 def read_csv_data(file_path: str, label_col: str, data_col: str):
     try:
@@ -290,15 +299,6 @@ def read_csv_data(file_path: str, label_col: str, data_col: str):
             return {"labels": labels, "data": data}
     except Exception as e:
         return {"error": str(e), "labels": [], "data": []}
-
-# --- 儀表板資料 API ---
-@app.get("/api/kpi_data")
-async def api_kpi_data():
-    return {
-        "monthly_loss": "1億 8752萬",
-        "monthly_cases": 401,
-        "ai_interceptions": 1230
-    }
 
 @app.get("/api/scam_types_data")
 async def api_scam_types_data(): return read_csv_data("data/scam_types.csv", "type", "cases")
