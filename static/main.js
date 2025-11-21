@@ -460,10 +460,24 @@ async function loadDashboardData() {
         }
 
         // 5. 載入熱區圖資料並初始化地圖
-        initMap();
+        loadGoogleMaps();
 
     } catch (e) {
         console.warn('loadDashboardData error:', e);
+    }
+}
+
+async function loadGoogleMaps() {
+    try {
+        const response = await fetch(`${API_BASE}/api/maps_key`);
+        const data = await response.json();
+        const script = document.createElement('script');
+        script.src = `https://maps.googleapis.com/maps/api/js?key=${data.key}&libraries=visualization&callback=initMap`;
+        script.defer = true;
+        document.head.appendChild(script);
+    } catch (error) {
+        console.error("無法載入 Google Maps API 金鑰:", error);
+        document.getElementById('map').textContent = '地圖載入失敗：無法取得 API 金鑰。';
     }
 }
 

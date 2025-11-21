@@ -1,11 +1,11 @@
 # 🛡️ 新竹市 AI 防詐偵測系統
 
 > **2025 新竹政策黑客松｜清大小夥伴**  
-> 結合 AI 智慧偵測 + 互動式教育 + 城市級儀表板的次世代防詐平台
+> 結合 AI 智慧偵測 + 互動式教育 + LINE Bot 整合的次世代防詐平台
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://opensource.org/licenses/MIT)
 [![Python 3.10+](https://img.shields.io/badge/python-3.10+-blue.svg)](https://www.python.org/downloads/)
-[![FastAPI](https://img.shields.io/badge/FastAPI-0.104+-green.svg)](https://fastapi.tiangolo.com/)
+[![FastAPI](https://img.shields.io/badge/FastAPI-0.110+-green.svg)](https://fastapi.tiangolo.com/)
 
 🌐 **[線上 Demo](https://jacinto5940304.github.io/hsinchu-ai-scam-demo/)** | 📊 **[儀表板](https://jacinto5940304.github.io/hsinchu-ai-scam-demo/dashboard)** | 🎮 **[互動模擬](https://jacinto5940304.github.io/hsinchu-ai-scam-demo/simulation)**
 
@@ -18,7 +18,7 @@
 - 🤖 **AI 即時偵測**：分析可疑訊息，給出風險分數、詐騙類型與 AI 解析
 - 🎮 **互動式模擬**：沉浸式詐騙情境演練，動態生成對話劇本
 - 📊 **城市級儀表板**：即時詐騙數據、熱區地圖、案件統計
-- 📚 **詐騙資料庫**：6 大類詐騙手法深度解析（愛情、投資、網購、求職、假冒檢警、假網拍）
+- 📱 **LINE Bot 整合**：支援 Rich Menu 圖文選單與 LIFF 內嵌網頁，提供無縫手機體驗
 - 📱 **完整 RWD**：支援桌面、平板、手機全平台響應式設計
 
 ---
@@ -42,14 +42,16 @@ FastAPI 主程式，提供以下端點：
 | 端點 | 方法 | 說明 |
 |------|------|------|
 | `/` | GET | 主頁 |
+| `/callback` | POST | 接收 LINE Webhook 事件 |
 | `/analyze` | POST | 分析文字是否為詐騙（AI + Plan B） |
 | `/generate_script` | POST | 生成互動模擬對話腳本 |
 | `/chat_reply` | POST | 續聊回覆（維持詐騙者人設） |
 | `/preset_script` | GET | 隨機取得預設對話腳本 |
+| `/api/maps_key` | GET | 安全地提供 Google Maps API 金鑰給前端 |
 | `/api/kpi_data` | GET | 儀表板 KPI 數據 |
-| `/api/scam_types` | GET | 詐騙類型分布 |
-| `/api/victim_ages` | GET | 受害者年齡分布 |
-| `/api/district_data` | GET | 新竹市各區案件統計 |
+| `/api/scam_types_data` | GET | 詐騙類型分布 |
+| `/api/victim_ages_data` | GET | 受害者年齡分布 |
+| `/api/hsinchu_district_data` | GET | 新竹市各區案件統計 |
 | `/api/heatmap_data` | GET | 地圖熱區資料 |
 | `/api/crime_data` | GET | 詐騙案件標記點 |
 
@@ -63,6 +65,8 @@ FastAPI 主程式，提供以下端點：
 | `simulation.html` | 互動模擬 - 詐騙情境演練 |
 | `incidents.html` | 詐騙事件資料集 - 6 大類詐騙案例 |
 | `team.html` | 團隊介紹與聯絡方式 |
+| `privacy.html` | 隱私權政策頁面 |
+| `terms.html` | 服務條款頁面 |
 | `scam_report_*.html` | 各類詐騙手法詳細解析頁 |
 
 ### 核心模組
@@ -70,12 +74,14 @@ FastAPI 主程式，提供以下端點：
 | 檔案 | 說明 |
 |------|------|
 | `baked_results.py` | Plan B 預烘焙答案資料庫 |
-| `dashboard_data.py` | 儀表板資料來源 |
+| `data/*.csv` | 儀表板資料來源 (CSV 檔案) |
 | `simulation_presets.py` | 互動模擬預設腳本 |
 | `static/main.js` | 前端主邏輯（API 呼叫、選單控制） |
 | `static/animations.js` | 粒子動畫、打字機效果 |
 | `static/style.css` | Cyberpunk 風格樣式 |
 | `static/config.js` | API 端點設定 |
+| `config.py` | 集中管理所有 API 金鑰與設定 |
+| `.env.example` | 環境變數範本檔案 |
 
 ---
 
@@ -84,7 +90,7 @@ FastAPI 主程式，提供以下端點：
 ### 環境需求
 
 - Python 3.10+
-- Node.js (可選，用於前端開發)
+- `ngrok` (用於 LINE Bot 本地開發測試)
 - Ollama (可選，用於本地 LLM)
 
 ### 安裝步驟
