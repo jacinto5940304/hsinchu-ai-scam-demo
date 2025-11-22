@@ -26,12 +26,12 @@
             <span class="bg-clip-text text-transparent bg-gradient-to-r from-cyan-400 to-purple-500">HSINCHU ANTI-SCAM</span>
         </a>
         <div class="hidden md:flex gap-8 text-sm">
-            <a href="/" class="nav-link active">HOME</a>
-            <a href="/detect" class="nav-link">DETECTION</a>
-            <a href="/dashboard" class="nav-link">DASHBOARD</a>
-            <a href="/simulation" class="nav-link">SIMULATION</a>
-            <a href="/incidents" class="nav-link">INCIDENTS</a>
-            <a href="/team" class="nav-link">TEAM</a>
+            <a href="/" class="nav-link active">主頁</a>
+            <a href="/detect" class="nav-link">AI 一鍵查證</a>
+            <a href="/dashboard" class="nav-link">防詐儀表板</a>
+            <a href="/simulation" class="nav-link">詐騙情境模擬</a>
+            <a href="/incidents" class="nav-link">最新詐騙資料庫</a>
+            <a href="/team" class="nav-link">聯絡我們</a>
         </div>
         <!-- Mobile Menu Button -->
         <div class="md:hidden">
@@ -45,20 +45,20 @@
     <!-- Mobile Menu -->
     <div id="mobile-menu" class="hidden md:hidden fixed top-0 left-0 w-full h-full bg-black/90 z-[60] backdrop-blur-md">
         <div class="flex flex-col items-center justify-center h-full gap-8">
-            <a href="/" class="mobile-menu-link nav-link active text-2xl">HOME</a>
-            <a href="/detect" class="mobile-menu-link nav-link text-2xl">DETECTION</a>
-            <a href="/dashboard" class="mobile-menu-link nav-link text-2xl">DASHBOARD</a>
-            <a href="/simulation" class="mobile-menu-link nav-link text-2xl">SIMULATION</a>
-            <a href="/incidents" class="mobile-menu-link nav-link text-2xl">INCIDENTS</a>
-            <a href="/team" class="mobile-menu-link nav-link text-2xl">TEAM</a>
+            <a href="/" class="mobile-menu-link nav-link active text-2xl">主頁</a>
+            <a href="/detect" class="mobile-menu-link nav-link text-2xl">AI 一鍵查證</a>
+            <a href="/dashboard" class="mobile-menu-link nav-link text-2xl">防詐儀表板</a>
+            <a href="/simulation" class="mobile-menu-link nav-link text-2xl">詐騙情境模擬</a>
+            <a href="/incidents" class="mobile-menu-link nav-link text-2xl">最新詐騙資料庫</a>
+            <a href="/team" class="mobile-menu-link nav-link text-2xl">聯絡我們</a>
         </div>
     </div>
 
     <!-- 主內容 -->
     <main class="relative pt-32 pb-20 px-6 flex flex-col justify-center items-center text-center min-h-screen">
-        <div class="text-cyan-400 font-tech text-sm tracking-[0.5em] mb-4 opacity-80">SYSTEM ONLINE // HSINCHU CITY</div>
+        <div class="text-cyan-400 font-tech text-sm tracking-[0.5em] mb-4 opacity-80">政策黑客松 | 新竹市 | 清大小夥伴</div>
         <h1 class="text-5xl md:text-7xl font-bold mb-6 font-tech leading-tight">
-            <span id="typewriter" data-text="AI ANTI-SCAM DEFENSE"></span><span class="cursor" style="display: none;">&nbsp;</span>
+            <span id="typewriter" data-text="新竹市 AI 防詐系統"></span><span class="cursor" style="display: none;">&nbsp;</span>
         </h1>
         <p class="text-gray-400 max-w-2xl text-lg mb-10">
             <span class="block">新竹市次世代 AI 防詐機器人上線。</span>
@@ -71,27 +71,8 @@
                 <i class="fa-solid fa-radar"></i> 啟動 AI 偵測
             </a>
             <a href="/dashboard" class="px-8 py-4 border border-white/20 text-gray-300 hover:bg-white/5 transition-all rounded-sm font-tech tracking-wider">
-                VIEW DASHBOARD
+                查看詐騙儀表板
             </a>
-        </div>
-
-        <!-- 原始數據塊 -->
-        <div class="w-full max-w-6xl mt-16 p-4 border border-white/10 rounded-lg">
-            <h2 class="text-center text-lg text-red-400 font-tech tracking-widest mb-4">科技城市的反面：新竹成為詐騙重災區</h2>
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-4 text-center">
-                <div class="p-4 bg-white/5 rounded">
-                    <p class="text-2xl font-tech text-red-400">1 億 8752 萬</p>
-                    <p class="text-sm text-gray-400">2025 年 4 月單月財損金額</p>
-                </div>
-                <div class="p-4 bg-white/5 rounded">
-                    <p class="text-2xl font-tech text-red-400">全台最高之一</p>
-                    <p class="text-sm text-gray-400">每十萬人案件數</p>
-                </div>
-                <div class="p-4 bg-white/5 rounded">
-                    <p class="text-2xl font-tech text-red-400">20-40 歲</p>
-                    <p class="text-sm text-gray-400">受害族群集中於青年與科技業從業者</p>
-                </div>
-            </div>
         </div>
 
 
@@ -100,13 +81,13 @@
         <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mt-20 w-full max-w-6xl">
             <div class="cyber-card p-6 rounded-xl text-left cursor-pointer hover:scale-105 transition-transform" onclick="openModal('ai-detection')">
                 <div class="text-3xl text-cyan-400 mb-3"><i class="fa-solid fa-brain"></i></div>
-                <h3 class="text-xl font-bold font-tech text-white mb-2">AI 智慧偵測</h3>
-                <p class="text-gray-400 text-sm">分析簡訊、社群貼文中的詐騙語氣，對可疑內容即時警示，並提供一鍵查證。</p>
+                <h3 class="text-xl font-bold font-tech text-white mb-2">一鍵查證</h3>
+                <p class="text-gray-400 text-sm">分析簡訊、社群貼文中的詐騙語氣，對可疑內容即時警示。</p>
                 <div class="mt-3 text-cyan-400 text-xs font-tech">點擊查看更多 →</div>
             </div>
             <div class="cyber-card p-6 rounded-xl text-left cursor-pointer hover:scale-105 transition-transform" onclick="openModal('simulation')">
                 <div class="text-3xl text-purple-400 mb-3"><i class="fa-solid fa-vr-cardboard"></i></div>
-                <h3 class="text-xl font-bold font-tech text-white mb-2">互動式防詐模擬</h3>
+                <h3 class="text-xl font-bold font-tech text-white mb-2">互動式防詐模擬體驗</h3>
                 <p class="text-gray-400 text-sm">模擬詐騙對話、釣魚信件，透過遊戲化學習提升識詐能力。</p>
                 <div class="mt-3 text-purple-400 text-xs font-tech">點擊查看更多 →</div>
             </div>
@@ -179,19 +160,19 @@
             'ai-detection': {
                 icon: 'fa-brain',
                 color: 'cyan',
-                title: 'AI 智慧偵測系統',
+                title: '一鍵查證',
                 sections: [
                     {
                         subtitle: '核心技術',
-                        content: '採用先進的自然語言處理（NLP）技術與深度學習模型，針對台灣常見詐騙話術建立專屬語料庫。系統能夠辨識語意中的緊迫感、誘導性詞彙、異常金融要求等關鍵特徵。'
+                        content: '微調大型語言模型(LLM)，運用提示工程，針對台灣常見詐騙話術建立專屬語料庫。系統能夠辨識語意中的緊迫感、誘導性詞彙、異常金融要求等關鍵特徵。'
                     },
                     {
                         subtitle: '即時警示機制',
-                        content: '當使用者輸入或貼上疑似詐騙訊息時，系統會在 3 秒內完成分析，並以顏色標示風險等級（綠色-安全、黃色-可疑、紅色-高危），同時提供詳細的風險解析報告。'
+                        content: '當使用者輸入或貼上疑似詐騙訊息時，系統會在 3 秒內完成分析，並給予危險程度分數，同時提供詳細的風險解析報告。'
                     },
                     {
-                        subtitle: '一鍵查證功能',
-                        content: '整合 165 反詐騙資料庫、金管會公告、警政署通報案例等多重數據源，讓市民能快速交叉比對可疑電話、帳號、網址，降低受騙風險。'
+                        subtitle: '黑名單、白名單資料庫',
+                        content: '整合白名單網域以及 165 反詐騙資料庫、金管會公告、警政署通報案例等多重數據源，讓市民能快速交叉比對可疑電話、帳號、網址，降低受騙風險。'
                     },
                     {
                         subtitle: '使用場景',
@@ -202,7 +183,7 @@
             'simulation': {
                 icon: 'fa-vr-cardboard',
                 color: 'purple',
-                title: '互動式防詐模擬訓練',
+                title: '互動式防詐模擬體驗',
                 sections: [
                     {
                         subtitle: '沉浸式情境設計',
@@ -210,11 +191,11 @@
                     },
                     {
                         subtitle: '遊戲化學習體驗',
-                        content: '每次完成模擬後，系統會評估使用者的識詐能力，給予積分與成就徽章。使用者可解鎖不同難度關卡（新手村→進階→專家），持續提升防詐意識。'
+                        content: '每次完成模擬後，系統會評估使用者的識詐能力，給予防詐建議，持續提升防詐意識。'
                     },
                     {
                         subtitle: '多元詐騙類型',
-                        content: '涵蓋投資詐騙（飆股群組、虛擬貨幣）、愛情詐騙（交友 App 騙局）、假冒親友（Line 帳號被盜）、假公務機關（假檢警）等超過 15 種常見詐騙劇本。'
+                        content: '涵蓋投資詐騙（飆股群組、虛擬貨幣）、愛情詐騙（交友 App 騙局）、假冒親友（Line 帳號被盜）、假公務機關（假檢警）等常見詐騙劇本。'
                     },
                     {
                         subtitle: '即時回饋與學習',

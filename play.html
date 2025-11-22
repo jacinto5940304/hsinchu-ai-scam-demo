@@ -1,0 +1,728 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>防詐實戰模擬 - 終極版</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700;900&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Noto Sans TC', sans-serif; background-color: #020617; color: white; overflow: hidden; }
+        .scrollbar-hide::-webkit-scrollbar { display: none; }
+        .scrollbar-hide { -ms-overflow-style: none; scrollbar-width: none; }
+        .animate-fadeIn { animation: fadeIn 0.5s ease-out forwards; }
+        .animate-slideUp { animation: slideUp 0.4s ease-out forwards; }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        @keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+    </style>
+</head>
+<body class="h-screen w-full flex items-center justify-center sm:p-4">
+
+    <div class="w-full max-w-md h-full sm:h-[95vh] bg-slate-950 sm:rounded-3xl border-x sm:border border-slate-800 shadow-2xl overflow-hidden flex flex-col relative">
+        
+        <div class="absolute top-0 left-0 w-full bg-slate-900/90 backdrop-blur p-3 flex justify-between items-center border-b border-slate-800 z-30">
+            <div class="flex items-center gap-2">
+                <i data-lucide="shield" class="w-5 h-5 text-indigo-500"></i>
+                <span class="font-bold text-sm tracking-wider text-slate-300">ANTI-FRAUD OS</span>
+            </div>
+            <div class="flex items-center gap-3 text-xs font-mono bg-black/40 px-3 py-1 rounded-full border border-slate-700/50">
+                <div class="flex items-center gap-1 text-emerald-400" id="header-money-container">
+                    <i data-lucide="wallet" class="w-3 h-3"></i>
+                    <span id="header-money">200,000</span>
+                </div>
+                <div class="w-px h-3 bg-slate-700"></div>
+                <div class="text-slate-400">CASE <span id="header-round">1</span>/4</div>
+            </div>
+        </div>
+
+        <div id="screen-container" class="flex-grow relative flex flex-col overflow-hidden pt-14">
+            
+            <div id="view-menu" class="absolute inset-0 flex flex-col items-center justify-center p-8 space-y-8 z-20 bg-slate-950 animate-fadeIn">
+                <div class="relative bg-slate-900 rounded-full p-6 border border-slate-700 shadow-[0_0_40px_rgba(79,70,229,0.2)]">
+                    <i data-lucide="ghost" class="w-16 h-16 text-indigo-400"></i>
+                </div>
+                <div class="text-center space-y-4">
+                    <h1 class="text-3xl font-black text-white tracking-tight">全境防詐模擬</h1>
+                    <p class="text-slate-400 text-sm leading-relaxed max-w-xs mx-auto">
+                        包含 28 種真實詐騙劇本隨機演練。請保護你的資產，直到最後一關。
+                    </p>
+                </div>
+                <button onclick="game.start()" class="w-full py-4 bg-indigo-600 hover:bg-indigo-500 text-white rounded-xl font-bold flex items-center justify-center gap-2 shadow-lg shadow-indigo-500/20 active:scale-95 transition-transform">
+                    啟動模擬 <i data-lucide="chevron-right" class="w-4 h-4"></i>
+                </button>
+            </div>
+
+            <div id="view-game" class="hidden flex-col h-full w-full">
+                <div id="chat-box" class="flex-grow overflow-y-auto p-4 pb-48 bg-slate-950 scrollbar-hide space-y-4"></div>
+                <div class="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black via-black to-transparent p-4 pt-12 z-20">
+                    <div id="choices-box" class="grid gap-2.5 animate-slideUp"></div>
+                </div>
+            </div>
+
+            <div id="view-result" class="hidden absolute inset-0 bg-slate-950 z-30 flex flex-col items-center justify-center p-8 animate-fadeIn text-center">
+                <div class="mb-6 relative">
+                    <div id="result-glow" class="absolute inset-0 blur-2xl opacity-20"></div>
+                    <div id="result-icon-container" class="relative"></div>
+                </div>
+                <h2 id="result-title" class="text-3xl font-bold mb-2"></h2>
+                <div class="font-mono text-xl text-slate-300 mb-6 border-b border-slate-800 pb-4 w-full">
+                    剩餘資產: NT$<span id="result-money"></span>
+                </div>
+                <p id="result-desc" class="text-slate-400 mb-8 leading-relaxed text-sm"></p>
+                <button onclick="game.start()" class="w-full py-4 bg-slate-800 hover:bg-slate-700 text-white rounded-xl font-bold border border-slate-700">
+                    <i data-lucide="refresh-ccw" class="w-4 h-4 inline mr-2"></i> 重新訓練
+                </button>
+            </div>
+        </div>
+
+        <div id="modal-consequence" class="hidden fixed inset-0 z-50 flex flex-col items-center justify-center bg-black/95 p-6 animate-fadeIn">
+            <div class="w-full max-w-sm bg-slate-900 rounded-2xl border border-slate-800 overflow-hidden shadow-2xl">
+                <div class="bg-slate-950 p-4 border-b border-slate-800">
+                    <div class="flex items-center gap-2 mb-2">
+                        <div class="w-5 h-5 rounded bg-indigo-600 flex items-center justify-center">
+                            <i data-lucide="siren" class="w-3 h-3 text-white"></i>
+                        </div>
+                        <span class="text-xs text-slate-400 font-mono">SYSTEM ALERT</span>
+                    </div>
+                    <h3 id="modal-title" class="text-lg font-bold text-white"></h3>
+                    <div id="modal-loss" class="mt-2 text-red-500 font-mono font-bold text-xl hidden"></div>
+                </div>
+                <div class="p-6 space-y-6 bg-slate-900">
+                    <div class="bg-slate-800/50 p-4 rounded-xl border border-slate-700 relative">
+                        <p id="modal-analysis" class="text-sm text-slate-300 leading-relaxed text-justify"></p>
+                    </div>
+                    <button onclick="game.nextLevel()" class="w-full py-4 bg-slate-800 hover:bg-slate-700 text-white rounded-xl font-bold border border-slate-700 active:scale-[0.98]">
+                        下一案例 <i data-lucide="chevron-right" class="w-4 h-4 inline"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // --- 1. 資料庫 ---
+        const NAMES = {
+            scammers: ['陳經理', '林專員', '客服-Alice', '王主任', '張代書', '會計-小美', '技術部-Kevin'],
+            authorities: ['台北地檢署', '刑事局偵九隊', '金管會證期局', '中華電信風控部', '健保局稽核科'],
+            platforms: ['蝦皮購物', '旋轉拍賣', 'MOMO購物', 'PChome', '幣安Binance', 'MAX交易所'],
+            invest_items: ['AI 算力租賃', '黃金期貨', '綠能虛擬幣', '未上市股票', '博弈套利程式'],
+            romance_roles: ['無國界醫生', '駐敘利亞軍官', '石油工程師', '跨國企業高管'],
+            prizes: ['iPhone 16 Pro Max', 'Dyson 全套組', '台北-東京雙人機票', '現金 NT$168,888'],
+            tickets: ['周杰倫嘉年華', 'Blackpink 世界巡迴', '張學友 60+ 巡演', '酷玩樂團 Coldplay'],
+            banks: ['中國信託', '國泰世華', '玉山銀行', '台新銀行'],
+            charities: ['浪浪天使協會', '偏鄉兒童營養計畫', '緊急災害救助基金', '守護海洋聯盟'],
+            rental_areas: ['台北大安區', '新北板橋', '台中西屯區', '竹科金山街'],
+            games: ['天堂W', '傳說對決', '楓之谷M', '英雄聯盟'],
+            fine_types: ['超速照相', '違規停車', 'ETC通行費', '燃料稅逾期'],
+            celebs: ['黃仁勳', '張忠謀', '巴菲特', '馬斯克'],
+            telecoms: ['中華電信', '台灣大哥大', '遠傳電信'],
+            hotels: ['日月潭雲品', '礁溪老爺', '墾丁夏都', '花蓮瑞穗天合'],
+            pets: ['布偶貓', '柴犬', '貴賓狗', '英短'],
+            cars: ['Benz C300', 'BMW 320i', 'Tesla Model 3', 'Porsche Macan'],
+            restaurants: ['饗饗', '旭集', 'RAW', '鼎泰豐']
+        };
+
+        const shuffleArray = (arr) => [...arr].sort(() => Math.random() - 0.5);
+        const getRandom = (arr) => arr[Math.floor(Math.random() * arr.length)];
+        const delay = (ms) => new Promise(r => setTimeout(r, ms));
+
+        // --- 2. 完整劇本庫 (28個) ---
+        const generators = [
+            // 1. 投資詐騙 (多輪)
+            () => ({
+                id: `inv_${Date.now()}`, scammerName: '客服-Judy', role: 'service', avatarColor: 'bg-pink-600',
+                intro: [{s:'p', t:'你好，我申請的50萬出金怎麼還沒到？'}, {s:'s', t:'親愛的會員，系統顯示您的帳戶觸發風控，資金已凍結。'}, {s:'s', t:'需繳納20%「自證清白保證金」才能解凍。'}],
+                choices: [
+                    { t:'為了拿回本金，我匯款。', outcome: { type:'loss', title:'二次剝皮', loss:100000, analysis:'【殺豬盤】任何要求「先匯錢才能領錢」的理由（稅金、保證金）絕對是詐騙。' } },
+                    { t:'扣掉手續費直接匯給我不行嗎？', nextStage: {
+                        dialogues: [{s:'s', t:'系統是自動執行的，我們無權修改！再拖延下去，帳戶會被永久註銷，錢就沒了！'}],
+                        choices: [
+                            { t:'好吧...那我匯款。', outcome: { type:'loss', title:'恐慌決策', loss:100000, analysis:'【情緒勒索】詐騙集團利用「帳戶註銷」製造恐慌，讓你失去判斷力。' } },
+                            { t:'註銷就註銷，我不付錢。', outcome: { type:'safe', title:'堅持底線', loss:0, analysis:'【防禦成功】面對恐嚇不為所動，保住了本金。' } }
+                        ]
+                    }},
+                    { t:'我去你們公司現場辦理。', nextStage: {
+                        dialogues: [{s:'s', t:'我們總部在香港，台灣只有辦事處，目前不開放臨櫃喔。'}, {s:'s', t:'您現在線上操作只要 5 分鐘，飛過來要花多少錢？'}],
+                        choices: [
+                            { t:'也是，那線上處理好了。', outcome: { type:'loss', title:'虛擬陷阱', loss:100000, analysis:'【虛擬平台】詐騙集團永遠不敢讓你去現場，因為根本沒有辦公室。' } },
+                            { t:'沒關係，我剛好在香港。', outcome: { type:'safe', title:'對方已讀不回', loss:0, analysis:'【戳破謊言】當你表現出要實體接觸時，詐騙集團通常會知難而退。' } }
+                        ]
+                    }}
+                ]
+            }),
+            // 2. 假APP
+            () => {
+                const item = getRandom(NAMES.invest_items);
+                return {
+                    id: `app_${Date.now()}`, scammerName: '助理-小雅', role: 'assistant', avatarColor: 'bg-pink-500',
+                    intro: [{s:'s', t:`老師說今晚 ${item} 有大行情！`}, {s:'s', t:'正規手續費太貴，用我們內部的APP交易零滑點。'}, {s:'s', t:'連結我傳給你，不要去商店搜，那是舊版的。'}],
+                    choices: [
+                        { t:'好，我相信老師，馬上安裝。', outcome: { type:'loss', title:'資安外洩', loss:50000, analysis:'【惡意軟體】安裝來路不明的 APK 檔，手機遭側錄，網銀被盜用。' } },
+                        { t:'連結是亂碼？怪怪的。', nextStage: {
+                            dialogues: [{s:'s', t:'這是加密節點，你不懂不要亂說！'}, {s:'s', t:'只有VIP學員才有這個通道，你不想賺錢就把機會讓給別人。'}],
+                            choices: [
+                                { t:'對不起，我怕錯過行情。', outcome: { type:'loss', title:'激將法中招', loss:50000, analysis:'【激將法】詐騙集團常說「你不懂」、「不想賺拉倒」來刺激受害者。' } },
+                                { t:'那我用原本的券商就好。', outcome: { type:'safe', title:'堅持正規', loss:0, analysis:'【防禦成功】只在 App Store / Google Play 下載經過審核的 APP。' } }
+                            ]
+                        }}
+                    ]
+                };
+            },
+            // 3. 網拍ATM
+            () => {
+                const pf = getRandom(NAMES.platforms);
+                return {
+                    id: `atm_${Date.now()}`, scammerName: `${pf}客服`, role: 'service', avatarColor: 'bg-orange-600',
+                    intro: [{s:'s', t:`您好，這裡是${pf}。因後台疏失，誤將訂單設為「批發商連續扣款」。`}, {s:'s', t:'今晚會自動扣款。請配合銀行專員進行「取消授權」。'}],
+                    choices: [
+                        { t:'天啊！快告訴我怎麼取消！', outcome: { type:'loss', title:'轉帳成功', loss:29989, analysis:'【解除分期付款】ATM 只有「提款」和「轉帳」功能，沒有「解除設定」功能。' } },
+                        { t:'我超商付現的，哪來扣款資料？', outcome: { type:'safe', title:'邏輯攻防', loss:0, analysis:'【邏輯漏洞】超商付現商家不會有您的銀行帳戶資料，無法自動扣款。' } },
+                        { t:'我直接打給銀行確認。', outcome: { type:'safe', title:'正確應對', loss:0, analysis:'【掛斷求證】直接撥打卡片背面的銀行電話或 165 求證。' } }
+                    ]
+                }
+            },
+            // 4. 假檢警
+            () => {
+                const auth = getRandom(NAMES.authorities);
+                return {
+                    id: `pol_${Date.now()}`, scammerName: `${auth}專員`, role: 'police', avatarColor: 'bg-slate-700',
+                    intro: [{s:'s', t:`喂？這裡是${auth}。您涉嫌洗錢，帳戶已列為警示。`}, {s:'s', t:'資金需進行「監管公證」。偵查不公開，不能掛電話。'}],
+                    choices: [
+                        { t:'我一定配合調查，還我清白。', outcome: { type:'loss', title:'現金面交', loss:300000, analysis:'【偵查不公開陷阱】檢警單位絕對不會要求「監管帳戶」或收現金。' } },
+                        { t:'你會發公文嗎？電話我不信。', nextStage: {
+                            dialogues: [{s:'s', t:'公文已經寄出了！你現在不配合，待會拘票一到，直接上銬帶走！'}, {s:'s', t:'你想要在鄰居面前被抓嗎？'}],
+                            choices: [
+                                { t:'不想...那我該怎麼做？', outcome: { type:'loss', title:'恐懼淪陷', loss:300000, analysis:'【偽造公文】詐騙集團常傳送偽造的傳票圖檔，利用民眾對司法的恐懼。' } },
+                                { t:'那我直接去警察局報到。', outcome: { type:'safe', title:'主動出擊', loss:0, analysis:'【最佳防禦】聽到「錢、監管、帳戶」關鍵字，直接掛斷報警。' } }
+                            ]
+                        }}
+                    ]
+                }
+            },
+            // 5. 猜猜我是誰
+            () => ({
+                id: `who_${Date.now()}`, scammerName: '不明號碼', role: 'impersonation', avatarColor: 'bg-gray-500',
+                intro: [{s:'s', t:'喂？聽得出來我是誰嗎？'}, {s:'p', t:'你是...志明？'}, {s:'s', t:'對啦！我換號碼了。兄弟急需3萬周轉，下週還你。'}],
+                choices: [
+                    { t:'好，帳號給我。', outcome: { type:'loss', title:'借貸詐騙', loss:30000, analysis:'【猜猜我是誰】匯款給陌生人，真正的朋友根本沒換號碼。' } },
+                    { t:'我打你舊號碼確認。', nextStage: {
+                        dialogues: [{s:'s', t:'舊手機就不見了才換號碼啊！你連兄弟都不信？'}, {s:'s', t:'真的很急，幫個忙啦！'}],
+                        choices: [
+                            { t:'好啦，這次幫你。', outcome: { type:'loss', title:'人情壓力', loss:30000, analysis:'【人情攻勢】詐騙集團利用你的善良與對朋友的信任。' } },
+                            { t:'那你找別人吧。', outcome: { type:'safe', title:'堅持查證', loss:0, analysis:'【多方驗證】親友借錢務必透過第二管道（通訊軟體、共同好友）查證。' } }
+                        ]
+                    }},
+                    { t:'我們高中班導叫什麼？', outcome: { type:'safe', title:'機智問答', loss:0, analysis:'【私密問題】詢問只有本人知道的事情來驗證身分，對方答不出來就會掛斷。' } }
+                ]
+            }),
+            // 6. 釣魚簡訊
+            () => {
+                const type = getRandom(['ETC通行費', '水費', '健保費']);
+                return {
+                    id: `sms_${Date.now()}`, scammerName: '系統簡訊', role: 'system', avatarColor: 'bg-blue-600',
+                    intro: [{s:'s', t:`【${type}】提醒：有一筆費用今日到期。請點擊連結繳費以免停用：https://gov-tw.cc`} ],
+                    choices: [
+                        { t:'點連結進去刷卡繳費。', outcome: { type:'loss', title:'信用卡盜刷', loss:5000, analysis:'【釣魚簡訊】官方網址不會是奇怪的域名。請只透過官方管道查詢。' } },
+                        { t:'自己開官方APP查詢。', outcome: { type:'safe', title:'官方查證', loss:0, analysis:'【主動查證】不點連結，主動使用官方APP查詢是最佳解。' } },
+                        { t:'刪除簡訊。', outcome: { type:'safe', title:'防禦成功', loss:0, analysis:'【零信任】對帶有連結的簡訊保持懷疑。' } }
+                    ]
+                }
+            },
+            // 7. 愛情詐騙
+            () => {
+                const role = getRandom(NAMES.romance_roles);
+                return {
+                    id: `love_${Date.now()}`, scammerName: role, role: 'assistant', avatarColor: 'bg-rose-500',
+                    intro: [{s:'s', t:'My dear，我寄給你的定情禮物卡在海關。'}, {s:'s', t:'需支付5000美金通關費。我帳戶凍結，能先幫我墊嗎？'}],
+                    choices: [
+                        { t:'沒問題！馬上匯款救你。', outcome: { type:'loss', title:'愛情詐騙', loss:150000, analysis:'【殺豬盤】素未謀面就談錢，百分之百是詐騙。' } },
+                        { t:'我們視訊確認一下好嗎？', nextStage: {
+                            dialogues: [{s:'s', t:'這裡訊號很差，而且基地規定不能開鏡頭！'}, {s:'s', t:'你是不是不愛我了？連這點錢都不幫？'}],
+                            choices: [
+                                { t:'對不起，我匯就是了。', outcome: { type:'loss', title:'情感勒索', loss:150000, analysis:'【情感勒索】詐騙集團會利用你的內疚感來達成目的。' } },
+                                { t:'不能視訊就拉倒。', outcome: { type:'safe', title:'識破謊言', loss:0, analysis:'【拒絕視訊】詐騙集團通常使用假照片，絕對不敢開視訊鏡頭。' } }
+                            ]
+                        }}
+                    ]
+                }
+            },
+            // 8. 中獎詐騙
+            () => {
+                const prize = getRandom(NAMES.prizes);
+                return {
+                    id: `win_${Date.now()}`, scammerName: 'IG-幸運抽獎', role: 'service', avatarColor: 'bg-purple-500',
+                    intro: [{s:'s', t:`恭喜抽中「${prize}」！`}, {s:'s', t:'需先繳納10%稅金 $3,600 才能領獎。'}],
+                    choices: [
+                        { t:'太幸運了！馬上匯。', outcome: { type:'loss', title:'中獎詐騙', loss:3600, analysis:'【假中獎】正規抽獎不會要求私下匯款稅金。' } },
+                        { t:'能從獎金扣嗎？', nextStage: {
+                            dialogues: [{s:'s', t:'規定不能互抵！一定要先入帳才能出納。'}, {s:'s', t:'今天五點前沒匯款就視同放棄喔。'}],
+                            choices: [
+                                { t:'好吧，那我去匯。', outcome: { type:'loss', title:'預付陷阱', loss:3600, analysis:'【預付陷阱】要求先付錢才能領獎都是詐騙。' } },
+                                { t:'那就放棄吧。', outcome: { type:'safe', title:'防禦成功', loss:0, analysis:'【冷靜思考】沒參加就不會中獎，也不會因為放棄而可惜。' } }
+                            ]
+                        }}
+                    ]
+                }
+            },
+            // 9. 假驗證 (網拍賣家)
+            () => ({
+                id: `verify_${Date.now()}`, scammerName: '買家-小陳', role: 'assistant', avatarColor: 'bg-orange-600',
+                intro: [{s:'s', t:'老闆，下單失敗。系統說你沒簽「誠信協議」，我無法付款。'}, {s:'s', t:'你快掃這個 QR Code 聯絡客服處理。'}],
+                choices: [
+                    { t:'不好意思！我馬上掃描。', outcome: { type:'loss', title:'盜刷通知', loss:30000, analysis:'【假賣場驗證】拍賣平台不會要求私下掃 QR Code 簽署協議。' } },
+                    { t:'我沒收到官方通知啊？', nextStage: {
+                        dialogues: [{s:'s', t:'截圖都給你了，快點好不好？'}, {s:'s', t:'不然我要去檢舉你詐欺喔！'}],
+                        choices: [
+                            { t:'好啦好啦，我掃就是了。', outcome: { type:'loss', title:'心急遭騙', loss:30000, analysis:'【釣魚網站】QR Code 通常導向釣魚網站，騙取網銀帳密。' } },
+                            { t:'請你去檢舉吧，我只看後台通知。', outcome: { type:'safe', title:'堅持原則', loss:0, analysis:'【官方後台】一切交易問題請以「官方後台通知」為準，勿信截圖。' } }
+                        ]
+                    }}
+                ]
+            }),
+            // 10. 求職詐騙
+            () => ({
+                id: `job_${Date.now()}`, scammerName: '人資-Linda', role: 'assistant', avatarColor: 'bg-purple-600',
+                intro: [{s:'s', t:'您好，我們是電商代營運。誠徵居家小幫手。'}, {s:'s', t:'需提供提款卡給我們節稅，每月多給3萬租金。'}],
+                choices: [
+                    { t:'寄卡就有錢拿？太好了。', outcome: { type:'loss', title:'淪為共犯', loss:0, analysis:'【求職詐騙】交出存摺提款卡就是變成人頭戶，需負法律責任。' } },
+                    { t:'要提款卡做什麼？很危險。', nextStage: {
+                        dialogues: [{s:'s', t:'這是避稅操作，很多人在排隊呢。'}, {s:'s', t:'我們有簽合約保障，不用擔心。'}],
+                        choices: [
+                            { t:'有合約那應該沒事。', outcome: { type:'loss', title:'假合約', loss:0, analysis:'【假合約】詐騙集團的合約沒有法律效力，無法保障你免於刑責。' } },
+                            { t:'這是人頭戶，我不做。', outcome: { type:'safe', title:'防禦成功', loss:0, analysis:'【保護個資】找工作絕不應交出提款卡與密碼。' } }
+                        ]
+                    }}
+                ]
+            }),
+            // 11. 信用貸款
+            () => {
+                const bank = getRandom(NAMES.banks);
+                return {
+                    id: `loan_${Date.now()}`, scammerName: `${bank}-信貸部`, role: 'service', avatarColor: 'bg-green-600',
+                    intro: [{s:'s', t:'恭喜信貸初審通過。'}, {s:'s', t:'但流水不足，需先匯3萬做「財力證明」，截圖後可領回。'}],
+                    choices: [
+                        { t:'了解，我馬上匯。', outcome: { type:'loss', title:'假貸款', loss:30000, analysis:'【假貸款】正規銀行不會要求撥款前匯款。' } },
+                        { t:'可以扣除手續費再撥款嗎？', nextStage: {
+                            dialogues: [{s:'s', t:'這是規定，不配合就取消額度！'}, {s:'s', t:'我們是為了幫你美化帳面才這樣做的。'}],
+                            choices: [
+                                { t:'那麻煩幫我美化一下。', outcome: { type:'loss', title:'話術陷阱', loss:30000, analysis:'【美化帳面】任何要求「包裝財力」的說法都是詐騙。' } },
+                                { t:'那我找別家銀行。', outcome: { type:'safe', title:'識破話術', loss:0, analysis:'【拒絕預付】撥款前要求付錢就是詐騙。' } }
+                            ]
+                        }}
+                    ]
+                };
+            },
+            // 12. 黃牛票
+            () => {
+                const ticket = getRandom(NAMES.tickets);
+                return {
+                    id: `ticket_${Date.now()}`, scammerName: '賣家', role: 'service', avatarColor: 'bg-yellow-500',
+                    intro: [{s:'s', t:`原價讓出兩張${ticket}門票。`}, {s:'s', t:'很多人問，先匯款就給你序號。可傳身分證證明。'}],
+                    choices: [
+                        { t:'太好了！馬上轉帳。', outcome: { type:'loss', title:'黃牛詐騙', loss:8800, analysis:'【假賣票】身分證通常是盜用的。堅持面交或官方平台。' } },
+                        { t:'可以面交嗎？', nextStage: {
+                            dialogues: [{s:'s', t:'沒空面交，不要拉倒。'}, {s:'s', t:'後面還有人在排隊喔。'}],
+                            choices: [
+                                { t:'好啦，我匯款就是了。', outcome: { type:'loss', title:'飢餓行銷', loss:8800, analysis:'【飢餓行銷】詐騙集團利用限量與排隊心理促使你衝動匯款。' } },
+                                { t:'那我不買了。', outcome: { type:'safe', title:'堅持面交', loss:0, analysis:'【拒絕無保障】看不見實體的交易風險極高。' } }
+                            ]
+                        }}
+                    ]
+                };
+            },
+            // 13. 交通罰單
+            () => {
+                const fine = getRandom(NAMES.fine_types);
+                return {
+                    id: `traffic_${Date.now()}`, scammerName: '監理服務網', role: 'system', avatarColor: 'bg-blue-600',
+                    intro: [{s:'s', t:`【交通違規】您的「${fine}」罰單已逾期。請點擊連結繳納以免強制執行：https://mvdis-gov.tw.pay`}],
+                    choices: [
+                        { t:'趕快繳掉。', outcome: { type:'loss', title:'釣魚簡訊', loss:5000, analysis:'【罰單釣魚】官方網址結尾是 .gov.tw。' } },
+                        { t:'去監理站官網查。', outcome: { type:'safe', title:'查證成功', loss:0, analysis:'【官方管道】主動查證是關鍵。' } },
+                        { t:'無視詐騙。', outcome: { type:'safe', title:'防禦成功', loss:0, analysis:'【冷靜應對】別被「強制執行」嚇到。' } }
+                    ]
+                };
+            },
+            // 14. 遊戲寶物
+            () => ({
+                id: `game_${Date.now()}`, scammerName: '賣家-阿豪', role: 'assistant', avatarColor: 'bg-indigo-500',
+                intro: [{s:'s', t:'頂級帳號急售，只賣 $3000。'}, {s:'s', t:'不走 8591，先匯款給我，馬上給帳密。'}],
+                choices: [
+                    { t:'先匯款搶購。', outcome: { type:'loss', title:'虛寶詐騙', loss:3000, analysis:'【私下交易】拒絕平台保障通常是詐騙。' } },
+                    { t:'堅持走 8591。', nextStage: {
+                        dialogues: [{s:'s', t:'撥款太慢，不賣你了。'}, {s:'s', t:'能不能爽快一點？'}],
+                        choices: [
+                            { t:'好啦，私下交易。', outcome: { type:'loss', title:'失去保障', loss:3000, analysis:'【放棄保障】一旦離開第三方平台，你就沒有任何保障了。' } },
+                            { t:'不賣拉倒。', outcome: { type:'safe', title:'堅持原則', loss:0, analysis:'【平台保障】詐騙集團討厭有保障的平台。' } }
+                        ]
+                    }}
+                ]
+            }),
+            // 15. 裝熟詐騙
+            () => ({
+                id: `wrong_${Date.now()}`, scammerName: '陌生人', role: 'assistant', avatarColor: 'bg-gray-400',
+                intro: [{s:'s', t:'請問是陳店長嗎？預約洗狗。'}, {s:'p', t:'傳錯囉。'}, {s:'s', t:'抱歉存錯。看你頭貼人不錯，我是做設計的，交個朋友？'}],
+                choices: [
+                    { t:'沒關係，交個朋友。', nextStage: {
+                        dialogues: [{s:'s', t:'聊得很開心...我有個投資副業賺很多，帶你一起？'}],
+                        choices: [
+                            { t:'好啊，帶我賺。', outcome: { type:'loss', title:'殺豬盤', loss:50000, analysis:'【裝熟詐騙】亂槍打鳥建立關係，最終導入投資詐騙。' } },
+                            { t:'我不做投資。', outcome: { type:'safe', title:'拒絕誘惑', loss:0, analysis:'【防範未然】只要提到錢，立刻警覺。' } }
+                        ]
+                    }},
+                    { t:'（已讀不回）', outcome: { type:'safe', title:'冷處理', loss:0, analysis:'【勿理會】不回應陌生訊息。' } }
+                ]
+            }),
+            // 16. 幣圈空投
+            () => ({
+                id: `airdrop_${Date.now()}`, scammerName: '幣圈小幫手', role: 'assistant', avatarColor: 'bg-yellow-600',
+                intro: [{s:'s', t:'限時空投！點連結連接錢包，免費領取 100 USDT：https://claim-usdt.io'}],
+                choices: [
+                    { t:'免費領幣！連接錢包。', outcome: { type:'loss', title:'惡意授權', loss:80000, analysis:'【惡意授權】詐騙網站誘騙簽署「無限授權」，轉走資產。' } },
+                    { t:'去官方推特確認。', outcome: { type:'safe', title:'查證成功', loss:0, analysis:'【官方查證】以官方驗證社群為準。' } },
+                    { t:'無視。', outcome: { type:'safe', title:'防禦成功', loss:0, analysis:'【拒絕貪念】來路不明的空投多為釣魚。' } }
+                ]
+            }),
+            // 17. 寵物買賣
+            () => {
+                const pet = getRandom(NAMES.pets);
+                return {
+                    id: `pet_${Date.now()}`, scammerName: '愛心貓舍', role: 'service', avatarColor: 'bg-amber-500',
+                    intro: [{s:'s', t:`最後一隻${pet}幼犬，因主人移民急找新家，只收紅包 $2,000。`}, {s:'s', t:'但我人在屏東，要先付運費 $3,000，我用寵物專車寄上去。'}],
+                    choices: [
+                        { t:'好便宜！我馬上匯運費。', outcome: { type:'loss', title:'寵物詐騙', loss:5000, analysis:'【寵物詐騙】利用低價送養吸引人，再用運費、檢疫費層層剝皮。' } },
+                        { t:'我親自開車下去載。', nextStage: {
+                            dialogues: [{s:'s', t:'我不方便開放參觀耶。'}, {s:'s', t:'怕會有傳染病帶進來。'}],
+                            choices: [
+                                { t:'那我還是用寄的好了。', outcome: { type:'loss', title:'藉口阻擋', loss:5000, analysis:'【拒絕面交】藉口越多，詐騙機率越高。' } },
+                                { t:'不看狗我不放心。', outcome: { type:'safe', title:'堅持面交', loss:0, analysis:'【實體接觸】活體買賣務必親眼確認。' } }
+                            ]
+                        }}
+                    ]
+                };
+            },
+            // 18. 家庭代工
+            () => ({
+                id: `work_${Date.now()}`, scammerName: '代工小幫手', role: 'assistant', avatarColor: 'bg-purple-400',
+                intro: [{s:'s', t:'誠徵家庭代工，包裝耳機，論件計酬月入 4 萬。'}, {s:'s', t:'首次領料需先匯 $2,000 材料保證金，交貨時退還。'}],
+                choices: [
+                    { t:'為了賺錢，先付保證金。', outcome: { type:'loss', title:'代工詐騙', loss:2000, analysis:'【家庭代工】正規代工絕不會要求先付錢。' } },
+                    { t:'可以從薪水扣嗎？', nextStage: {
+                        dialogues: [{s:'s', t:'公司規定不行，這也是保障我們材料不被偷。'}, {s:'s', t:'不配合就算了，很多人在排隊。'}],
+                        choices: [
+                            { t:'好吧，我付。', outcome: { type:'loss', title:'話術洗腦', loss:2000, analysis:'【先付錢就是騙】找工作不應先花錢。' } },
+                            { t:'那我不做了。', outcome: { type:'safe', title:'堅持底線', loss:0, analysis:'【防禦成功】拒絕預付保證金。' } }
+                        ]
+                    }}
+                ]
+            }),
+            // 19. 假愛心
+            () => {
+                const charity = getRandom(NAMES.charities);
+                return {
+                    id: `charity_${Date.now()}`, scammerName: charity, role: 'service', avatarColor: 'bg-orange-400',
+                    intro: [{s:'s', t:'狗園斷糧，急需援助。捐款 $1000 送環保袋。連結：charity-help.xyz'}],
+                    choices: [
+                        { t:'好可憐，馬上捐。', outcome: { type:'loss', title:'愛心詐騙', loss:20000, analysis:'【假募款】確認官網域名與勸募字號。' } },
+                        { t:'請問勸募字號？', nextStage: {
+                            dialogues: [{s:'s', t:'申請中...愛心不能等啊！'}, {s:'s', t:'狗狗快餓死了！'}],
+                            choices: [
+                                { t:'那先捐一點。', outcome: { type:'loss', title:'道德綁架', loss:20000, analysis:'【道德綁架】詐騙集團利用你的同情心。' } },
+                                { t:'我去官方粉專看。', outcome: { type:'safe', title:'官方查證', loss:0, analysis:'【雙重確認】主動搜尋官方粉專求證。' } }
+                            ]
+                        }}
+                    ]
+                };
+            },
+            // 20. 假綁架
+            () => ({
+                id: `kidnap_${Date.now()}`, scammerName: '不明來電', role: 'police', avatarColor: 'bg-gray-800',
+                intro: [{s:'s', t:'（傳來哭聲：爸救我！）'}, {s:'s', t:'你兒子幫人擔保欠錢，現在在我手上。馬上匯 20 萬，不然斷手腳！'}],
+                choices: [
+                    { t:'拜託別傷害他，我匯錢！', outcome: { type:'loss', title:'假綁架', loss:200000, analysis:'【AI 語音】聽到哭聲別慌，這是恐懼陷阱。' } },
+                    { t:'讓我跟我兒子講話。', nextStage: {
+                        dialogues: [{s:'s', t:'（哭聲變大）爸快救我...'}, {s:'s', t:'聽到了沒？快匯錢！'}],
+                        choices: [
+                            { t:'好，我匯！', outcome: { type:'loss', title:'聲音詐騙', loss:200000, analysis:'【模擬聲音】現在 AI 可以輕易模擬親友聲音。' } },
+                            { t:'（用另一支手機聯絡兒子）', outcome: { type:'safe', title:'多方查證', loss:0, analysis:'【冷靜查證】聯絡本人或學校確認安全。' } }
+                        ]
+                    }}
+                ]
+            }),
+            // 21. 租屋詐騙
+            () => {
+                const area = getRandom(NAMES.rental_areas);
+                return {
+                    id: `rent_${Date.now()}`, scammerName: '房東-王先生', role: 'service', avatarColor: 'bg-teal-600',
+                    intro: [{s:'s', t:`（${area}精美套房，租金遠低於行情）`}, {s:'s', t:'很多人在問。我人在國外，為了過濾租客，先付 $5,000 訂金才給看房。'}],
+                    choices: [
+                        { t:'好便宜，先匯訂金。', outcome: { type:'loss', title:'租屋詐騙', loss:5000, analysis:'【假房東】看房前要求付錢絕對是詐騙。' } },
+                        { t:'我要現場看房再付。', nextStage: {
+                            dialogues: [{s:'s', t:'我就說在國外啊！'}, {s:'s', t:'你現在不付，我馬上租給別人。'}],
+                            choices: [
+                                { t:'別租給別人，我付。', outcome: { type:'loss', title:'急迫性陷阱', loss:5000, analysis:'【製造搶手】詐騙集團會讓你覺得「不搶就沒了」。' } },
+                                { t:'沒看房不付錢。', outcome: { type:'safe', title:'堅持原則', loss:0, analysis:'【眼見為憑】堅持實地看屋。' } }
+                            ]
+                        }}
+                    ]
+                };
+            },
+            // 22. AI 名人
+            () => {
+                const celeb = getRandom(NAMES.celebs);
+                return {
+                    id: `celeb_${Date.now()}`, scammerName: `${celeb} (AI)`, role: 'assistant', avatarColor: 'bg-zinc-800',
+                    intro: [{s:'s', t:`（影片：${celeb} 推薦投資社團）`}, {s:'s', t:'我是本人。加入公益社團，免費送親筆簽名書與選股心法。'}],
+                    choices: [
+                        { t:'哇是本人！馬上加入。', outcome: { type:'loss', title:'AI 詐騙', loss:30000, analysis:'【Deepfake】名人絕不會在社群開群組帶人投資。' } },
+                        { t:'嘴型怪怪的，本人會開群組？', outcome: { type:'safe', title:'識破 AI', loss:0, analysis:'【辨識 Deepfake】觀察嘴型、眨眼頻率與聲音破綻。' } },
+                        { t:'Deepfake，滑掉。', outcome: { type:'safe', title:'直接無視', loss:0, analysis:'【廣告陷阱】社群投資廣告多為詐騙。' } }
+                    ]
+                };
+            },
+            // 23. 積分到期
+            () => {
+                const telecom = getRandom(NAMES.telecoms);
+                return {
+                    id: `point_${Date.now()}`, scammerName: `${telecom}客服`, role: 'system', avatarColor: 'bg-blue-700',
+                    intro: [{s:'s', t:'您的會員積分 5000 點即將歸零。請點擊連結兌換禮品：reward-points.cc'}],
+                    choices: [
+                        { t:'馬上換 Dyson！', outcome: { type:'loss', title:'積分釣魚', loss:30000, analysis:'【積分詐騙】那個運費頁面是在騙信用卡授權。' } },
+                        { t:'登入官方 APP 查積分。', outcome: { type:'safe', title:'查證拆穿', loss:0, analysis:'【回歸官方】透過官方 APP 操作最安全。' } },
+                        { t:'假網址，刪除。', outcome: { type:'safe', title:'防禦成功', loss:0, analysis:'【辨識網址】亂碼或奇怪域名直接視為詐騙。' } }
+                    ]
+                };
+            },
+            // 24. 訂房重複扣款
+            () => {
+                const hotel = getRandom(NAMES.hotels);
+                return {
+                    id: `book_${Date.now()}`, scammerName: `${hotel}訂房組`, role: 'service', avatarColor: 'bg-teal-700',
+                    intro: [{s:'s', t:'抱歉系統出錯，誤將您的訂單設為團體訂房，扣了 10 筆房費。'}, {s:'s', t:'需請銀行協助刷退，請去 ATM 操作解除代碼。'}],
+                    choices: [
+                        { t:'快幫我取消！', outcome: { type:'loss', title:'解除分期', loss:29989, analysis:'【訂房詐騙】飯店不會主動通知重複扣款並要求操作 ATM。' } },
+                        { t:'我先看網銀有沒有扣款。', nextStage: {
+                            dialogues: [{s:'s', t:'過 12 點就來不及了！'}, {s:'s', t:'到時候幾萬塊扣下去我們不負責喔！'}],
+                            choices: [
+                                { t:'好可怕，那我先操作。', outcome: { type:'loss', title:'恐懼決策', loss:29989, analysis:'【時間壓力】詐騙常製造時間壓力阻礙查證。' } },
+                                { t:'扣就扣，我明天打給銀行。', outcome: { type:'safe', title:'冷靜查證', loss:0, analysis:'【拖延戰術】只要拖過當下，通常就能發現破綻。' } }
+                            ]
+                        }}
+                    ]
+                };
+            },
+            // 25. 神秘客
+            () => ({
+                id: `shop_${Date.now()}`, scammerName: '行銷公司', role: 'assistant', avatarColor: 'bg-purple-500',
+                intro: [{s:'s', t:'誠徵神秘客，幫忙測試網購流程。'}, {s:'s', t:'需先墊付購買禮品卡，任務完成後全額退款並加發薪水。'}],
+                choices: [
+                    { t:'賺紅利好機會，買！', outcome: { type:'loss', title:'刷單詐騙', loss:5000, analysis:'【刷單詐騙】要求先墊錢買點數或商品，絕對是詐騙。' } },
+                    { t:'為什麼要我先墊錢？', nextStage: {
+                        dialogues: [{s:'s', t:'這是測試流程一部份。'}, {s:'s', t:'我們公司很大，不會騙你這點錢。'}],
+                        choices: [
+                            { t:'好吧，試一次看看。', outcome: { type:'loss', title:'小額誘餌', loss:5000, analysis:'【放長線】第一單可能會退你錢，等你投入大筆資金就收網。' } },
+                            { t:'拒絕墊付。', outcome: { type:'safe', title:'識破', loss:0, analysis:'【墊付風險】正規工作不會要求員工墊款。' } }
+                        ]
+                    }}
+                ]
+            }),
+            // 26. 二手車
+            () => {
+                const car = getRandom(NAMES.cars);
+                return {
+                    id: `car_${Date.now()}`, scammerName: '自售車主', role: 'service', avatarColor: 'bg-slate-500',
+                    intro: [{s:'s', t:`自售 ${car}，車況極新只賣 50 萬。`}, {s:'s', t:'很多人要看車，先匯訂金 1 萬我幫你保留。'}],
+                    choices: [
+                        { t:'太便宜了先搶！匯訂金。', outcome: { type:'loss', title:'訂金詐騙', loss:10000, analysis:'【假車貼】低於行情太多的車，利用「保留優先權」騙訂金。' } },
+                        { t:'我看過車沒問題再付。', nextStage: {
+                            dialogues: [{s:'s', t:'那我就賣給別人囉。'}, {s:'s', t:'剛剛已經有人要匯款了。'}],
+                            choices: [
+                                { t:'等等！我馬上匯！', outcome: { type:'loss', title:'搶購陷阱', loss:10000, analysis:'【製造競爭】詐騙集團常謊稱有人在排隊。' } },
+                                { t:'沒緣分就算了。', outcome: { type:'safe', title:'堅持看車', loss:0, analysis:'【實體看車】二手車買賣務必實體看車簽約。' } }
+                            ]
+                        }}
+                    ]
+                };
+            },
+            // 27. 餐廳訂位
+            () => {
+                const rest = getRandom(NAMES.restaurants);
+                return {
+                    id: `food_${Date.now()}`, scammerName: `${rest}客服`, role: 'service', avatarColor: 'bg-red-700',
+                    intro: [{s:'s', t:'您預訂了本週末的位子。為確保用餐，請點簡訊連結預付 $1000 訂金。'}],
+                    choices: [
+                        { t:'好，我怕被取消。付款。', outcome: { type:'loss', title:'訂位釣魚', loss:20000, analysis:'【訂位詐騙】近期流行假冒知名餐廳發送付款連結。' } },
+                        { t:'我打電話去餐廳確認。', outcome: { type:'safe', title:'查證成功', loss:0, analysis:'【官方求證】主動致電是破解冒充詐騙的最好方法。' } },
+                        { t:'以前不用付啊，怪怪的。', outcome: { type:'safe', title:'防禦成功', loss:0, analysis:'【保持懷疑】收到付款要求先冷靜思考合理性。' } }
+                    ]
+                };
+            },
+            // 28. 二次詐騙
+            () => ({
+                id: `rec_${Date.now()}`, scammerName: '反詐律師', role: 'police', avatarColor: 'bg-blue-800',
+                intro: [{s:'s', t:'我是駭客，看到你被騙了。我有技術能攻破詐騙集團後台，幫你把錢追回來。'}, {s:'s', t:'只收 20% 手續費。'}],
+                choices: [
+                    { t:'拜託你了！我急需那筆錢。', outcome: { type:'loss', title:'二次詐騙', loss:20000, analysis:'【二次詐騙】只有檢警能透過法律程序凍結帳戶。' } },
+                    { t:'警察都追不回，你怎麼可能？', nextStage: {
+                        dialogues: [{s:'s', t:'我們有特殊管道，不信算了。'}, {s:'s', t:'你甘心錢就這樣沒了嗎？'}],
+                        choices: [
+                            { t:'不甘心...試試看吧。', outcome: { type:'loss', title:'絕望收割', loss:20000, analysis:'【利用絕望】詐騙集團利用受害者想追回損失的心理。' } },
+                            { t:'這是二次詐騙。', outcome: { type:'safe', title:'識破謊言', loss:0, analysis:'【特殊管道】不存在合法的私下追討管道。' } }
+                        ]
+                    }}
+                ]
+            })
+        ];
+
+        // --- 遊戲核心 ---
+        const game = {
+            state: { money: 200000, round: 1, maxRounds: 4, scenarioPool: [], currentCase: null },
+
+            start: function() {
+                this.state.money = 200000;
+                this.state.round = 1;
+                this.state.scenarioPool = shuffleArray(generators).slice(0, 4).map(gen => gen());
+                this.updateHeader();
+                this.showScreen('view-game');
+                this.playRound();
+            },
+
+            updateHeader: function() {
+                document.getElementById('header-money').innerText = this.state.money.toLocaleString();
+                document.getElementById('header-round').innerText = this.state.round;
+                const container = document.getElementById('header-money-container');
+                if (this.state.money < 50000) container.classList.replace('text-emerald-400', 'text-red-400');
+                else container.classList.replace('text-red-400', 'text-emerald-400');
+            },
+
+            showScreen: function(id) {
+                ['view-menu', 'view-game', 'view-result'].forEach(v => document.getElementById(v).classList.add('hidden'));
+                document.getElementById(id).classList.remove('hidden');
+                document.getElementById(id).classList.add('flex');
+            },
+
+            playRound: async function() {
+                const currentCase = this.state.scenarioPool[this.state.round - 1];
+                this.state.currentCase = currentCase;
+                document.getElementById('chat-box').innerHTML = ''; 
+                document.getElementById('choices-box').innerHTML = ''; 
+
+                for (const msg of currentCase.intro) {
+                    await delay(600 + Math.random() * 500);
+                    this.appendMessage(msg.s === 'p' ? 'player' : 'scammer', msg.t);
+                }
+                await delay(500);
+                this.renderChoices(currentCase.choices);
+            },
+
+            appendMessage: function(role, text) {
+                const chatBox = document.getElementById('chat-box');
+                const isPlayer = role === 'player';
+                const currentCase = this.state.currentCase;
+                const div = document.createElement('div');
+                div.className = `flex w-full mb-4 animate-fadeIn ${isPlayer ? 'justify-end' : 'justify-start'}`;
+                
+                const avatar = isPlayer ? '' : `
+                    <div class="w-9 h-9 rounded-full flex-shrink-0 flex items-center justify-center shadow-lg mr-3 text-white text-xs font-bold ${currentCase.avatarColor}">
+                        ${currentCase.role === 'police' ? '<i data-lucide="gavel" class="w-4 h-4"></i>' : (currentCase.scammerName[0] || 'S')}
+                    </div>`;
+
+                const bubbleClass = isPlayer ? 'bg-indigo-600 text-white rounded-br-none' : 'bg-slate-800 text-slate-200 rounded-tl-none border border-slate-700';
+                div.innerHTML = `${avatar}<div class="max-w-[80%]"><div class="text-[10px] text-slate-500 mb-1 ml-1">${isPlayer?'':currentCase.scammerName}</div><div class="p-3.5 rounded-2xl shadow-sm text-sm leading-relaxed tracking-wide ${bubbleClass}">${text}</div></div>`;
+                chatBox.appendChild(div);
+                chatBox.scrollTop = chatBox.scrollHeight;
+                lucide.createIcons();
+            },
+
+            renderChoices: function(choices) {
+                const box = document.getElementById('choices-box');
+                box.innerHTML = '<p class="text-[10px] text-slate-500 mb-1 ml-1 uppercase tracking-widest opacity-70">Your Response</p>';
+                choices.forEach(c => {
+                    const btn = document.createElement('button');
+                    btn.className = "w-full p-4 text-left rounded-xl bg-slate-900/90 backdrop-blur border border-slate-800 hover:bg-slate-800 hover:border-indigo-500/50 text-slate-200 text-sm font-medium transition-all active:scale-[0.98] shadow-lg";
+                    btn.innerText = c.t;
+                    btn.onclick = () => this.handleChoice(c);
+                    box.appendChild(btn);
+                });
+            },
+
+            handleChoice: async function(choice) {
+                document.getElementById('choices-box').innerHTML = ''; 
+                this.appendMessage('player', choice.t);
+                await delay(800); 
+
+                if (choice.nextStage) {
+                    for (const msg of choice.nextStage.dialogues) {
+                        this.appendMessage('scammer', '...');
+                        await delay(600);
+                        document.getElementById('chat-box').lastChild.remove();
+                        this.appendMessage('scammer', msg.t);
+                        await delay(800);
+                    }
+                    this.renderChoices(choice.nextStage.choices);
+                } else if (choice.outcome) {
+                    this.state.money -= choice.outcome.loss || 0;
+                    this.updateHeader();
+                    this.showConsequence(choice.outcome);
+                }
+            },
+
+            showConsequence: function(outcome) {
+                const modal = document.getElementById('modal-consequence');
+                document.getElementById('modal-title').innerText = outcome.title;
+                document.getElementById('modal-title').className = `text-lg font-bold ${outcome.type === 'loss' ? 'text-red-400' : 'text-emerald-400'}`;
+                document.getElementById('modal-loss').innerText = outcome.loss > 0 ? `- NT$ ${outcome.loss.toLocaleString()}` : '';
+                document.getElementById('modal-loss').classList.toggle('hidden', outcome.loss === 0);
+                document.getElementById('modal-analysis').innerText = outcome.analysis;
+                modal.classList.remove('hidden');
+            },
+
+            nextLevel: function() {
+                document.getElementById('modal-consequence').classList.add('hidden');
+                if (this.state.money <= 0 || this.state.round >= this.state.maxRounds) {
+                    this.showFinalResult();
+                } else {
+                    this.state.round++;
+                    this.updateHeader();
+                    this.playRound();
+                }
+            },
+
+            showFinalResult: function() {
+                this.showScreen('view-result');
+                const isWin = this.state.money >= 150000;
+                const isBankrupt = this.state.money <= 0;
+                
+                const titleEl = document.getElementById('result-title');
+                const glowEl = document.getElementById('result-glow');
+                const iconContainer = document.getElementById('result-icon-container');
+                const descEl = document.getElementById('result-desc');
+
+                document.getElementById('result-money').innerText = this.state.money.toLocaleString();
+
+                if (isBankrupt) {
+                    titleEl.innerText = "破產宣告";
+                    titleEl.className = "text-3xl font-bold mb-2 text-red-500";
+                    glowEl.className = "absolute inset-0 blur-2xl opacity-20 bg-red-500";
+                    iconContainer.innerHTML = '<i data-lucide="skull" class="w-20 h-20 text-red-500 relative"></i>';
+                    descEl.innerText = "您的帳戶餘額已歸零。真實世界的詐騙不會給您第二次機會，請務必提高警覺。";
+                } else {
+                    titleEl.innerText = isWin ? "資安防禦專家" : "資安高風險群";
+                    titleEl.className = isWin ? "text-3xl font-bold mb-2 text-emerald-400" : "text-3xl font-bold mb-2 text-red-500";
+                    glowEl.className = isWin ? "absolute inset-0 blur-2xl opacity-20 bg-emerald-500" : "absolute inset-0 blur-2xl opacity-20 bg-red-500";
+                    iconContainer.innerHTML = isWin 
+                        ? '<i data-lucide="award" class="w-20 h-20 text-emerald-400 relative"></i>'
+                        : '<i data-lucide="alert-triangle" class="w-20 h-20 text-yellow-400 relative"></i>';
+                    descEl.innerText = isWin 
+                        ? "您展現了極高的警覺性，成功識破了各種精心設計的劇本。請繼續保持這份懷疑精神！"
+                        : "您容易受到情緒勒索影響，請多加小心。";
+                }
+                lucide.createIcons();
+            }
+        };
+
+        lucide.createIcons();
+    </script>
+</body>
+</html>

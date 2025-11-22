@@ -28,12 +28,12 @@
             <span class="bg-clip-text text-transparent bg-gradient-to-r from-cyan-400 to-purple-500">HSINCHU ANTI-SCAM</span>
         </a>
         <div class="hidden md:flex gap-8 text-sm">
-            <a href="/" class="nav-link">HOME</a>
-            <a href="/detect" class="nav-link">DETECTION</a>
-            <a href="/dashboard" class="nav-link active">DASHBOARD</a>
-            <a href="/simulation" class="nav-link">SIMULATION</a>
-            <a href="/incidents" class="nav-link">INCIDENTS</a>
-            <a href="/team" class="nav-link">TEAM</a>
+            <a href="/" class="nav-link">主頁</a>
+            <a href="/detect" class="nav-link">AI 一鍵查證</a>
+            <a href="/dashboard" class="nav-link active">防詐儀表板</a>
+            <a href="/simulation" class="nav-link">詐騙情境模擬</a>
+            <a href="/incidents" class="nav-link">最新詐騙資料庫</a>
+            <a href="/team" class="nav-link">聯絡我們</a>
         </div>
         <!-- Mobile Menu Button -->
         <div class="md:hidden">
@@ -47,19 +47,19 @@
     <!-- Mobile Menu -->
     <div id="mobile-menu" class="hidden md:hidden fixed top-0 left-0 w-full h-full bg-black/90 z-[60] backdrop-blur-md">
         <div class="flex flex-col items-center justify-center h-full gap-8">
-            <a href="/" class="mobile-menu-link nav-link text-2xl">HOME</a>
-            <a href="/detect" class="mobile-menu-link nav-link text-2xl">DETECTION</a>
-            <a href="/dashboard" class="mobile-menu-link nav-link active text-2xl">DASHBOARD</a>
-            <a href="/simulation" class="mobile-menu-link nav-link text-2xl">SIMULATION</a>
-            <a href="/incidents" class="mobile-menu-link nav-link text-2xl">INCIDENTS</a>
-            <a href="/team" class="mobile-menu-link nav-link text-2xl">TEAM</a>
+            <a href="/" class="mobile-menu-link nav-link text-2xl">主頁</a>
+            <a href="/detect" class="mobile-menu-link nav-link text-2xl">AI 一鍵查證</a>
+            <a href="/dashboard" class="mobile-menu-link nav-link active text-2xl">防詐儀表板</a>
+            <a href="/simulation" class="mobile-menu-link nav-link text-2xl">詐騙情境模擬</a>
+            <a href="/incidents" class="mobile-menu-link nav-link text-2xl">最新詐騙資料庫</a>
+            <a href="/team" class="mobile-menu-link nav-link text-2xl">聯絡我們</a>
         </div>
     </div>
 
     <!-- 主內容 -->
     <main class="relative pt-32 pb-20 px-6">
         <div class="text-center mb-12">
-            <h1 class="text-5xl md:text-6xl font-bold font-tech neon-text">THREAT DASHBOARD</h1>
+            <h1 class="text-5xl md:text-6xl font-bold font-tech neon-text">防詐儀表板</h1>
             <p class="text-gray-400 max-w-3xl mx-auto text-lg mt-4">即時監控新竹市詐騙活動數據，分析威脅趨勢與熱點分佈。</p>
         </div>
 
@@ -67,38 +67,50 @@
             <!-- KPI 區塊 -->
             <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
                 <div class="cyber-card p-6 rounded-xl">
-                    <div class="font-tech text-gray-400 text-sm">MONTHLY FINANCIAL LOSS</div>
+                    <div class="font-tech text-gray-400 text-sm">當日全台總財損</div>
                     <div id="kpi-monthly-loss" class="text-4xl font-bold text-cyan-400 mt-2">--</div>
                 </div>
                 <div class="cyber-card p-6 rounded-xl">
-                    <div class="font-tech text-gray-400 text-sm">MONTHLY REPORTED CASES</div>
+                    <div class="font-tech text-gray-400 text-sm">當月新竹總財損</div>
                     <div id="kpi-monthly-cases" class="text-4xl font-bold text-cyan-400 mt-2">--</div>
                 </div>
                 <div class="cyber-card p-6 rounded-xl">
-                    <div class="font-tech text-gray-400 text-sm">AI INTERCEPTION COUNT</div>
+                    <div class="font-tech text-gray-400 text-sm">當月新竹案件數</div>
                     <div id="kpi-ai-interceptions" class="text-4xl font-bold text-cyan-400 mt-2">--</div>
                 </div>
             </div>
 
             <!-- 圖表與地圖區 -->
             <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-                <!-- Scam Type Distribution -->
-                <div class="cyber-card p-6 rounded-xl">
-                    <h3 class="font-tech text-lg text-white mb-4">SCAM TYPE DISTRIBUTION</h3>
-                    <div class="relative" style="height: 280px;">
-                        <canvas id="scamTypesChart"></canvas>
-                    </div>
-                </div>
-                <!-- Victim Age Groups -->
-                <div class="cyber-card p-6 rounded-xl">
-                    <h3 class="font-tech text-lg text-white mb-4">VICTIM AGE GROUPS</h3>
-                    <div class="relative" style="height: 280px;">
-                        <canvas id="victimAgesChart"></canvas>
+                <!-- Scam Overview: two pies in one card (cases + losses) -->
+                <div class="cyber-card p-6 rounded-xl lg:col-span-2">
+                    <h3 class="font-tech text-lg text-white mb-4">當日詐騙手法圓餅圖</h3>
+                    <div class="relative flex gap-4" style="height: 280px; align-items:stretch;">
+                        <!-- 左側圖例欄：固定寬度 -->
+                        <div id="scamLegend" style="width:160px; min-width:120px; background:transparent; padding-right:8px; display:flex; flex-direction:column; gap:6px; height:100%; justify-content:flex-end;">
+                            <!-- Legend items will be injected here by JS -->
+                        </div>
+
+                        <!-- 右側為兩張並列圓餅，確保大小相同 -->
+                        <div style="flex:1; display:flex; gap:8px;">
+                            <div style="flex:1; display:flex; flex-direction:column;">
+                                <div style="font-size:12px; color:#9ca3af; margin-bottom:6px;">詐騙件數</div>
+                                <div style="flex:1;">
+                                    <canvas id="scamCountsChart" style="width:100%; height:100%;"></canvas>
+                                </div>
+                            </div>
+                            <div style="flex:1; display:flex; flex-direction:column;">
+                                <div style="font-size:12px; color:#9ca3af; margin-bottom:6px;">財損（金額，單位：萬）</div>
+                                <div style="flex:1;">
+                                    <canvas id="scamLossesChart" style="width:100%; height:100%;"></canvas>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
                 <!-- Cases by District -->
                 <div class="cyber-card p-6 rounded-xl">
-                    <h3 class="font-tech text-lg text-white mb-4">CASES BY DISTRICT</h3>
+                    <h3 class="font-tech text-lg text-white mb-4">當日案件市區排名</h3>
                     <div class="relative" style="height: 280px;">
                         <canvas id="hsinchuDistrictChart"></canvas>
                     </div>
@@ -106,8 +118,11 @@
                 
                 <!-- Heatmap -->
                 <div class="cyber-card p-6 rounded-xl flex flex-col lg:col-span-3">
-                    <h3 class="font-tech text-lg text-white mb-4">SCAM HEATMAP</h3>
-                    <div id="map" class="w-full rounded-lg bg-black/20 h-[32rem]"></div>
+                    <h3 class="font-tech text-lg text-white mb-4">詐騙熱點地圖</h3>
+                                        <div class="relative">
+                                            <div id="map-layer-controls" class="z-50"></div>
+                                            <div id="map" class="w-full rounded-lg bg-black/20 h-[32rem]"></div>
+                                        </div>
                 </div>
             </div>
         </div>

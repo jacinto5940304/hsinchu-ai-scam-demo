@@ -26,12 +26,12 @@
             <span class="bg-clip-text text-transparent bg-gradient-to-r from-cyan-400 to-purple-500">HSINCHU ANTI-SCAM</span>
         </a>
         <div class="hidden md:flex gap-8 text-sm">
-            <a href="/" class="nav-link">HOME</a>
-            <a href="/detect" class="nav-link active">DETECTION</a>
-            <a href="/dashboard" class="nav-link">DASHBOARD</a>
-            <a href="/simulation" class="nav-link">SIMULATION</a>
-            <a href="/incidents" class="nav-link">INCIDENTS</a>
-            <a href="/team" class="nav-link">TEAM</a>
+            <a href="/" class="nav-link">主頁</a>
+            <a href="/detect" class="nav-link active">AI 一鍵查證</a>
+            <a href="/dashboard" class="nav-link">防詐儀表板</a>
+            <a href="/simulation" class="nav-link">詐騙情境模擬</a>
+            <a href="/incidents" class="nav-link">最新詐騙資料庫</a>
+            <a href="/team" class="nav-link">聯絡我們</a>
         </div>
         <!-- Mobile Menu Button -->
         <div class="md:hidden">
@@ -45,19 +45,19 @@
     <!-- Mobile Menu -->
     <div id="mobile-menu" class="hidden md:hidden fixed top-0 left-0 w-full h-full bg-black/90 z-[60] backdrop-blur-md">
         <div class="flex flex-col items-center justify-center h-full gap-8">
-            <a href="/" class="mobile-menu-link nav-link text-2xl">HOME</a>
-            <a href="/detect" class="mobile-menu-link nav-link active text-2xl">DETECTION</a>
-            <a href="/dashboard" class="mobile-menu-link nav-link text-2xl">DASHBOARD</a>
-            <a href="/simulation" class="mobile-menu-link nav-link text-2xl">SIMULATION</a>
-            <a href="/incidents" class="mobile-menu-link nav-link text-2xl">INCIDENTS</a>
-            <a href="/team" class="mobile-menu-link nav-link text-2xl">TEAM</a>
+            <a href="/" class="mobile-menu-link nav-link text-2xl">主頁</a>
+            <a href="/detect" class="mobile-menu-link nav-link active text-2xl">AI 一鍵查證</a>
+            <a href="/dashboard" class="mobile-menu-link nav-link text-2xl">防詐儀表板</a>
+            <a href="/simulation" class="mobile-menu-link nav-link text-2xl">詐騙情境模擬</a>
+            <a href="/incidents" class="mobile-menu-link nav-link text-2xl">最新詐騙資料庫</a>
+            <a href="/team" class="mobile-menu-link nav-link text-2xl">聯絡我們</a>
         </div>
     </div>
 
     <!-- 主內容 -->
     <main class="relative pt-32 pb-20 px-6 flex flex-col items-center min-h-screen">
         <div class="text-center mb-12">
-            <h1 class="text-5xl md:text-6xl font-bold font-tech neon-text">AI REAL-TIME DETECTION</h1>
+            <h1 class="text-5xl md:text-6xl font-bold font-tech neon-text">AI 一鍵查證</h1>
             <p class="text-gray-400 max-w-2xl text-lg mt-4">將可疑訊息貼入下方分析矩陣，神經網絡將立即進行威脅評估。</p>
         </div>
 
@@ -65,7 +65,7 @@
             <textarea id="scamText" class="w-full h-32 p-4 rounded-lg bg-black/30 border border-white/10 focus:ring-2 focus:ring-cyan-400 focus:border-cyan-400 outline-none transition-all text-base" placeholder="[SYSTEM] 請輸入待分析文本..."></textarea>
             
             <button id="analyzeButton" class="cyber-btn w-full mt-4 py-3 text-lg font-bold rounded-lg flex items-center justify-center gap-2">
-                <i class="fa-solid fa-microchip"></i> ANALYZE
+                <i class="fa-solid fa-microchip"></i> 一鍵分析
             </button>
 
             <div id="loading" class="text-center mt-4 text-cyan-400 font-tech tracking-widest" style="display: none;">

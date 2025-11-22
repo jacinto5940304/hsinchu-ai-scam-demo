@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>新竹市防詐戰情中心 | 系統管理後台</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        :root {
+            --bs-primary-rgb: 58, 107, 173;
+            --bs-primary: rgb(var(--bs-primary-rgb));
+        }
+        body {
+            background-color: #f8f9fa;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+        }
+        .navbar {
+            box-shadow: 0 2px 4px rgba(0,0,0,.05);
+        }
+        .sidebar {
+            background-color: #fff;
+            box-shadow: 0 2px 4px rgba(0,0,0,.05);
+            height: 100vh;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 250px;
+            padding-top: 56px; /* Navbar height */
+        }
+        .sidebar .nav-link {
+            color: #495057;
+            font-weight: 500;
+        }
+        .sidebar .nav-link.active, .sidebar .nav-link:hover {
+            color: var(--bs-primary);
+            background-color: #e9ecef;
+        }
+        .main-content {
+            margin-left: 250px;
+            padding: 20px;
+            padding-top: 76px; /* Navbar height + padding */
+        }
+        .card {
+            border: none;
+            box-shadow: 0 2px 8px rgba(0,0,0,.08);
+        }
+        .card-header {
+            background-color: #fff;
+            font-weight: 600;
+            color: var(--bs-primary);
+            border-bottom: 2px solid var(--bs-primary);
+        }
+        .stat-card .display-4 {
+            font-weight: 700;
+        }
+        .table-responsive {
+            max-height: 500px;
+        }
+    </style>
+</head>
+<body>
+
+<nav class="navbar navbar-expand-lg navbar-light bg-light fixed-top">
+    <div class="container-fluid">
+        <a class="navbar-brand fw-bold" href="#">
+            <i class="bi bi-shield-check"></i>
+            hsinchu_hackthon - backend
+        </a>
+        <div class="d-flex align-items-center">
+            <span id="clock" class="navbar-text me-3"></span>
+            <span class="badge bg-success">系統狀態：正常</span>
+        </div>
+    </div>
+</nav>
+
+<div class="sidebar">
+    <ul class="nav flex-column pt-3">
+        <li class="nav-item">
+            <a class="nav-link active" href="/admin"><i class="bi bi-bar-chart-line-fill me-2"></i> 總覽儀表板</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" href="#"><i class="bi bi-table me-2"></i> 案件管理</a>
+        </li>
+        <li class="nav-item mt-auto">
+             <a class="nav-link" href="/"><i class="bi bi-box-arrow-left me-2"></i> 回到前台</a>
+        </li>
+    </ul>
+</div>
+
+<main class="main-content">
+    <div class="row g-4 mb-4">
+        <div class="col-xl-3 col-md-6"><div class="card stat-card text-center p-3 h-100"><h6 class="text-muted">本月累計通報</h6><h2 id="total-cases" class="display-4 text-primary">--</h2></div></div>
+        <div class="col-xl-3 col-md-6"><div class="card stat-card text-center p-3 h-100"><h6 class="text-muted">AI 即時攔截成功</h6><h2 id="ai-blocked" class="display-4 text-success">--</h2></div></div>
+        <div class="col-xl-3 col-md-6"><div class="card stat-card text-center p-3 h-100"><h6 class="text-muted">預估攔截金額 (萬)</h6><h2 class="display-4 text-warning">18,752</h2></div></div>
+        <div class="col-xl-3 col-md-6"><div class="card stat-card text-center p-3 h-100"><h6 class="text-muted">當前威脅等級</h6><h2 id="threat-level" class="display-4 text-danger">高</h2></div></div>
+    </div>
+
+    <div class="card mb-4">
+        <div class="card-header"><i class="bi bi-broadcast-pin me-2"></i>即時偵測紀錄</div>
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-hover table-striped mb-0">
+                    <thead class="table-light">
+                        <tr>
+                            <th>時間</th>
+                            <th>來源</th>
+                            <th>內容節錄</th>
+                            <th>類型</th>
+                            <th>風險指數</th>
+                        </tr>
+                    </thead>
+                    <tbody id="log-table-body">
+                        <tr><td colspan="5" class="text-center text-muted p-5">等待數據傳入...</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <div class="row g-4">
+        <div class="col-lg-4">
+            <div class="card h-100">
+                <div class="card-header"><i class="bi bi-pie-chart-fill me-2"></i>詐騙類型分析 (真實案件)</div>
+                <div class="card-body d-flex align-items-center justify-content-center"><canvas id="scamTypeChart"></canvas></div>
+            </div>
+        </div>
+        <div class="col-lg-4">
+            <div class="card h-100">
+                <div class="card-header"><i class="bi bi-geo-alt-fill me-2"></i>高風險地區分析</div>
+                <div class="card-body d-flex align-items-center justify-content-center"><canvas id="districtChart"></canvas></div>
+            </div>
+        </div>
+        <div class="col-lg-4">
+            <div class="card h-100">
+                <div class="card-header"><i class="bi bi-person-badge-fill me-2"></i>高風險職業分析</div>
+                <div class="card-body d-flex align-items-center justify-content-center"><canvas id="jobChart"></canvas></div>
+            </div>
+        </div>
+    </div>
+</main>
+
+<script>
+    // --- 1. 初始化 ---
+    let scamTypeChart, districtChart, jobChart;
+
+    document.addEventListener('DOMContentLoaded', function() {
+        // 初始化圖表
+        scamTypeChart = createDoughnutChart('scamTypeChart');
+        districtChart = createBarChart('districtChart', '地區');
+        jobChart = createBarChart('jobChart', '職業');
+
+        // 首次載入資料
+        fetchAdminData();
+        fetchAnalyticsData();
+
+        // 定時更新
+        setInterval(fetchAdminData, 3000);
+        setInterval(fetchAnalyticsData, 10000); // 分析數據不用太頻繁
+
+        // 更新時鐘
+        setInterval(() => {
+            document.getElementById('clock').innerText = new Date().toLocaleString('zh-TW', { dateStyle: 'long', timeStyle: 'medium' });
+        }, 1000);
+    });
+
+    // --- 2. Chart Helpers ---
+    function createDoughnutChart(canvasId) {
+        const ctx = document.getElementById(canvasId).getContext('2d');
+        return new Chart(ctx, {
+            type: 'doughnut',
+            data: { labels: [], datasets: [{ data: [], backgroundColor: ['#0d6efd', '#198754', '#ffc107', '#dc3545', '#6c757d'] }] },
+            options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'bottom' } } }
+        });
+    }
+
+    function createBarChart(canvasId, label) {
+        const ctx = document.getElementById(canvasId).getContext('2d');
+        return new Chart(ctx, {
+            type: 'bar',
+            data: { labels: [], datasets: [{ label: `回報次數`, data: [], backgroundColor: 'rgba(58, 107, 173, 0.7)' }] },
+            options: {
+                responsive: true, maintainAspectRatio: false, indexAxis: 'y',
+                plugins: { legend: { display: false } },
+                scales: { x: { beginAtZero: true } }
+            }
+        });
+    }
+
+    function updateChartData(chart, newData) {
+        chart.data.labels = newData.labels;
+        chart.data.datasets[0].data = newData.data;
+        chart.update();
+    }
+
+    // --- 3. Data Fetching and Rendering ---
+    async function fetchAdminData() {
+        try {
+            const res = await fetch('/api/admin_stats');
+            if (!res.ok) throw new Error(`Network response was not ok (${res.status})`);
+            const data = await res.json();
+
+            // 更新 KPI
+            document.getElementById('total-cases').innerText = data.total_cases;
+            document.getElementById('ai-blocked').innerText = data.ai_blocked;
+
+            // 更新 Log 表格
+            const logTableBody = document.getElementById('log-table-body');
+            logTableBody.innerHTML = data.logs.length ? '' : '<tr><td colspan="5" class="text-center text-muted p-5">目前無即時資料</td></tr>';
+
+            data.logs.forEach(log => {
+                const riskValue = log.risk;
+                let riskHtml;
+                if (riskValue === 'N/A') {
+                    riskHtml = `<span class="text-muted">${riskValue}</span>`;
+                } else {
+                    const riskColor = riskValue > 80 ? 'text-danger' : (riskValue > 50 ? 'text-warning' : 'text-success');
+                    riskHtml = `<span class="fw-bold ${riskColor}">${riskValue}%</span>`;
+                }
+
+                const sourceColors = { "Web": "primary", "Line": "success", "LINE(一鍵查證)": "success", "LINE(演練)": "secondary", "LINE(詐騙模式)": "secondary" };
+                const sourceColor = sourceColors[log.source] || 'dark';
+
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td><span class="badge bg-light text-dark">${log.time}</span></td>
+                    <td><span class="badge bg-${sourceColor}">${log.source}</span></td>
+                    <td class="text-truncate" style="max-width: 250px;" title="${log.text}">${log.text}</td>
+                    <td>${log.type}</td>
+                    <td>${riskHtml}</td>
+                `;
+                logTableBody.appendChild(row);
+            });
+
+        } catch (e) {
+            console.error("Fetch admin data error:", e);
+            document.getElementById('log-table-body').innerHTML = `<tr><td colspan="5" class="text-center text-danger p-5">資料載入失敗: ${e.message}</td></tr>`;
+        }
+    }
+
+    async function fetchAnalyticsData() {
+        try {
+            const res = await fetch('/api/admin/dashboard_analytics');
+            if (!res.ok) throw new Error(`Network response was not ok (${res.status})`);
+            const data = await res.json();
+
+            updateChartData(scamTypeChart, data.scam_type_stats);
+            updateChartData(districtChart, data.district_stats);
+            updateChartData(jobChart, data.job_stats);
+
+        } catch (e) {
+            console.error("Fetch analytics data error:", e);
+        }
+    }
+</script>
+</body>
+</html>
